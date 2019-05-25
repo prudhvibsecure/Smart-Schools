@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto"
+            android:gravity="left"
+            android:hint="Marks"
+            android:padding="5dp"
+            android:textColor="@color/transparent_black"
+            android:textSize="8pt"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/marks_oo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight=".5"
+            android:background="@drawable/green1"
+            android:fontFamily="@font/roboto"
+            android:gravity="center"
+            android:hint="Marks"
+            android:padding="5dp"
+            android:textColor="@color/white"
+            android:textSize="8pt"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/grade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto"
+        android:gravity="left"
+        android:hint="Grade"
+        android:padding="5dp"
+        android:textColor="@color/transparent_black"
+        android:textSize="8pt"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/percentage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto"
+        android:gravity="left"
+        android:hint="Percentage"
+        android:padding="5dp"
+        android:textColor="@color/transparent_black"
+        android:textSize="8pt"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/rank"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto"
+        android:gravity="left"
+        android:hint="Rank"
+        android:padding="5dp"
+        android:visibility="gone"
+        android:textColor="@color/transparent_black"
+        android:textSize="8pt"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/feed_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto"
+        android:gravity="left"
+        android:hint="Feed back"
+        android:visibility="gone"
+        android:padding="5dp"
+        android:textColor="@color/transparent_black"
+        android:textSize="8pt"
+        android:textStyle="bold" />
+</LinearLayout>

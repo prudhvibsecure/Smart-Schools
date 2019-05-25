@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/v_rectangle"
+    android:layout_margin="4dp">
+
+    <TextView
+        android:id="@+id/ex_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:gravity="left"
+        android:padding="8dp"
+        android:text="date"
+        android:visibility="gone"
+        android:textColor="@color/transparent_black" />
+
+    <TableLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolset">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/subject"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/v_rectangle"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Subject"
+                android:textColor="@color/transparent_black" />
+
+            <TextView
+                android:id="@+id/t_marks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/v_rectangle"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Total Marks"
+                android:textColor="@color/transparent_black" />
+
+            <TextView
+                android:id="@+id/marks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/v_rectangle"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Marks"
+                android:textColor="@color/transparent_black" />
+
+            <TextView
+                android:id="@+id/rank"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/v_rectangle"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Rank"
+                android:textColor="@color/transparent_black" />
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

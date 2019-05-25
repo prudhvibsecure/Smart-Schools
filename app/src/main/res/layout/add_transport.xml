@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolset"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/ad_t_ts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/layout_bg"
+        android:hint="Transport name"
+        android:textCursorDrawable="@null"
+        android:inputType="textPersonName"
+        android:maxLines="1"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:cursorVisible="true"
+        android:textColor="@color/black"
+        android:textColorHint="@color/textGray"
+        android:textSize="18dp" />
+
+    <EditText
+        android:id="@+id/ad_t_ts_n"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/layout_bg"
+        android:hint="Mobile number"
+        android:inputType="number"
+        android:maxLength="10"
+        android:textCursorDrawable="@null"
+        android:maxLines="1"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:cursorVisible="true"
+        android:textColor="@color/black"
+        android:textColorHint="@color/textGray"
+        android:textSize="18dp" />
+
+    <EditText
+        android:id="@+id/ad_t_student"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/layout_bg"
+        android:hint="Student name"
+        android:inputType="textPersonName"
+        android:maxLength="10"
+        android:maxLines="1"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:textColorHint="@color/textGray"
+        android:textSize="18dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/layout_bg" >
+
+        <Spinner
+            android:id="@+id/st_spinner"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+           android:layout_weight="1"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"
+            android:tint="@color/transparent_black"
+            android:src="@android:drawable/arrow_down_float"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/add_cls"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/green1"
+        android:fontFamily="@font/roboto"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="ADD"
+        android:textColor="@color/white"
+        android:textSize="8pt" />
+
+    <TextView
+        android:id="@+id/update_ex"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/green1"
+        android:fontFamily="@font/roboto"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="Update"
+        android:textColor="@color/white"
+        android:textSize="8pt"
+        android:visibility="gone" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+
+</LinearLayout>

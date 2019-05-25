@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">SCS</string>
+    <string name="notification_channel_id">default</string>
+    <string name="file_limit_size_upload_format">Files must be less than %sMB</string>
+    <string name="subject"><u>subject</u></string>
+</resources>
