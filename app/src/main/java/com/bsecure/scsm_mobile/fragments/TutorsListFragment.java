@@ -64,6 +64,8 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
     String tras_id = null, tp_name, phone_number;
     StudentsListAdapter sadapter;
     RecyclerView students;
+    private ArrayList<String> st_ids = new ArrayList<>();
+
 
     @Override
     public void onAttach(Context context) {
@@ -75,7 +77,6 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view_layout = inflater.inflate(R.layout.content_main_view, null);
-
 
 
         db_tables = new DB_Tables(getActivity());
@@ -105,7 +106,8 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
         member_dialog.setCanceledOnTouchOutside(true);
         ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).setHint("Tutor Name");
         m_spinner = (Spinner) member_dialog.findViewById(R.id.st_spinner);
-            getStudentsList(m_spinner);
+        m_spinner.setVisibility(View.GONE);
+        getStudentsList(m_spinner);
         m_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -147,13 +149,16 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                     studentModel.setClass_id(jsonobject.optString("class_id"));
                     studentModel.setStudent_id(jsonobject.optString("student_id"));
                     studentModelList.add(studentModel);
-                    students = (RecyclerView)member_dialog.findViewById(R.id.students);
+                    students = (RecyclerView) member_dialog.findViewById(R.id.students);
                     sadapter = new StudentsListAdapter(getActivity(), studentModelList, new ClickListener() {
                         @Override
                         public void OnClick(int position, boolean checked) {
-                            if(checked)
-                            {
-
+                            if (checked) {
+                                String id = studentModelList.get(position).getStudent_id();
+                                st_ids.add(id);
+                            } else {
+                                String id = studentModelList.get(position).getStudent_id();
+                                st_ids.remove(id);
                             }
                         }
                     });
@@ -162,10 +167,10 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                     students.setAdapter(sadapter);
                 }
 
-//                ArrayAdapter<StudentModel> dataAdapter = new ArrayAdapter<StudentModel>(getContext(),
-//                        android.R.layout.simple_spinner_item, studentModelList);
-//                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                this.m_spinner.setAdapter(dataAdapter);
+                ArrayAdapter<StudentModel> dataAdapter = new ArrayAdapter<StudentModel>(getContext(),
+                        android.R.layout.simple_spinner_item, studentModelList);
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                this.m_spinner.setAdapter(dataAdapter);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -186,6 +191,15 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                 Toast.makeText(getActivity(), "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if (st_ids.size() == 0) {
+                Toast.makeText(getActivity(), "Please Assign Atleast One Student", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            StringBuilder builder=new StringBuilder();
+            for (String s : st_ids) {
+                builder.append("," + s);
+            }
+            student_id= builder.substring(1);
             JSONObject object = new JSONObject();
             object.put("tutor_id", tras_id);
             object.put("tutor_name", tp_name);
@@ -210,6 +224,10 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
             String phone_number = ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).getText().toString();
             if (phone_number.length() < 10) {
                 Toast.makeText(getActivity(), "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (st_ids.size() == 0) {
+                Toast.makeText(getActivity(), "Please Assign Atleast One Student", Toast.LENGTH_SHORT).show();
                 return;
             }
             JSONObject object = new JSONObject();
@@ -419,7 +437,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                     JSONObject object11 = new JSONObject(results.toString());
                     if (object11.optString("statuscode").equalsIgnoreCase("200")) {
                         member_dialog.dismiss();
-                        db_tables.addTutorsList(tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, student_id, tras_id, "0");
+                        db_tables.addTutorsList(tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, st_ids.toString(), tras_id, "0");
                         teachersList();
                     } else {
                         member_dialog.dismiss();
