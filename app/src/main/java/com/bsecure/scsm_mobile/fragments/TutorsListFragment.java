@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.ClickListener;
 import com.bsecure.scsm_mobile.R;
+import com.bsecure.scsm_mobile.adapters.StudentsAdapter;
 import com.bsecure.scsm_mobile.adapters.StudentsListAdapter;
 import com.bsecure.scsm_mobile.adapters.TransportListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
@@ -45,7 +47,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TutorsListFragment extends Fragment implements TransportListAdapter.ContactAdapterListener, HttpHandler {
+public class TutorsListFragment extends Fragment implements TransportListAdapter.ContactAdapterListener, HttpHandler, StudentsListAdapter.ContactAdapterListener {
 
     private ParentActivity schoolMain;
     View view_layout;
@@ -62,7 +64,8 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
     private List<StudentModel> studentModelList;
     private List<StudentModel> selectList;
     String tras_id = null, tp_name, phone_number;
-    StudentsListAdapter sadapter;
+    StudentsListAdapter studentsAdapter;
+
     RecyclerView students;
     private ArrayList<String> st_ids = new ArrayList<>();
 
@@ -150,23 +153,24 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                     studentModel.setStudent_id(jsonobject.optString("student_id"));
                     studentModelList.add(studentModel);
                     students = (RecyclerView) member_dialog.findViewById(R.id.students);
-                    sadapter = new StudentsListAdapter(getActivity(), studentModelList, new ClickListener() {
-                        @Override
-                        public void OnClick(int position, boolean checked) {
-                            if (checked) {
-                                String id = studentModelList.get(position).getStudent_id();
-                                st_ids.add(id);
-                            } else {
-                                String id = studentModelList.get(position).getStudent_id();
-                                st_ids.remove(id);
-                            }
-                        }
-                    });
-                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-                    students.setLayoutManager(mLayoutManager);
-                    students.setAdapter(sadapter);
-                }
 
+//                    sadapter = new StudentsListAdapter(getActivity(), studentModelList, new ClickListener() {
+//                        @Override
+//                        public void OnClick(int position, boolean checked) {
+//                            if (checked) {
+//                                String id = studentModelList.get(position).getStudent_id();
+//                                st_ids.add(id);
+//                            } else {
+//                                String id = studentModelList.get(position).getStudent_id();
+//                                st_ids.remove(id);
+//                            }
+//                        }
+//                    });
+                }
+                studentsAdapter = new StudentsListAdapter(studentModelList, getActivity(), this);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                students.setLayoutManager(mLayoutManager);
+                students.setAdapter(studentsAdapter);
                 ArrayAdapter<StudentModel> dataAdapter = new ArrayAdapter<StudentModel>(getContext(),
                         android.R.layout.simple_spinner_item, studentModelList);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -195,11 +199,11 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                 Toast.makeText(getActivity(), "Please Assign Atleast One Student", Toast.LENGTH_SHORT).show();
                 return;
             }
-            StringBuilder builder=new StringBuilder();
+            StringBuilder builder = new StringBuilder();
             for (String s : st_ids) {
                 builder.append("," + s);
             }
-            student_id= builder.substring(1);
+            student_id = builder.substring(1);
             JSONObject object = new JSONObject();
             object.put("tutor_id", tras_id);
             object.put("tutor_name", tp_name);
@@ -230,10 +234,16 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                 Toast.makeText(getActivity(), "Please Assign Atleast One Student", Toast.LENGTH_SHORT).show();
                 return;
             }
+            StringBuilder builder = new StringBuilder();
+            for (String s : st_ids) {
+                builder.append("," + s);
+            }
+            student_id = builder.substring(1);
             JSONObject object = new JSONObject();
             object.put("tutor_id", tr_id);
             object.put("tutor_name", tp_name);
             object.put("phone_number", phone_number);
+            object.put("student_id", student_id);
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             db_tables.updateTutorsList(tr_id, tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number);
@@ -331,32 +341,73 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
     private void edittutorsForm(final List<TransportModel> matchesList, final int position) {
 
         member_dialog = new Dialog(getActivity(), R.style.MyAlertDialogStyle);
-        member_dialog.setContentView(R.layout.add_transport);
+        member_dialog.setContentView(R.layout.add_tutor);
         member_dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         member_dialog.setCancelable(true);
         member_dialog.setCanceledOnTouchOutside(true);
+        member_dialog.getWindow().setGravity(Gravity.BOTTOM);
         ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).setHint("Tutor Name");
         ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).setText(matchesList.get(position).getTransport_name());
         ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).setText(matchesList.get(position).getPhone_number());
-        final String student_ids = matchesList.get(position).getStudent_id();
+        String student_ids = matchesList.get(position).getStudent_id();
+        student_ids = student_ids.substring(1, student_ids.length() - 1);
+        final String match_ids[] = student_ids.split(",");
         m_spinner = (Spinner) member_dialog.findViewById(R.id.st_spinner);
-        getStudentsList(m_spinner);
-        m_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int mpos, long l) {
-                StudentModel studentModel = null;
-                studentModel = (StudentModel) m_spinner.getSelectedItem();
-                student_id = studentModel.getStudent_id();
-                if (student_ids.equalsIgnoreCase(student_id)) {
-                    m_spinner.setSelection(mpos);
+        m_spinner.setVisibility(View.GONE);
+        try {
+            String msg_list = db_tables.getstudentsList();
+            studentModelList = new ArrayList<>();
+            selectList = new ArrayList<>();
+            JSONObject obj = new JSONObject(msg_list);
+            JSONArray jsonarray2 = obj.getJSONArray("student_details");
+            if (jsonarray2.length() > 0) {
+                for (int i = 0; i < jsonarray2.length(); i++) {
+                    StudentModel studentModel = new StudentModel();
+
+                    JSONObject jsonobject = jsonarray2.getJSONObject(i);
+                    studentModel.setStudent_name(jsonobject.optString("student_name"));
+                    studentModel.setRoll_no(jsonobject.optString("roll_no"));
+                    studentModel.setStatus(jsonobject.optString("status"));
+                    studentModel.setClass_id(jsonobject.optString("class_id"));
+                    studentModel.setStudent_id(jsonobject.optString("student_id"));
+                    for (String ids : match_ids) {
+                        if (ids.equalsIgnoreCase(jsonobject.optString("student_id"))) {
+                            studentModel.setSelected(true);
+                            st_ids.add(ids);
+                        }
+                    }
+                    studentModelList.add(studentModel);
                 }
+                students = (RecyclerView) member_dialog.findViewById(R.id.students);
+                studentsAdapter = new StudentsListAdapter(studentModelList, getActivity(), this);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                students.setLayoutManager(mLayoutManager);
+                students.setAdapter(studentsAdapter);
+                ArrayAdapter<StudentModel> dataAdapter = new ArrayAdapter<StudentModel>(getContext(),
+                        android.R.layout.simple_spinner_item, studentModelList);
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                this.m_spinner.setAdapter(dataAdapter);
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+//        getStudentsList(m_spinner);
+//        m_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int mpos, long l) {
+//                StudentModel studentModel = null;
+//                studentModel = (StudentModel) m_spinner.getSelectedItem();
+//                student_id = studentModel.getStudent_id();
+//                if (student_ids.equalsIgnoreCase(student_id)) {
+//                    m_spinner.setSelection(mpos);
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
         member_dialog.findViewById(R.id.update_ex).setVisibility(View.VISIBLE);
         member_dialog.findViewById(R.id.add_cls).setVisibility(View.GONE);
         member_dialog.findViewById(R.id.update_ex).setOnClickListener(new View.OnClickListener() {
@@ -477,5 +528,17 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
     @Override
     public void onFailure(String errorCode, int requestType) {
 
+    }
+
+    @Override
+    public void onRowClicked(List<StudentModel> matchesList, boolean value, CheckBox chk_name, int position) {
+        String id = studentModelList.get(position).getStudent_id();
+        if (chk_name.isChecked()) {
+            st_ids.add(id);
+            chk_name.setBackground(getResources().getDrawable(R.mipmap.ic_check));
+        } else {
+            st_ids.remove(id);
+            chk_name.setBackground(getResources().getDrawable(R.mipmap.ic_uncheck));
+        }
     }
 }

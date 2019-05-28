@@ -24,15 +24,15 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/layout_bg"
+        android:cursorVisible="true"
         android:hint="Transport name"
-        android:textCursorDrawable="@null"
         android:inputType="textPersonName"
         android:maxLines="1"
         android:padding="10dp"
         android:singleLine="true"
-        android:cursorVisible="true"
         android:textColor="@color/black"
         android:textColorHint="@color/textGray"
+        android:textCursorDrawable="@null"
         android:textSize="18dp" />
 
     <EditText
@@ -43,16 +43,16 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/layout_bg"
+        android:cursorVisible="true"
         android:hint="Mobile number"
         android:inputType="number"
         android:maxLength="10"
-        android:textCursorDrawable="@null"
         android:maxLines="1"
         android:padding="10dp"
         android:singleLine="true"
-        android:cursorVisible="true"
         android:textColor="@color/black"
         android:textColorHint="@color/textGray"
+        android:textCursorDrawable="@null"
         android:textSize="18dp" />
 
     <EditText
@@ -80,33 +80,41 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/layout_bg" >
+        android:background="@drawable/layout_bg">
 
         <Spinner
             android:id="@+id/st_spinner"
             android:layout_width="0dp"
             android:layout_height="45dp"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="5dp"
             android:layout_marginRight="10dp"
-            android:visibility="gone"
+            android:padding="5dp"
+            android:src="@android:drawable/arrow_down_float"
             android:tint="@color/transparent_black"
-            android:src="@android:drawable/arrow_down_float"/>
+            android:visibility="gone" />
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="Children"
+        android:textColor="@color/red"
+        android:textStyle="bold" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/students"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"/>
+        android:layout_marginRight="20dp" />
 
     <TextView
         android:id="@+id/add_cls"
@@ -136,7 +144,6 @@
         android:textColor="@color/white"
         android:textSize="8pt"
         android:visibility="gone" />
-
 
 
     <Space
