@@ -3,7 +3,7 @@ package com.bsecure.scsm_mobile.models;
 public class StudentModel {
 
     String student_id, roll_no, student_name, status, class_id, condition, markslist,class_name, section;
-    boolean isSelected;
+    boolean isSelected ;
 
     public String getClass_name() {
         return class_name;

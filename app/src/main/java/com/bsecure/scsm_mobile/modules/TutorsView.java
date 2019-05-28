@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
@@ -59,7 +60,7 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
         mCallback = new ItemTouchHelperCallback_Tutors();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
-         getTurotos();
+        getTurotos();
     }
 
     private void getTurotos() {
@@ -84,6 +85,7 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
                     studentModelArrayList = new ArrayList<>();
                     JSONObject object = new JSONObject(results.toString());
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
+                        findViewById(R.id.no_data).setVisibility(View.GONE);
                         JSONArray jsonarray2 = object.getJSONArray("tutor_students_details");
                         if (jsonarray2.length() > 0) {
                             for (int i = 0; i < jsonarray2.length(); i++) {
@@ -101,8 +103,8 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
                             mRecyclerView.setLayoutManager(linearLayoutManager);
                             mRecyclerView.setAdapter(adapter);
                         }
-                    }
-                    else {
+                    } else {
+                        findViewById(R.id.no_data).setVisibility(View.VISIBLE);
                         Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
                     break;
