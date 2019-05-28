@@ -43,10 +43,10 @@ public class Paths {
     public static final String view_transport_location = base + "view_transport_location";
     public static final String get_coordinates = base + "get_coordinates";
     public static final String attendance_reply = base + "attendance_reply";
-    public static final String forward = base + "forward";
+    public static final String forward = base + "forward_v1";
     public static final String previous_subject_wise_marks = base + "previous_subject_wise_marks";
     public static final String view_periods = base + "view_periods";
     public static final String check_holiday = base + "check_holiday";
     public static final String check_prformance = base + "check_student_performance";
-    public static final String tutor_delete_student = base + "tutor_delete_student";
+    public static final String tutor_delete_student = base + "delete_tutor_student_v1";
 }

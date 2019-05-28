@@ -990,8 +990,8 @@ public class DB_Tables {
             if (database != null) {
                 SQLiteDatabase db = database.getWritableDatabase();
 
-//                String sql = "select * from Message where class_id='" + class_id + "'";
-               String sql = "select * from Message where class_id='" + class_id + "' and student_id='"+student_id+"'";
+               String sql = "select * from Message where class_id='" + class_id + "'";
+             //  String sql = "select * from Message where class_id='" + class_id + "' and student_id='"+student_id+"'";
                 Cursor cursor = db.rawQuery(sql,
                         null);
                 if (cursor != null) {

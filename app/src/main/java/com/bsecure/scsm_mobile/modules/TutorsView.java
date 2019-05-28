@@ -112,6 +112,7 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
                     JSONObject object1 = new JSONObject(results.toString());
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
                         Toast.makeText(this, "Student Removed successfully", Toast.LENGTH_SHORT).show();
+                        adapter.notifyDataSetChanged();
                         getTurotos();
                     }
                     break;

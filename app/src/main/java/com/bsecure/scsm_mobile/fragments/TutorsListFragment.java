@@ -470,6 +470,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                                 .make(coordinatorLayout, "Removed Successfully", Snackbar.LENGTH_LONG);
                         snackbar.setActionTextColor(Color.YELLOW);
                         snackbar.show();
+
                     } else {
 
                     }
@@ -490,6 +491,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                         member_dialog.dismiss();
                         db_tables.addTutorsList(tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, st_ids.toString(), tras_id, "0");
                         teachersList();
+                        st_ids.clear();
                     } else {
                         member_dialog.dismiss();
                         Toast.makeText(getActivity(), object11.optString("statusdescription"), Toast.LENGTH_SHORT).show();
@@ -532,6 +534,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
 
     @Override
     public void onRowClicked(List<StudentModel> matchesList, boolean value, CheckBox chk_name, int position) {
+        st_ids.clear();
         String id = studentModelList.get(position).getStudent_id();
         if (chk_name.isChecked()) {
             st_ids.add(id);

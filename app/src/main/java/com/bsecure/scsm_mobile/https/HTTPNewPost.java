@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.view.Window;
+import android.widget.Toast;
 
 
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
@@ -78,6 +79,10 @@ public class HTTPNewPost {
                 // showUserActionResult(-1, context.getString(R.string.nipcyns));
                 return;
             }
+            else
+            {
+                Toast.makeText(context, "No Internet Connection Found", Toast.LENGTH_SHORT).show();
+            }
 
         new Thread(new Runnable() {
 
@@ -136,19 +141,29 @@ public class HTTPNewPost {
                         postUserAction(0, "");
 
                         return;
+                    }else if (serverResponseCode==404){
+                        disableProgress();
+
+                    }else if(serverResponseCode==500){
+                        disableProgress();
                     }
 
                     postUserAction(-1, serverResponseMessage);
 
                 } catch (MalformedURLException me) {
+                    dismissProgress();
                     // postUserAction(-1, context.getString(R.string.iurl));
                 } catch (ConnectException e) {
+                    dismissProgress();
                     //postUserAction(-1, context.getString(R.string.snr1));
                 } catch (SocketException se) {
+                    dismissProgress();
                     //postUserAction(-1, context.getString(R.string.snr2));
                 } catch (SocketTimeoutException stex) {
+                    dismissProgress();
                     // postUserAction(-1, context.getString(R.string.sct));
                 } catch (Exception ex) {
+                    dismissProgress();
                     //postUserAction(-1, context.getString(R.string.snr3));
                 } finally {
                     if (inputStream != null)
