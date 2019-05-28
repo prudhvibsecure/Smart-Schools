@@ -624,7 +624,7 @@ public class TutorsChatSingle extends AppCompatActivity implements View.OnClickL
 
         } else {
             mAudioButton.setListenForRecord(true);
-            Toast toast = Toast.makeText(getApplicationContext(), "Tap to Record, Hold to Release", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(getApplicationContext(), "Hold To Record, Release To Send", Toast.LENGTH_LONG);
             toast.setGravity(Gravity.BOTTOM | Gravity.RIGHT, 100, 150);
             View view = toast.getView();
             TextView tv_txt = (TextView) view.findViewById(android.R.id.message);
