@@ -774,6 +774,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
             // object.put("teacher_id", reply_Id);
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             db_tables.messageData(message, null, mesg_date_time, null, class_id, SharedValues.getValue(this, "school_id"), "0", null, student_id, studentName, null, "0", "1", "Yes", "none");
+            db_tables.messageData(message, null, mesg_date_time, null, class_id, SharedValues.getValue(this, "school_id"), "0", null, student_id, studentName, null, "0", "1", "Yes", "none");
 
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();
