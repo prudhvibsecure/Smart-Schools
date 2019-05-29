@@ -11,6 +11,7 @@ public class Paths {
     public static final String get_tutor_students =  base + "get_tutor_students";
     public static final String view_tutors = base + "view_tutors";
     public static final String get_transport = base + "get_transport";
+    public static final String get_transports = base + "get_transports";
     public static final String get_staff = base + "get_staff";
     public static final String get_teacher = base + "get_teacher";
     public static final String get_students = base + "get_students";
@@ -49,4 +50,6 @@ public class Paths {
     public static final String check_holiday = base + "check_holiday";
     public static final String check_prformance = base + "check_student_performance";
     public static final String tutor_delete_student = base + "delete_tutor_student_v1";
+    public static final String start_transport = base + "start_transport";
+    public static final String stop_transport = base + "stop_transport";
 }

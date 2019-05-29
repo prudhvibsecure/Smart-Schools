@@ -79,6 +79,10 @@ public class HTTPNewPost {
                 // showUserActionResult(-1, context.getString(R.string.nipcyns));
                 return;
             }
+            else
+            {
+                Toast.makeText(context, "No Internet Connection Found", Toast.LENGTH_SHORT).show();
+            }
 
         new Thread(new Runnable() {
 

@@ -16,6 +16,7 @@ import com.bsecure.scsm_mobile.firebasepaths.SharedPrefManager;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.modules.ParentActivity;
 import com.bsecure.scsm_mobile.modules.ParentView;
+import com.bsecure.scsm_mobile.modules.RoutesList;
 import com.bsecure.scsm_mobile.modules.StaffView;
 import com.bsecure.scsm_mobile.modules.TeacherView;
 import com.bsecure.scsm_mobile.modules.TransportView;
@@ -43,7 +44,7 @@ public class Login_Phone extends AppCompatActivity implements HttpHandler {
 
     private void getLogin() {
 
-        if(isNetworkConnected()) {
+        if (isNetworkConnected()) {
 
             String mob_number = ((EditText) findViewById(R.id.mob_number)).getText().toString();
             if (mob_number.length() == 0) {
@@ -63,9 +64,7 @@ public class Login_Phone extends AppCompatActivity implements HttpHandler {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        else
-        {
+        } else {
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
     }
@@ -96,9 +95,11 @@ public class Login_Phone extends AppCompatActivity implements HttpHandler {
                         } else if (object.optString("member_id").equalsIgnoreCase("4")) {
                             // Tutor
                             startPages(TutorsView.class);
-                        } else {
+                        } else if (object.optString("member_id").equalsIgnoreCase("5")) {
                             startPages(TransportView.class);
                             // Transport
+                        } else {
+                            startPages(RoutesList.class);
                         }
                         return;
                     }
