@@ -1,6 +1,9 @@
 package com.bsecure.scsm_mobile.modules;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bsecure.scsm_mobile.Login_Phone;
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.StudentsView;
 import com.bsecure.scsm_mobile.View_Exam_List;
@@ -44,12 +48,15 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
     private RecyclerView mRecyclerView;
     public ItemTouchHelperExtension mItemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
-
+    IntentFilter filter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main_view);
 
+
+        filter = new IntentFilter("com.teacher.refresh");
+        registerReceiver(mBroadcastReceiver, filter);
         db_tables = new DB_Tables(this);
         db_tables.openDB();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
@@ -62,6 +69,22 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
         getTurotos();
     }
+
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            try {
+                SharedValues.saveValue(getApplicationContext(), "member_id", "");
+                getApplicationContext().deleteDatabase("schools_data_mob.db");
+                Intent sc = new Intent(getApplicationContext(), TutorsView.class);
+                startActivity(sc);
+                finish();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     private void getTurotos() {
 
@@ -113,8 +136,11 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
                     JSONObject object1 = new JSONObject(results.toString());
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
                         Toast.makeText(this, "Student Removed successfully", Toast.LENGTH_SHORT).show();
-                        adapter.notifyDataSetChanged();
-                        getTurotos();
+                        if (adapter != null) {
+                            adapter.notifyDataSetChanged();
+                            adapter.clear();
+                            getTurotos();
+                        }
                     }
                     break;
             }

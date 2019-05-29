@@ -97,6 +97,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.Contac
 
             contactViewHolder.tv_title.setText(mycontactlist.getStudent_name());
             contactViewHolder.contact_ph.setText(mycontactlist.getRoll_no());
+
 //            if (mycontactlist.getStatus().equalsIgnoreCase("0")) {
 //                contactViewHolder.chk_name.setChecked(true);
 //                contactViewHolder.chk_name.setBackgroundColor(Color.TRANSPARENT);

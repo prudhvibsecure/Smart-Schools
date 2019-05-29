@@ -159,6 +159,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     List<Members> contactObjectList;
     private SweetAlertDialog pDialog;
     private MembersAdapter transportListAdapter;
+    String match_ids[];
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -184,6 +185,8 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
             studentName = getData.getStringExtra("name");
             class_id = getData.getStringExtra("class_id");
             student_id = getData.getStringExtra("student_id");
+            //student_id = student_id.substring(1, student_id.length() - 1);
+            //match_ids = student_id.split(",");
             findViewById(R.id.inputLL).setVisibility(View.GONE);
             findViewById(R.id.record_view).setVisibility(View.GONE);
             findViewById(R.id.send_btn_l).setVisibility(View.GONE);
@@ -266,8 +269,20 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                         transportModel.setStudent_id(jsonobject.optString("student_id"));
                         transportModel.setSchool_id(jsonobject.optString("school_id"));
                         transportModel.setTransport_id(jsonobject.optString("tutor_id"));
-                        contactObjectList.add(transportModel);
+//                        if(("["+student_id+"]").equals(jsonobject.optString("student_id"))) {
+//                            contactObjectList.add(transportModel);
+//                        }
 
+                        if ((student_id).equals(jsonobject.optString("student_id").substring(1, jsonobject.optString("student_id").length() - 1))) {
+                            contactObjectList.add(transportModel);
+                        }
+                        /*for (String stu_id : match_ids) {
+                            if ((student_id).equals(jsonobject.optString("student_id"))) {
+                                contactObjectList.add(transportModel);
+
+                            }
+                        }*/
+                        /*contactObjectList.add(transportModel);*/
                     }
 
                     RecyclerView recyclerView = member_dialog.findViewById(R.id.member_list);
@@ -911,7 +926,8 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (runTimePermission != null) {
             runTimePermission.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
@@ -1524,7 +1540,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onClick(View v) {
 
-                        getForward(matchesList.get(position).getMessage(), matchesList.get(position).getMessage_id(), matchesList.get(position).getMessage_date(),matchesList.get(position).getClass_id());
+                        getForward(matchesList.get(position).getMessage(), matchesList.get(position).getMessage_id(), matchesList.get(position).getMessage_date(), matchesList.get(position).getClass_id());
                         rep_Dialog.dismiss();
                     }
                 });
@@ -1553,7 +1569,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    private void getForward(String messages, String msgId, String msg_date,String class_id) {
+    private void getForward(String messages, String msgId, String msg_date, String class_id) {
         try {
 
             getTutorsListM();
@@ -1568,7 +1584,8 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
-    public void onRowClicked(List<Members> matchesList, boolean value, CheckBox chk_name, int position) {
+    public void onRowClicked(List<Members> matchesList, boolean value, CheckBox chk_name,
+                             int position) {
         if (chk_name.isChecked()) {
             fwd_Id = matchesList.get(position).getTransport_name();
             fr_ids.remove(fwd_Id);

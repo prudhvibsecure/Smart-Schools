@@ -128,6 +128,7 @@ public class DB_Tables {
         }
 
     }
+
     public void deleteClass(String class_id) {
         SQLiteDatabase db = null;
         try {
@@ -143,6 +144,7 @@ public class DB_Tables {
             e.printStackTrace();
         }
     }
+
     public void updateClassList(String ad_cname, String section, String tc_seb, String class_ids) {
         SQLiteDatabase db = null;
         try {
@@ -320,6 +322,44 @@ public class DB_Tables {
         }
         return jsonObject.toString();
     }
+
+    ///
+
+    public void tutorDeleteStudent(final String stu_id, String phone) {
+
+        SQLiteDatabase db = null;
+        try {
+            long rawId;
+            if (database != null) {
+                String iwhereClause = "student_id='" + stu_id + "' && phone_number='"+ phone +"'";
+                db = database.getWritableDatabase();
+                db.delete("TUTOR", iwhereClause, null);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void parentDeleteTutor(final String stu_id, String tut_id) {
+
+        SQLiteDatabase db = null;
+        try {
+            long rawId;
+            if (database != null) {
+                String iwhereClause = "student_id='" + stu_id + "' && tutor_id='"+ tut_id +"'";
+                db = database.getWritableDatabase();
+                db.delete("TUTOR", iwhereClause, null);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    ///
 
     public void addStaff(String staff_id, String name, String phone_number, String designation, String school_id, String staus) {
         SQLiteDatabase db = null;

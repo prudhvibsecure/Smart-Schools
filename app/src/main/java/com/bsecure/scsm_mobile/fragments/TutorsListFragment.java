@@ -1,7 +1,10 @@
 package com.bsecure.scsm_mobile.fragments;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -25,6 +28,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.ClickListener;
+import com.bsecure.scsm_mobile.Login_Phone;
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.StudentsAdapter;
 import com.bsecure.scsm_mobile.adapters.StudentsListAdapter;
@@ -81,7 +85,6 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view_layout = inflater.inflate(R.layout.content_main_view, null);
 
-
         db_tables = new DB_Tables(getActivity());
         db_tables.openDB();
         view_layout.findViewById(R.id.toolset).setVisibility(View.GONE);
@@ -99,6 +102,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
         return view_layout;
     }
+
 
     private void getAddTutors() {
         member_dialog = new Dialog(getActivity(), R.style.MyAlertDialogStyle);

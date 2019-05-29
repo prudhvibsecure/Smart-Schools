@@ -151,6 +151,32 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Intent refresh=new Intent("com.teacher.refresh");
                     sendBroadcast(refresh);
 
+                }else if(m_type.equalsIgnoreCase("ATC") || m_type.equalsIgnoreCase("ETC"))
+                {
+                    String teacher_classes_id = arry_data[2];
+                    String class_id = arry_data[3];
+                    String class_name = arry_data[4];
+                    String section = arry_data[6];
+                    String subjects = arry_data[6];
+                    db_tables.addTeacherClassList(teacher_classes_id, class_id, section,class_name,subjects);
+                    Intent refresh=new Intent("com.teacher.refresh");
+                    sendBroadcast(refresh);
+                }
+                else if(m_type.equalsIgnoreCase("TDTU"))
+                {
+                    String student_id = arry_data[1];
+                    String phone = arry_data[2];
+                    db_tables.tutorDeleteStudent(student_id, phone);
+                    Intent refresh=new Intent("com.teacher.refresh");
+                    sendBroadcast(refresh);
+                }
+                else if(m_type.equalsIgnoreCase("DTUS"))
+                {
+                    String student_id = arry_data[1];
+                    String tutor_id = arry_data[2];
+                    db_tables.parentDeleteTutor(student_id, tutor_id);
+                    Intent refresh=new Intent("com.teacher.refresh");
+                    sendBroadcast(refresh);
                 }
 
             } else {
