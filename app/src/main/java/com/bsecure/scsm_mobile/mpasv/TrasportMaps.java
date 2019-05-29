@@ -55,6 +55,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
     Geocoder geocoder;
     IntentFilter myIntentFilter;
     LocationManager mLocationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,9 +75,9 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onResume() {
         super.onResume();
-        try{
+        try {
             registerReceiver(mBroadcatNotification, myIntentFilter);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -131,14 +132,14 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                         latLng = new LatLng(latitude, longitude);
                         googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                         markerOptions = new MarkerOptions();
-
+                        googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_schoolbus)));
                         // Setting the position for the marker
-                        markerOptions.position(latLng);
-                        markerOptions.title(addressText);
-                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_schoolbus));
-
-                        // Placing a marker on the touched position
-                        googleMap.addMarker(markerOptions);
+//                        markerOptions.position(latLng);
+//                        markerOptions.title(addressText);
+//                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_schoolbus));
+//
+//                        // Placing a marker on the touched position
+//                        googleMap.addMarker(markerOptions);
                         ((TextView) findViewById(R.id.loc_txt)).setText(addressText);
                     }
                 }
@@ -225,14 +226,15 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                 LatLng coordinate = new LatLng(latitude, longitude);
                 CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 19);
                 googleMap.animateCamera(yourLocation);
-                markerOptions = new MarkerOptions();
-
-                // Setting the position for the marker
-                markerOptions.position(coordinate);
-                markerOptions.title(addressText);
-
-                // Placing a marker on the touched position
-                googleMap.addMarker(markerOptions);
+//                markerOptions = new MarkerOptions();
+//
+//                // Setting the position for the marker
+//                markerOptions.position(coordinate);
+//                markerOptions.title(addressText);
+//
+//                // Placing a marker on the touched position
+//                googleMap.addMarker(markerOptions);
+                googleMap.addMarker(new MarkerOptions().position(coordinate).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_pickup)));
                 ((TextView) findViewById(R.id.loc_txt)).setText(addressText);
             }
             // Setting a click event handler for the map
@@ -251,13 +253,14 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                     googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
                     // Creating a marker
-                    markerOptions = new MarkerOptions();
-
-                    // Setting the position for the marker
-                    markerOptions.position(latLng);
-
-                    // Placing a marker on the touched position
-                    googleMap.addMarker(markerOptions);
+//                    markerOptions = new MarkerOptions();
+//
+//                    // Setting the position for the marker
+//                    markerOptions.position(latLng);
+//
+//                    // Placing a marker on the touched position
+//                    googleMap.addMarker(markerOptions);
+                    googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_pickup)));
 
                     // Adding Marker on the touched location with address
                     new ReverseGeocodingTask(getBaseContext()).execute(latLng);
@@ -271,7 +274,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private Location getLastKnownLocation() {
-        mLocationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
+        mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         List<String> providers = mLocationManager.getProviders(true);
         Location bestLocation = null;
         for (String provider : providers) {
@@ -286,6 +289,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
         }
         return bestLocation;
     }
+
     private class ReverseGeocodingTask extends AsyncTask<LatLng, Void, String> {
         Context mContext;
 
@@ -327,10 +331,11 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
         protected void onPostExecute(String addressText) {
             // Setting the title for the marker.
             // This will be displayed on taping the marker
-            markerOptions.title(addressText);
+           // markerOptions.title(addressText);
             ((TextView) findViewById(R.id.loc_txt)).setText(addressText);
             // Placing a marker on the touched position
-            googleMap.addMarker(markerOptions);
+
+            googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_pickup)));
 
         }
     }

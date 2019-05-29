@@ -261,11 +261,13 @@ public class TransportListFragment extends Fragment implements TransportListAdap
 
     @Override
     public void onMessageRow(List<TransportModel> matchesList, int position) {
-//        try {
-//            getEventShowTrasport(matchesList.get(position).getTransport_id(), matchesList.get(position).getStudent_id(), matchesList.get(position).getSchool_id());
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
+        try {
+            Intent maps = new Intent(getActivity(), TrasportMaps.class);
+            startActivity(maps);
+            getEventShowTrasport(matchesList.get(position).getTransport_id(), matchesList.get(position).getStudent_id(), matchesList.get(position).getSchool_id());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void getEventShowTrasport(String transport_id, String student_id, String school_id) {
@@ -387,8 +389,7 @@ public class TransportListFragment extends Fragment implements TransportListAdap
                     }
                     break;
                 case 10:
-                    Intent maps = new Intent(getActivity(), TrasportMaps.class);
-                    startActivity(maps);
+
                     break;
             }
 

@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.bsecure.scsm_mobile.modules.ParentActivity;
 import com.bsecure.scsm_mobile.modules.ParentView;
+import com.bsecure.scsm_mobile.modules.RoutesList;
 import com.bsecure.scsm_mobile.modules.StaffView;
 import com.bsecure.scsm_mobile.modules.TeacherView;
 import com.bsecure.scsm_mobile.modules.TransportView;
@@ -39,7 +40,9 @@ public class SplashActivity extends AppCompatActivity {
                     } else if (member_id.equalsIgnoreCase("5")) {
                         // Transport
                         startPages(TransportView.class);
-                    } else {
+                    } else if (member_id.equalsIgnoreCase("6")) {
+                        startPages(RoutesList.class);
+                    }else{
                         startPages(Login_Phone.class);
                     }
 

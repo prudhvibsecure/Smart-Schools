@@ -41,8 +41,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 
-public class GoogleView extends AppCompatActivity
-        implements OnMapReadyCallback,HttpHandler {
+public class GoogleView extends AppCompatActivity implements OnMapReadyCallback, HttpHandler {
 
     GoogleMap mGoogleMap;
     SupportMapFragment mapFrag;
@@ -50,23 +49,23 @@ public class GoogleView extends AppCompatActivity
     Location mLastLocation;
     Marker mCurrLocationMarker;
     FusedLocationProviderClient mFusedLocationClient;
-    private String transport_id,student_id,school_id;
+    private String transport_id, student_id, school_id;
     Geocoder geocoder;
     private String addressText = "";
     List<Address> addresses = null;
+    Location location;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_maps);
 
-        Intent data=getIntent();
-        if (data!=null){
+        Intent data = getIntent();
+        if (data != null) {
 
-            transport_id=data.getStringExtra("t_id");
-            student_id=data.getStringExtra("st_id");
-            school_id=data.getStringExtra("sc_id");
+            transport_id = data.getStringExtra("t_id");
+            student_id = data.getStringExtra("st_id");
+            school_id = data.getStringExtra("sc_id");
         }
-
 
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -75,6 +74,7 @@ public class GoogleView extends AppCompatActivity
         mapFrag.getMapAsync(this);
         geocoder = new Geocoder(this);
     }
+
     private void getUpdatetoNotify(double latitude, double longtude) {
 
         try {
@@ -95,6 +95,7 @@ public class GoogleView extends AppCompatActivity
 
     @Override
     protected void onResume() {
+        getUpdatetoNotify(location.getLatitude(), location.getLongitude());
         super.onResume();
     }
 
@@ -114,8 +115,8 @@ public class GoogleView extends AppCompatActivity
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(120000); // two minute interval
-        mLocationRequest.setFastestInterval(120000);
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -123,8 +124,8 @@ public class GoogleView extends AppCompatActivity
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 //Location Permission already granted
-                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-                mGoogleMap.setMyLocationEnabled(true);
+//                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+//                mGoogleMap.setMyLocationEnabled(true);
             } else {
                 //Request Location Permission
                 checkLocationPermission();
@@ -141,7 +142,7 @@ public class GoogleView extends AppCompatActivity
             List<Location> locationList = locationResult.getLocations();
             if (locationList.size() > 0) {
                 //The last location in the list is the newest
-                Location location = locationList.get(locationList.size() - 1);
+                location = locationList.get(locationList.size() - 1);
                 Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                 mLastLocation = location;
                 if (mCurrLocationMarker != null) {
@@ -163,20 +164,20 @@ public class GoogleView extends AppCompatActivity
 
 
                 }
-                getUpdatetoNotify(location.getLatitude(),location.getLongitude());
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                markerOptions.title(addressText);
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                getUpdatetoNotify(location.getLatitude(), location.getLongitude());
+//                MarkerOptions markerOptions = new MarkerOptions();
+//                markerOptions.position(latLng);
+//                markerOptions.title(addressText);
+//                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
                 mGoogleMap.setBuildingsEnabled(true);
                 mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
                 CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(latLng, 25);
                 mGoogleMap.animateCamera(yourLocation);
-                mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
-
+                //mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+                mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_pickup)));
                 //move map camera
-               // mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
+                // mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
             }
         }
     };

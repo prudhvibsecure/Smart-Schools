@@ -102,6 +102,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     String transport_id = arry_data[2];
                     String student_id = arry_data[3];
                     String school_id = arry_data[4];
+                    Intent my_maps = new Intent();
+                    my_maps.setAction("com.scm.gps");
+                    my_maps.putExtra("trans_id", transport_id);
+                    my_maps.putExtra("student_id", student_id);
+                    my_maps.putExtra("school_id", school_id);
+                    sendBroadcast(my_maps);
                     //  View Transport Push Notification
                 } else if (m_type.equalsIgnoreCase("EOH")) {
                     String name = arry_data[2];

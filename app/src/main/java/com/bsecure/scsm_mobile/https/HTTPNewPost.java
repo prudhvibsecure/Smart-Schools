@@ -13,6 +13,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 
+import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 
 import java.io.ByteArrayInputStream;
@@ -73,16 +74,13 @@ public class HTTPNewPost {
         this.requestId = requestId;
 
         if (progressFlag)
-             showProgress(progressMsg, context);
+            showProgress(progressMsg, context);
 
-            if (!isNetworkAvailable()) {
-                // showUserActionResult(-1, context.getString(R.string.nipcyns));
-                return;
-            }
-            else
-            {
-                Toast.makeText(context, "No Internet Connection Found", Toast.LENGTH_SHORT).show();
-            }
+        if (!isNetworkAvailable()) {
+            showUserActionResult(-1, context.getString(R.string.nonet));
+            dismissProgress();
+            return;
+        }
 
         new Thread(new Runnable() {
 
@@ -136,15 +134,15 @@ public class HTTPNewPost {
                         bytebuf = baos.toByteArray();
                         obj = new String(bytebuf, "UTF-8");
 
-                      //  Log.e("response::::", obj.toString() + "");
+                        //  Log.e("response::::", obj.toString() + "");
 
                         postUserAction(0, "");
 
                         return;
-                    }else if (serverResponseCode==404){
+                    } else if (serverResponseCode == 404) {
                         disableProgress();
 
-                    }else if(serverResponseCode==500){
+                    } else if (serverResponseCode == 500) {
                         disableProgress();
                     }
 
