@@ -105,6 +105,7 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
                         }
                     } else {
                         findViewById(R.id.no_data).setVisibility(View.VISIBLE);
+                        adapter.notifyDataSetChanged();
                         Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
                     break;

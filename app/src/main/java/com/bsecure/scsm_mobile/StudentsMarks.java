@@ -142,7 +142,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
             }
             SweetAlertDialog dialog = new SweetAlertDialog(this,SweetAlertDialog.NORMAL_TYPE);
             dialog.setTitle("Alert!");
-            dialog.setContentText("Roll No's: " + Html.fromHtml(desc));
+            dialog.setContentText(desc);
             dialog.setCancelable(false);
             dialog.setConfirmButton("Yes", new SweetAlertDialog.OnSweetClickListener() {
                 @Override
@@ -222,7 +222,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
             }
             SweetAlertDialog dialog = new SweetAlertDialog(this);
             dialog.setTitle("Alert!");
-            dialog.setContentText("Roll No's: " + desc);
+            dialog.setContentText(desc);
             dialog.setCancelable(false);
             dialog.setConfirmButton("Yes", new SweetAlertDialog.OnSweetClickListener() {
                 @Override

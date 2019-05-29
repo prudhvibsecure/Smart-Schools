@@ -191,8 +191,12 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                 return;
             }
             phone_number = ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).getText().toString();
-            if (phone_number.length() < 10) {
+            if (phone_number.length() == 0) {
                 Toast.makeText(getActivity(), "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (phone_number.length() < 10) {
+                Toast.makeText(getActivity(), "Please Enter Valid Mobile Number", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (st_ids.size() == 0) {
@@ -226,8 +230,12 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                 return;
             }
             String phone_number = ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).getText().toString();
-            if (phone_number.length() < 10) {
+            if (phone_number.length() == 0) {
                 Toast.makeText(getActivity(), "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (phone_number.length() < 10) {
+                Toast.makeText(getActivity(), "Please Enter Valid Mobile Number", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (st_ids.size() == 0) {
@@ -465,6 +473,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                         adapter.notifyDataSetChanged();
 
                         db_tables.deleteTutor(teach_Id);
+                        Toast.makeText(schoolMain, "Tutor Deleted Successfully", Toast.LENGTH_SHORT).show();
                         teachersList();
                         Snackbar snackbar = Snackbar
                                 .make(coordinatorLayout, "Removed Successfully", Snackbar.LENGTH_LONG);
@@ -490,6 +499,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                     if (object11.optString("statuscode").equalsIgnoreCase("200")) {
                         member_dialog.dismiss();
                         db_tables.addTutorsList(tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, st_ids.toString(), tras_id, "0");
+                        Toast.makeText(schoolMain, "Tutor Added Successfully", Toast.LENGTH_SHORT).show();
                         teachersList();
                         st_ids.clear();
                     } else {
@@ -514,6 +524,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                     JSONObject object12 = new JSONObject(results.toString());
                     if (object12.optString("statuscode").equalsIgnoreCase("200")) {
                         member_dialog.dismiss();
+                        Toast.makeText(schoolMain, "Tutor Details Updated Successfully", Toast.LENGTH_SHORT).show();
                         teachersList();
                     } else {
 
