@@ -108,12 +108,16 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.Contac
 //                contactViewHolder.chk_name.setChecked(false);
 //                contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.ic_uncheck));
 //            }
-            if (isChecked.containsKey(position)) {
-                contactViewHolder.chk_name.setChecked(isChecked.get(position));
+            if (matchesList.get(position).isSelected()) {
                 contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.ic_check));
-            } else {
-                contactViewHolder.chk_name.setChecked(false);
-                contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.ic_uncheck));
+            }else {
+                if (isChecked.containsKey(position)) {
+                    contactViewHolder.chk_name.setChecked(isChecked.get(position));
+                    contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.ic_check));
+                } else {
+                    contactViewHolder.chk_name.setChecked(false);
+                    contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.ic_uncheck));
+                }
             }
             boolean value = selectedItems.get(position);
             contactViewHolder.itemView.setActivated(selectedItems.get(position, false));

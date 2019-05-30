@@ -367,13 +367,13 @@ public class SelfFragment extends Fragment implements HttpHandler, View.OnClickL
         int percentage = Integer.parseInt(matchesList.get(position).getPercengate());
         // if (percentage==0)
         if (percentage < 60) {
-            prent_txt.setText(Html.fromHtml("Your Child <br/>Is Weak In-<br/>" + matchesList.get(position).getSubject()));
+            prent_txt.setText(Html.fromHtml("Your Child <br/>Is Weak In <br/>" + matchesList.get(position).getSubject()));
         } else if (percentage < 75) {
-            prent_txt.setText(Html.fromHtml("More Hard Work <br/>Required In-<br/>" + matchesList.get(position).getSubject()));
+            prent_txt.setText(Html.fromHtml("More Hard Work <br/>Required In <br/>" + matchesList.get(position).getSubject()));
         } else if (percentage < 95) {
-            prent_txt.setText(Html.fromHtml("Need Improvement <br/>To Reach Top Grade <br/>In-" + matchesList.get(position).getSubject()));
+            prent_txt.setText(Html.fromHtml("Need Improvement <br/>To Reach Top Grade <br/>In " + matchesList.get(position).getSubject()));
         } else {
-            prent_txt.setText(Html.fromHtml("Your Child<br/>Is Best At-<br/>" + matchesList.get(position).getSubject()));
+            prent_txt.setText(Html.fromHtml("Your Child<br/>Is Best At <br/>" + matchesList.get(position).getSubject()));
         }
 
     }

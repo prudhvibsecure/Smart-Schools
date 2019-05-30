@@ -658,17 +658,6 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void sendVoiceMessage() {
-
-        try {
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-
-    }
 
     private void showSendButton() {
         findViewById(R.id.user_attach).setVisibility(View.GONE);
@@ -760,7 +749,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                 findViewById(R.id.ic_member).setVisibility(View.GONE);
                 break;
             case R.id.send_for:
-                if (fr_ids.size() > 0) {
+                if (fr_ids_l.size() > 0) {
                     StringBuilder builder = new StringBuilder();
                     for (String s : fr_ids_l) {
                         builder.append("," + s);
@@ -789,7 +778,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
             // object.put("teacher_id", reply_Id);
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             db_tables.messageData(message, null, mesg_date_time, null, class_id, SharedValues.getValue(this, "school_id"), "0", null, student_id, studentName, null, "0", "1", "Yes", "none");
-            db_tables.messageData(message, null, mesg_date_time, null, class_id, SharedValues.getValue(this, "school_id"), "0", null, student_id, studentName, null, "0", "1", "Yes", "none");
+           // db_tables.messageData(message, null, mesg_date_time, null, class_id, SharedValues.getValue(this, "school_id"), "0", null, student_id, studentName, null, "0", "1", "Yes", "none");
 
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();

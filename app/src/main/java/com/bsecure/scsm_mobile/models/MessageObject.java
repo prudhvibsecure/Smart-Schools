@@ -23,6 +23,15 @@ public class MessageObject implements Serializable {
     String for_condition;
     String nType;
     String class_id;
+    String student_id;
+
+    public String getStudent_id() {
+        return student_id;
+    }
+
+    public void setStudent_id(String student_id) {
+        this.student_id = student_id;
+    }
 
     public String getClass_id() {
         return class_id;

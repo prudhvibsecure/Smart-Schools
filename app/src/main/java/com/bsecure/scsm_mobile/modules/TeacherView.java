@@ -55,7 +55,7 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
     private TextDrawable.IBuilder builder = null;
     private ColorGenerator generator = ColorGenerator.MATERIAL;
     private Dialog m_dialog;
-    private IntentFilter filter,re_filter;
+    private IntentFilter filter, re_filter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,10 +63,13 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
         setContentView(R.layout.content_main_view);
         filter = new IntentFilter("com.scs.app.SESSION");
         filter.setPriority(1);
+
         re_filter = new IntentFilter("com.teacher.refresh");
-        registerReceiver(mBroadcastReceiver, filter);
+        registerReceiver(mBroadcastReceiver_ref, re_filter);
+
         db_tables = new DB_Tables(this);
         db_tables.openDB();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
         toolbar.setTitle("Class List");//Organization Head
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
@@ -277,7 +280,11 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
         public void onReceive(Context context, Intent intent) {
 
             try {
-                getListTeachers();
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                    adapter.clear();
+                    getListTeachers();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

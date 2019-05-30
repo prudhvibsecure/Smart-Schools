@@ -113,11 +113,11 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
             dialog.setTitle("Alert!");
             String desc;
             if (rollno_list_id.size() > 0) {
-                desc = rollno_list_id.toString();
-                dialog.setContentText("Roll No.'s: " + Html.fromHtml(desc + " Are Being Marked Absent."));
+                desc = "Students";
+                dialog.setContentText("" + Html.fromHtml(desc + " Are Being Marked Absent."));
             } else {
                 desc = "All Students <br/>Present";
-                dialog.setContentText("Roll No.'s: " + Html.fromHtml(desc));
+                dialog.setContentText("" + Html.fromHtml(desc));
             }
             dialog.setCancelable(false);
             dialog.setConfirmButton("Yes", new SweetAlertDialog.OnSweetClickListener() {
@@ -164,7 +164,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                 String fis1 = builder1.toString();
                 roll_nos = fis1.substring(1);
             }
-            time_stamp= System.currentTimeMillis();
+            time_stamp = System.currentTimeMillis();
             // attendance_id,class_id, attendance_date, student_ids, teacher_id, school_id
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
@@ -214,7 +214,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                                 studentModel.setStatus(jsonobject.optString("status"));
                                 studentModel.setClass_id(jsonobject.optString("class_id"));
                                 studentModel.setStudent_id(jsonobject.optString("student_id"));
-                                studentModel.setSelected(false);
+                                studentModel.setSelected(true);
                                 studentModelList.add(studentModel);
 
                             }

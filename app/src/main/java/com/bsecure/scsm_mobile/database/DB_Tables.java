@@ -1030,8 +1030,8 @@ public class DB_Tables {
             if (database != null) {
                 SQLiteDatabase db = database.getWritableDatabase();
 
-               String sql = "select * from Message where class_id='" + class_id + "'";
-             //  String sql = "select * from Message where class_id='" + class_id + "' and student_id='"+student_id+"'";
+               //String sql = "select * from Message where class_id='" + class_id + "'";
+               String sql = "select * from Message where class_id='" + class_id + "' and student_id='"+student_id+"'";
                 Cursor cursor = db.rawQuery(sql,
                         null);
                 if (cursor != null) {
@@ -1046,6 +1046,7 @@ public class DB_Tables {
                         json.put("no_reply", cursor.getString(cursor.getColumnIndex("no_reply")));
                         json.put("user_me", cursor.getString(cursor.getColumnIndex("user_me")));
                         json.put("forward", cursor.getString(cursor.getColumnIndex("forward")));
+                        json.put("student_id", cursor.getString(cursor.getColumnIndex("student_id")));
                         array.put(json);
                     }
 
@@ -1080,6 +1081,7 @@ public class DB_Tables {
                 cv.put("forward", forwd_id);
                 cv.put("forward_status", forward_status);
                 cv.put("notifyType", nType);
+                cv.put("student_id", student_id);
                 db.insert("Message", null, cv);
                 db.close();
             }

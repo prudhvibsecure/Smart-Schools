@@ -368,7 +368,7 @@ public class TutorsChatSingle extends AppCompatActivity implements View.OnClickL
     private void getChatMessages() {
 
         try {
-            String msg_list = db_tables.getchatList_view_tutors(class_id,student_id);
+            String msg_list = db_tables.getchatList_view_tutors(class_id, student_id);
             messageList = new ArrayList<>();
             JSONObject obj = new JSONObject(msg_list);
             JSONArray jsonarray2 = obj.getJSONArray("message_body");
@@ -387,6 +387,7 @@ public class TutorsChatSingle extends AppCompatActivity implements View.OnClickL
                     messageObject.setMessage_id(jsonobject.optString("message_id"));
                     messageObject.setForward_status(jsonobject.optString("forward"));
                     messageObject.setFor_condition(jsonobject.optString("forward_status"));
+                    messageObject.setStudent_id(jsonobject.optString("student_id"));
                     messageList.add(messageObject);
 
                 }
@@ -637,17 +638,6 @@ public class TutorsChatSingle extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void sendVoiceMessage() {
-
-        try {
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-
-    }
 
     private void showSendButton() {
         findViewById(R.id.user_attach).setVisibility(View.GONE);
@@ -883,7 +873,7 @@ public class TutorsChatSingle extends AppCompatActivity implements View.OnClickL
         if (requestCode == 101
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // getAtachDiloag();
-           // openGallery();
+            // openGallery();
         }
         if (requestCode == 102
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
