@@ -560,7 +560,7 @@ public class DB_Tables {
     }
 
 
-    public void addstudents(String student_id, String roll_no, String student_name, String status, String class_id) {
+    /*public void addstudents(String student_id, String roll_no, String student_name, String status, String class_id) {
         SQLiteDatabase db = null;
         try {
             long rawId;
@@ -580,7 +580,31 @@ public class DB_Tables {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }*/
+
+    public void addstudents(String student_id, String roll_no, String student_name, String status, String class_id) {
+        SQLiteDatabase db = null;
+        try {
+            long rawId;
+            if (database != null) {
+                db = database.getWritableDatabase();
+                ContentValues cv = new ContentValues();
+                cv.put("student_id", student_id);
+                cv.put("roll_no", roll_no);
+                cv.put("student_name", student_name);
+                cv.put("status", status);
+                cv.put("condition", "0");
+                cv.put("class_id", class_id);
+                db.insertWithOnConflict("PSTUDENTS", null, cv, SQLiteDatabase.CONFLICT_IGNORE);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
+
 
     public void addstudentsAttandence(String student_id, String roll_no, String student_name, String status, String class_id) {
         SQLiteDatabase db = null;
@@ -641,7 +665,7 @@ public class DB_Tables {
         return jsonObject.toString();
     }
 
-    public String getstudentsList() {
+   /* public String getstudentsList() {
         JSONObject jsonObject = new JSONObject();
 
         try {
@@ -650,6 +674,43 @@ public class DB_Tables {
                 SQLiteDatabase db = database.getWritableDatabase();
 
                 String sql = "select * from Students";
+                Cursor cursor = db.rawQuery(sql,
+                        null);
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
+
+                        final JSONObject json = new JSONObject();
+                        json.put("student_id", cursor.getString(cursor.getColumnIndex("student_id")));
+                        json.put("roll_no", cursor.getString(cursor.getColumnIndex("roll_no")));
+                        json.put("student_name", cursor.getString(cursor.getColumnIndex("student_name")));
+                        json.put("class_id", cursor.getString(cursor.getColumnIndex("class_id")));
+                        json.put("status", cursor.getString(cursor.getColumnIndex("status")));
+                        json.put("condition", cursor.getString(cursor.getColumnIndex("condition")));
+                        json.put("marks_obtained", cursor.getString(cursor.getColumnIndex("marks_obtained")));
+                        json.put("subject", cursor.getString(cursor.getColumnIndex("subject")));
+                        array.put(json);
+                    }
+
+                    jsonObject.put("student_details", array);
+                    cursor.close();
+                }
+                db.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }*/
+
+    public String getstudentsList() {
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            JSONArray array = new JSONArray();
+            if (database != null) {
+                SQLiteDatabase db = database.getWritableDatabase();
+
+                String sql = "select * from PSTUDENTS";
                 Cursor cursor = db.rawQuery(sql,
                         null);
                 if (cursor != null) {

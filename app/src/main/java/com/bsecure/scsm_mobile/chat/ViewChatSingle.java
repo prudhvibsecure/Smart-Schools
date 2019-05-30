@@ -11,6 +11,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -160,6 +161,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     private SweetAlertDialog pDialog;
     private MembersAdapter transportListAdapter;
     String match_ids[];
+    String siid;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -185,6 +187,11 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
             studentName = getData.getStringExtra("name");
             class_id = getData.getStringExtra("class_id");
             student_id = getData.getStringExtra("student_id");
+            SharedPreferences sp = getSharedPreferences("STU", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("sid", student_id);
+            editor.apply();
+            siid = sp.getString("sid", "");
             //student_id = student_id.substring(1, student_id.length() - 1);
             //match_ids = student_id.split(",");
             findViewById(R.id.inputLL).setVisibility(View.GONE);
@@ -269,12 +276,14 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                         transportModel.setStudent_id(jsonobject.optString("student_id"));
                         transportModel.setSchool_id(jsonobject.optString("school_id"));
                         transportModel.setTransport_id(jsonobject.optString("tutor_id"));
-//                        if(("["+student_id+"]").equals(jsonobject.optString("student_id"))) {
-//                            contactObjectList.add(transportModel);
-//                        }
-
-                        if ((student_id).equals(jsonobject.optString("student_id").substring(1, jsonobject.optString("student_id").length() - 1))) {
+                        /*if(("["+student_id+"]").equals(jsonobject.optString("student_id"))) {
                             contactObjectList.add(transportModel);
+                        }*/
+                        match_ids = jsonobject.optString("student_id").split(",");
+                        for (String stu_id : match_ids) {
+                            if ((siid).equals(jsonobject.optString("student_id").substring(1, stu_id.length() - 1))) {
+                                contactObjectList.add(transportModel);
+                            }
                         }
                         /*for (String stu_id : match_ids) {
                             if ((student_id).equals(jsonobject.optString("student_id"))) {

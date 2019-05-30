@@ -9,7 +9,7 @@ public class Paths {
     public static final String member_register = base + "member_register";
     public static final String get_tutor = base + "get_tutor";
     public static final String get_tutor_students =  base + "get_tutor_students";
-    public static final String view_tutors = base + "view_tutors";
+    public static final String view_tutors = base + "view_tutors_v1";
     public static final String get_transport = base + "get_transport";
     public static final String get_transports = base + "get_transports";
     public static final String get_staff = base + "get_staff";

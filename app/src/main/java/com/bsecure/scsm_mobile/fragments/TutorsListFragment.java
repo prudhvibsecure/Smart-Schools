@@ -385,7 +385,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
         ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).setText(matchesList.get(position).getTransport_name());
         ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).setText(matchesList.get(position).getPhone_number());
         String student_ids = matchesList.get(position).getStudent_id();
-        student_ids = student_ids.substring(1, student_ids.length() - 1);
+        student_ids = student_ids.substring(1, student_ids.length() - 1);//[23,45]
         final String match_ids[] = student_ids.split(",");
         m_spinner = (Spinner) member_dialog.findViewById(R.id.st_spinner);
         m_spinner.setVisibility(View.GONE);
@@ -406,6 +406,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                     studentModel.setClass_id(jsonobject.optString("class_id"));
                     studentModel.setStudent_id(jsonobject.optString("student_id"));
                     for (String ids : match_ids) {
+                        Toast.makeText(getActivity(), ids, Toast.LENGTH_SHORT).show();
                         if (ids.equalsIgnoreCase(jsonobject.optString("student_id"))) {
                             studentModel.setSelected(true);
                             st_ids.add(ids);
@@ -516,6 +517,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
                         adapter.notifyDataSetChanged();
                         db_tables.update_tutors_status(teach_Id, t_status);
+                        Toast.makeText(getActivity(), "Tutor Inactivated Successfully", Toast.LENGTH_SHORT).show();
                         teachersList();
                     } else {
 
@@ -562,6 +564,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
 
 
         } catch (Exception e) {
+
             e.printStackTrace();
         }
     }

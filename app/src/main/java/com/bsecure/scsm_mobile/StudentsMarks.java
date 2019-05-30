@@ -138,7 +138,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
             if (roll_ids.size() > 0) {
                 desc = "Marks Are Going To Be Submitted";
             } else {
-                desc = "Please Fill <br/>Required Details";
+                desc = "Please Fill Required Details";
             }
             SweetAlertDialog dialog = new SweetAlertDialog(this,SweetAlertDialog.NORMAL_TYPE);
             dialog.setTitle("Alert!");

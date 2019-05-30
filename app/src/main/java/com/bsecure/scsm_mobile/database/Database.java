@@ -21,6 +21,7 @@ public class Database extends SQLiteOpenHelper {
     public final String CREATE_MARKS = "CREATE TABLE MARKS(marks_id integer primary key,examinations_id TEXT,marks_obtained TEXT,teacher_id TEXT,class_id TEXT,subject TEXT,student_name TEXT,student_id integer,roll_no TEXT,ro_list TEXT,marks_list TEXT);";
     public final String CREATE_SYLLABUS = "CREATE TABLE SYLLABUS(syllabus_id TEXT primary key,lesson TEXT,description TEXT,subject TEXT,class_id TEXT);";//FOREIGN KEY (student_id) REFERENCES Students (student_id)
     public final String CREATE_PARENT = "CREATE TABLE PARENT_MSG(message_id TEXT,message TEXT,message_date TEXT,message_time TEXT,user_me TEXT,sender_name TEXT,attendance_date TEXT,class_id TEXT);";//FOREIGN KEY (student_id) REFERENCES Students (student_id)
+    public final String CREATE_PSTUDENTS = "CREATE TABLE PSTUDENTS(student_id integer primary key,roll_no TEXT,student_name TEXT,parent_phone_number TEXT,class_id TEXT,status TEXT,extra_subjects TEXT,condition TEXT,examinations_id TEXT,marks_obtained TEXT,teacher_id TEXT,subject TEXT);";
 
     public Database(Context context) {
         super(context, APP_DATABASE_NAME, null, APP_DATABASE_VERSION);
@@ -36,9 +37,7 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_Teachers);
         db.execSQL(CREATE_Teacher_classes);
         db.execSQL(CREATE_Students);
-
         db.execSQL(CREATE_Attendance);
-
         db.execSQL(CREATE_Message);
         db.execSQL(CREATE_Transport);
         db.execSQL(CREATE_Staff);
@@ -46,8 +45,7 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(CREATE_MARKS);
         db.execSQL(CREATE_SYLLABUS);
         db.execSQL(CREATE_PARENT);
-
-
+        db.execSQL(CREATE_PSTUDENTS);
     }
 
     @Override
