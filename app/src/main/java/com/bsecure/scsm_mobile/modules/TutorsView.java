@@ -55,7 +55,7 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
         setContentView(R.layout.content_main_view);
 
 
-        filter = new IntentFilter("com.teacher.refresh");
+        filter = new IntentFilter("com.tutor.refresh");
         registerReceiver(mBroadcastReceiver, filter);
         db_tables = new DB_Tables(this);
         db_tables.openDB();
@@ -75,11 +75,7 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
         public void onReceive(Context context, Intent intent) {
 
             try {
-                SharedValues.saveValue(getApplicationContext(), "member_id", "");
-                getApplicationContext().deleteDatabase("schools_data_mob.db");
-                Intent sc = new Intent(getApplicationContext(), TutorsView.class);
-                startActivity(sc);
-                finish();
+                getTurotos();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -247,4 +243,9 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mBroadcastReceiver);
+        super.onDestroy();
+    }
 }

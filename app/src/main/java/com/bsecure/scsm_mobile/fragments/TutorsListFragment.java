@@ -72,7 +72,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
 
     RecyclerView students;
     private ArrayList<String> st_ids = new ArrayList<>();
-
+    private IntentFilter filter;
 
     @Override
     public void onAttach(Context context) {
@@ -85,6 +85,8 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view_layout = inflater.inflate(R.layout.content_main_view, null);
 
+        filter = new IntentFilter("com.parenttutor.refresh");
+        getActivity().registerReceiver(mBroadcastReceiver, filter);
         db_tables = new DB_Tables(getActivity());
         db_tables.openDB();
         view_layout.findViewById(R.id.toolset).setVisibility(View.GONE);
@@ -103,6 +105,27 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
         return view_layout;
     }
 
+    @Override
+    public void onDestroy() {
+        try {
+            getActivity().unregisterReceiver(mBroadcastReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        super.onDestroy();
+    }
+
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (adapter != null) {
+                adapter.clear();
+                adapter.notifyDataSetChanged();
+                teachersList();
+            }
+
+        }
+    };
 
     private void getAddTutors() {
         member_dialog = new Dialog(getActivity(), R.style.MyAlertDialogStyle);
@@ -258,7 +281,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
             object.put("student_id", student_id);
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
-            db_tables.updateTutorsList(tr_id, tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number);
+            db_tables.updateTutorsList(tr_id, tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, st_ids.toString());
             task.userRequest("Please Wait...", 5, Paths.edit_tutor, object.toString(), 1);
         } catch (Exception e) {
             e.printStackTrace();
@@ -311,7 +334,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
             object.put("student_id", SharedValues.getValue(getActivity(), "id"));
 
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
-            task.userRequest("Loading...", 12, Paths.base + "view_tutors", object.toString(), 1);
+            task.userRequest("Loading...", 12, Paths.base + "view_tutors1", object.toString(), 1);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -528,6 +551,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                     JSONObject object12 = new JSONObject(results.toString());
                     if (object12.optString("statuscode").equalsIgnoreCase("200")) {
                         member_dialog.dismiss();
+                        // db_tables.addTutorsList(tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, st_ids.toString(), tras_id, "0");
                         Toast.makeText(schoolMain, "Tutor Details Updated Successfully", Toast.LENGTH_SHORT).show();
                         teachersList();
                     } else {
@@ -549,7 +573,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
 
     @Override
     public void onRowClicked(List<StudentModel> matchesList, boolean value, CheckBox chk_name, int position) {
-        st_ids.clear();
+        //st_ids.clear();
         String id = studentModelList.get(position).getStudent_id();
         if (chk_name.isChecked()) {
             st_ids.add(id);

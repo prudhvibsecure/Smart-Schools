@@ -129,6 +129,28 @@ public class DB_Tables {
 
     }
 
+    public void updateClassList(String teacher_classes_id, String class_id, String section, String class_name, String subjects) {
+        SQLiteDatabase db = null;
+        try {
+            if (database != null) {
+                db = database.getWritableDatabase();
+
+                String iwhereClause = "class_id='" + class_id + "' and teacher_classes_id='" + teacher_classes_id + "'";
+                ContentValues cv = new ContentValues();
+                cv.put("teacher_classes_id", teacher_classes_id);
+                cv.put("subjects", subjects);
+                cv.put("section", section);
+                cv.put("class_name", class_name);
+                cv.put("class_id", class_id);
+                db.update("Teacher_classes", cv, iwhereClause, null);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void deleteClass(String class_id) {
         SQLiteDatabase db = null;
         try {
@@ -331,7 +353,7 @@ public class DB_Tables {
         try {
             long rawId;
             if (database != null) {
-                String iwhereClause = "student_id='" + stu_id + "' && phone_number='"+ phone +"'";
+                String iwhereClause = "student_id='" + stu_id + "' and phone_number='" + phone + "'";
                 db = database.getWritableDatabase();
                 db.delete("TUTOR", iwhereClause, null);
                 db.close();
@@ -348,9 +370,9 @@ public class DB_Tables {
         try {
             long rawId;
             if (database != null) {
-                String iwhereClause = "student_id='" + stu_id + "' && tutor_id='"+ tut_id +"'";
+                String iwhereClause = "student_id='" + stu_id + "' and tutor_id='" + tut_id + "'";
                 db = database.getWritableDatabase();
-                db.delete("TUTOR", iwhereClause, null);
+                db.delete("TUTORS", iwhereClause, null);
                 db.close();
             }
 
@@ -809,7 +831,7 @@ public class DB_Tables {
             if (database != null) {
 
                 // String cursor_q = "select * from Students where examinations_id='" + exam_id + "' and class_id='" + class_id + "' and subject='" + sub + "'";
-                String cursor_q = "select * from MARKS where examinations_id='" + exam_id + "' and class_id='" + class_id + "' and subject='" + sub +"'";
+                String cursor_q = "select * from MARKS where examinations_id='" + exam_id + "' and class_id='" + class_id + "' and subject='" + sub + "'";
                 SQLiteDatabase db = database.getWritableDatabase();
                 Cursor cursor = db
                         .rawQuery(cursor_q,
@@ -832,14 +854,15 @@ public class DB_Tables {
         }
         return marks;
     }
-    public String getMarks2(String exam_id, String class_id, String sub,String st_id) {
+
+    public String getMarks2(String exam_id, String class_id, String sub, String st_id) {
 
         String marks = "";
         try {
             if (database != null) {
 
                 // String cursor_q = "select * from Students where examinations_id='" + exam_id + "' and class_id='" + class_id + "' and subject='" + sub + "'";
-                String cursor_q = "select * from MARKS where examinations_id='" + exam_id + "' and class_id='" + class_id + "' and subject='" + sub + "' and student_id='"+st_id+"'";
+                String cursor_q = "select * from MARKS where examinations_id='" + exam_id + "' and class_id='" + class_id + "' and subject='" + sub + "' and student_id='" + st_id + "'";
                 SQLiteDatabase db = database.getWritableDatabase();
                 Cursor cursor = db
                         .rawQuery(cursor_q,
@@ -862,6 +885,7 @@ public class DB_Tables {
         }
         return marks;
     }
+
     public String getStudentId(String marks) {
 
         String students_id = "";
@@ -1021,7 +1045,7 @@ public class DB_Tables {
         return jsonObject.toString();
     }
 
-    public String getchatList_view_tutors(String class_id,String student_id) {
+    public String getchatList_view_tutors(String class_id, String student_id) {
 
         JSONObject jsonObject = new JSONObject();
 
@@ -1030,8 +1054,8 @@ public class DB_Tables {
             if (database != null) {
                 SQLiteDatabase db = database.getWritableDatabase();
 
-               //String sql = "select * from Message where class_id='" + class_id + "'";
-               String sql = "select * from Message where class_id='" + class_id + "' and student_id='"+student_id+"'";
+                //String sql = "select * from Message where class_id='" + class_id + "'";
+                String sql = "select * from Message where class_id='" + class_id + "' and student_id='" + student_id + "'";
                 Cursor cursor = db.rawQuery(sql,
                         null);
                 if (cursor != null) {
@@ -1288,7 +1312,7 @@ public class DB_Tables {
         }
     }
 
-    public void updateTutorsList(String tutor_id, String ad_xname, String school_id, String number) {
+    public void updateTutorsList(String tutor_id, String ad_xname, String school_id, String number, String st_id) {
 
         SQLiteDatabase db = null;
         try {
@@ -1300,6 +1324,7 @@ public class DB_Tables {
                 cv.put("phone_number", number);
                 cv.put("school_id", school_id);
                 cv.put("tutor_status", "0");
+                cv.put("student_id", st_id);
                 db.update("TUTORS", cv, iwhereClause, null);
                 db.close();
             }

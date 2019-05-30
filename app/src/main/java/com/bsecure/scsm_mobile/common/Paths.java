@@ -38,7 +38,7 @@ public class Paths {
     public static final String delete_transport = base + "delete_transport";
     public static final String set_transport_status = base + "set_transport_status";
     public static final String add_tutor = base + "add_tutor_v1";
-    public static final String edit_tutor = base + "edit_tutor";
+    public static final String edit_tutor = base + "edit_tutor_v1";
     public static final String delete_tutor = base + "delete_tutor_v1";
     public static final String set_tutor_status = base + "set_tutor_status";
     public static final String view_transport_location = base + "view_transport_location";

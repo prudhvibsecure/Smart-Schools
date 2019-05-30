@@ -64,7 +64,7 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
         filter = new IntentFilter("com.scs.app.SESSION");
         filter.setPriority(1);
 
-        re_filter = new IntentFilter("com.teacher.refresh");
+        re_filter = new IntentFilter("com.teacher.add");
         registerReceiver(mBroadcastReceiver_ref, re_filter);
 
         db_tables = new DB_Tables(this);
@@ -265,11 +265,11 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
         public void onReceive(Context context, Intent intent) {
 
             try {
-                SharedValues.saveValue(getApplicationContext(), "member_id", "");
-                getApplicationContext().deleteDatabase("schools_data_mob.db");
-                Intent sc = new Intent(getApplicationContext(), Login_Phone.class);
-                startActivity(sc);
-                finish();
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                    adapter.clear();
+                    getListTeachers();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
