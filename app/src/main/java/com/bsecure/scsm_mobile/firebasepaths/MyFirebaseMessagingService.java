@@ -147,7 +147,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 } else if (m_type.equalsIgnoreCase("DTC")) {
                     String class_id = arry_data[1];
                     db_tables.deleteClass(class_id);
-                    Toast.makeText(this, "deleted", Toast.LENGTH_SHORT).show();
                     Intent refresh = new Intent("com.teacher.add");
                     sendBroadcast(refresh);
 

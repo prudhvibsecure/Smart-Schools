@@ -156,9 +156,9 @@ public class DB_Tables {
         try {
             long rawId;
             if (database != null) {
-                String iwhereClause = "class_id='" + class_id + "'";
+                String iwhereClause = "teacher_classes_id='" + class_id + "'";
                 db = database.getWritableDatabase();
-                db.delete("Teachers", iwhereClause, null);
+                db.delete("Teacher_classes", iwhereClause, null);
                 db.close();
             }
 

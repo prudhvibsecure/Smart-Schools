@@ -187,13 +187,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
             studentName = getData.getStringExtra("name");
             class_id = getData.getStringExtra("class_id");
             student_id = getData.getStringExtra("student_id");
-            SharedPreferences sp = getSharedPreferences("STU", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putString("sid", student_id);
-            editor.apply();
-            siid = sp.getString("sid", "");
-            //student_id = student_id.substring(1, student_id.length() - 1);
-            //match_ids = student_id.split(",");
+
             findViewById(R.id.inputLL).setVisibility(View.GONE);
             findViewById(R.id.record_view).setVisibility(View.GONE);
             findViewById(R.id.send_btn_l).setVisibility(View.GONE);
@@ -276,22 +270,13 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                         transportModel.setStudent_id(jsonobject.optString("student_id"));
                         transportModel.setSchool_id(jsonobject.optString("school_id"));
                         transportModel.setTransport_id(jsonobject.optString("tutor_id"));
-                        /*if(("["+student_id+"]").equals(jsonobject.optString("student_id"))) {
-                            contactObjectList.add(transportModel);
-                        }*/
-                        match_ids = jsonobject.optString("student_id").split(",");
-                        for (String stu_id : match_ids) {
-                            if ((siid).equals(jsonobject.optString("student_id").substring(1, stu_id.length() - 1))) {
+                        String student_ids = jsonobject.optString("student_id").substring(1, jsonobject.optString("student_id").length() - 1);//[23,45]
+                        final String match_ids[] = student_ids.split(",");
+                        for (String ids : match_ids) {
+                            if (ids.equalsIgnoreCase(student_id)) {
                                 contactObjectList.add(transportModel);
                             }
                         }
-                        /*for (String stu_id : match_ids) {
-                            if ((student_id).equals(jsonobject.optString("student_id"))) {
-                                contactObjectList.add(transportModel);
-
-                            }
-                        }*/
-                        /*contactObjectList.add(transportModel);*/
                     }
 
                     RecyclerView recyclerView = member_dialog.findViewById(R.id.member_list);
@@ -715,7 +700,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                 object.put("message_date", mesg_date_time);
                 object.put("message_time", mesg_date_time);
                 object.put("class_id", class_id);
-                object.put("student_id", student_id);
+                object.put("student_ids", student_id);
                 object.put("reply_id", reply_Id);
                 // object.put("teacher_id", reply_Id);
                 object.put("school_id", SharedValues.getValue(this, "school_id"));
@@ -787,7 +772,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
             // object.put("teacher_id", reply_Id);
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             db_tables.messageData(message, null, mesg_date_time, null, class_id, SharedValues.getValue(this, "school_id"), "0", null, student_id, studentName, null, "0", "1", "Yes", "none");
-           // db_tables.messageData(message, null, mesg_date_time, null, class_id, SharedValues.getValue(this, "school_id"), "0", null, student_id, studentName, null, "0", "1", "Yes", "none");
+            // db_tables.messageData(message, null, mesg_date_time, null, class_id, SharedValues.getValue(this, "school_id"), "0", null, student_id, studentName, null, "0", "1", "Yes", "none");
 
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();
@@ -1353,7 +1338,6 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
             switch (requestType) {
                 case 10:
                     reply_Id = "";
-                    student_id = "";
                     displayname = null;
                     fwd_Id = "";
                     fwd_sId = "";

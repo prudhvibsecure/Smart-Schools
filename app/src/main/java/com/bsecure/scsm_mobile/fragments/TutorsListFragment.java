@@ -181,18 +181,6 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                     studentModelList.add(studentModel);
                     students = (RecyclerView) member_dialog.findViewById(R.id.students);
 
-//                    sadapter = new StudentsListAdapter(getActivity(), studentModelList, new ClickListener() {
-//                        @Override
-//                        public void OnClick(int position, boolean checked) {
-//                            if (checked) {
-//                                String id = studentModelList.get(position).getStudent_id();
-//                                st_ids.add(id);
-//                            } else {
-//                                String id = studentModelList.get(position).getStudent_id();
-//                                st_ids.remove(id);
-//                            }
-//                        }
-//                    });
                 }
                 studentsAdapter = new StudentsListAdapter(studentModelList, getActivity(), this);
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -406,7 +394,6 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                     studentModel.setClass_id(jsonobject.optString("class_id"));
                     studentModel.setStudent_id(jsonobject.optString("student_id"));
                     for (String ids : match_ids) {
-                        Toast.makeText(getActivity(), ids, Toast.LENGTH_SHORT).show();
                         if (ids.equalsIgnoreCase(jsonobject.optString("student_id"))) {
                             studentModel.setSelected(true);
                             st_ids.add(ids);
