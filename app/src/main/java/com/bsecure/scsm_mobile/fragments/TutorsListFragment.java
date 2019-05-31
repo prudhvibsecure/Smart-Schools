@@ -513,11 +513,12 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                 case 4:
                     JSONObject object11 = new JSONObject(results.toString());
                     if (object11.optString("statuscode").equalsIgnoreCase("200")) {
+                        String tid = object11.optString("tutor_id");
                         member_dialog.dismiss();
-                        db_tables.addTutorsList(tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, st_ids.toString(), tras_id, "0");
+                        db_tables.addTutorsList(tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, st_ids.toString(), tid, "0");
                         Toast.makeText(schoolMain, "Tutor Added Successfully", Toast.LENGTH_SHORT).show();
                         teachersList();
-                        st_ids.clear();
+                        //st_ids.clear();
                     } else {
                         member_dialog.dismiss();
                         Toast.makeText(getActivity(), object11.optString("statusdescription"), Toast.LENGTH_SHORT).show();

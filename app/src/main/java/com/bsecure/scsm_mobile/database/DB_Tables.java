@@ -309,6 +309,7 @@ public class DB_Tables {
         return jsonObject.toString();
     }
 
+
     public String getTutorsList_Active() {
 
         JSONObject jsonObject = new JSONObject();
@@ -560,7 +561,7 @@ public class DB_Tables {
     }
 
 
-    /*public void addstudents(String student_id, String roll_no, String student_name, String status, String class_id) {
+    public void addstudents(String student_id, String roll_no, String student_name, String status, String class_id) {
         SQLiteDatabase db = null;
         try {
             long rawId;
@@ -580,21 +581,21 @@ public class DB_Tables {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
-    public void addstudents(String student_id, String roll_no, String student_name, String status, String class_id) {
+    public void addTutorStudents(String id, String tutor_id, String student_id, String student_name, String stu_class, String section) {
         SQLiteDatabase db = null;
         try {
             long rawId;
             if (database != null) {
                 db = database.getWritableDatabase();
                 ContentValues cv = new ContentValues();
+                cv.put("id", id);
+                cv.put("tutor_id", tutor_id);
                 cv.put("student_id", student_id);
-                cv.put("roll_no", roll_no);
                 cv.put("student_name", student_name);
-                cv.put("status", status);
-                cv.put("condition", "0");
-                cv.put("class_id", class_id);
+                cv.put("class", stu_class);
+                cv.put("section", section);
                 db.insertWithOnConflict("PSTUDENTS", null, cv, SQLiteDatabase.CONFLICT_IGNORE);
                 db.close();
             }
@@ -665,7 +666,7 @@ public class DB_Tables {
         return jsonObject.toString();
     }
 
-   /* public String getstudentsList() {
+    public String getstudentsList() {
         JSONObject jsonObject = new JSONObject();
 
         try {
@@ -700,9 +701,9 @@ public class DB_Tables {
             e.printStackTrace();
         }
         return jsonObject.toString();
-    }*/
+    }
 
-    public String getstudentsList() {
+   /* public String getstudentsList() {
         JSONObject jsonObject = new JSONObject();
 
         try {
@@ -737,7 +738,7 @@ public class DB_Tables {
             e.printStackTrace();
         }
         return jsonObject.toString();
-    }
+    }*/
 
     public void updateVV(String student_id, String chk, String class_id) {
         SQLiteDatabase db = null;

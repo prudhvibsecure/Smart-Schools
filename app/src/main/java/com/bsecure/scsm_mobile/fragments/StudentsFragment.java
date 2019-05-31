@@ -177,7 +177,6 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
 
                 }
 
-
                 adapter = new ParentStudentsListAdapter(studentModelList, getActivity(), this);
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
                 mRecyclerView.setLayoutManager(linearLayoutManager);

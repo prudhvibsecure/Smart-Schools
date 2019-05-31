@@ -49,14 +49,14 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
     public ItemTouchHelperExtension mItemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
     IntentFilter filter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main_view);
 
+        filter = new IntentFilter("com.tutor.refresh");//com.tutor.refresh
 
-        filter = new IntentFilter("com.tutor.refresh");
-        registerReceiver(mBroadcastReceiver, filter);
         db_tables = new DB_Tables(this);
         db_tables.openDB();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
@@ -70,12 +70,22 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
         getTurotos();
     }
 
+    @Override
+    protected void onResume() {
+        registerReceiver(mBroadcastReceiver, filter);
+        super.onResume();
+    }
+
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
             try {
-                getTurotos();
+                if (adapter != null) {
+                    adapter.clear();
+                    adapter.notifyDataSetChanged();
+                    getTurotos();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -181,6 +181,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Intent refresh = new Intent("com.parenttutor.refresh");
                     sendBroadcast(refresh);
                 }
+                else if(m_type.equalsIgnoreCase("ATU"))
+                {
+                    Intent refresh = new Intent("com.tutor.refresh");
+                    sendBroadcast(refresh);
+
+                }
 
             } else {
                 String imageUrl = data.optString("image");
