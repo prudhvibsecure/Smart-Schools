@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,10 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.bsecure.scsm_mobile.ClickListener;
-import com.bsecure.scsm_mobile.Login_Phone;
 import com.bsecure.scsm_mobile.R;
-import com.bsecure.scsm_mobile.adapters.StudentsAdapter;
 import com.bsecure.scsm_mobile.adapters.StudentsListAdapter;
 import com.bsecure.scsm_mobile.adapters.TransportListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
@@ -72,7 +70,9 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
 
     RecyclerView students;
     private ArrayList<String> st_ids = new ArrayList<>();
+    private ArrayList<String> st_names = new ArrayList<>();
     private IntentFilter filter;
+    String match_ids[];
 
     @Override
     public void onAttach(Context context) {
@@ -224,7 +224,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
             }
             student_id = builder.substring(1);
             JSONObject object = new JSONObject();
-            object.put("tutor_id", tras_id);
+            //  object.put("tutor_id", tras_id);
             object.put("tutor_name", tp_name);
             object.put("phone_number", phone_number);
             object.put("student_id", student_id);
@@ -236,45 +236,45 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
         }
     }
 
-    private void updateaddTP(String tr_id) {
-        try {
-            //ss String tras_id = String.valueOf(System.currentTimeMillis());
-            String tp_name = ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).getText().toString();
-            if (tp_name.length() == 0) {
-                Toast.makeText(getActivity(), "Please Enter Tutor Name", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            String phone_number = ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).getText().toString();
-            if (phone_number.length() == 0) {
-                Toast.makeText(getActivity(), "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (phone_number.length() < 10) {
-                Toast.makeText(getActivity(), "Please Enter Valid Mobile Number", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (st_ids.size() == 0) {
-                Toast.makeText(getActivity(), "Please Assign Atleast One Student", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            StringBuilder builder = new StringBuilder();
-            for (String s : st_ids) {
-                builder.append("," + s);
-            }
-            student_id = builder.substring(1);
-            JSONObject object = new JSONObject();
-            object.put("tutor_id", tr_id);
-            object.put("tutor_name", tp_name);
-            object.put("phone_number", phone_number);
-            object.put("student_id", student_id);
-            object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
-            HTTPNewPost task = new HTTPNewPost(getActivity(), this);
-            db_tables.updateTutorsList(tr_id, tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, st_ids.toString());
-            task.userRequest("Please Wait...", 5, Paths.edit_tutor, object.toString(), 1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void updateaddTP(String tr_id) {
+//        try {
+//            //ss String tras_id = String.valueOf(System.currentTimeMillis());
+//            String tp_name = ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).getText().toString();
+//            if (tp_name.length() == 0) {
+//                Toast.makeText(getActivity(), "Please Enter Tutor Name", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            String phone_number = ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).getText().toString();
+//            if (phone_number.length() == 0) {
+//                Toast.makeText(getActivity(), "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            if (phone_number.length() < 10) {
+//                Toast.makeText(getActivity(), "Please Enter Valid Mobile Number", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            if (st_ids.size() == 0) {
+//                Toast.makeText(getActivity(), "Please Assign Atleast One Student", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            StringBuilder builder = new StringBuilder();
+//            for (String s : st_ids) {
+//                builder.append("," + s);
+//            }
+//            student_id = builder.substring(1);
+//            JSONObject object = new JSONObject();
+//            object.put("tutor_id", tr_id);
+//            object.put("tutor_name", tp_name);
+//            object.put("phone_number", phone_number);
+//            object.put("student_id", student_id);
+//            object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+//            HTTPNewPost task = new HTTPNewPost(getActivity(), this);
+//            db_tables.updateTutorsList(tr_id, tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, st_ids.toString());
+//            task.userRequest("Please Wait...", 5, Paths.edit_tutor, object.toString(), 1);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void teachersList() {
         try {
@@ -358,6 +358,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
     @Override
     public void onMessageRow(List<TransportModel> matchesList, int position) {
         edittutorsForm(matchesList, position);
+        tras_id = matchesList.get(position).getTransport_id();
 
     }
 
@@ -372,9 +373,12 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
         ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).setHint("Tutor Name");
         ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).setText(matchesList.get(position).getTransport_name());
         ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).setText(matchesList.get(position).getPhone_number());
+        ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).setEnabled(false);
         String student_ids = matchesList.get(position).getStudent_id();
-        student_ids = student_ids.substring(1, student_ids.length() - 1);//[23,45]
-        final String match_ids[] = student_ids.split(",");
+        student_ids = student_ids.substring(1, student_ids.length() - 1);
+        if (!TextUtils.isEmpty(student_ids)) {
+            match_ids = student_ids.split(",");
+        }
         m_spinner = (Spinner) member_dialog.findViewById(R.id.st_spinner);
         m_spinner.setVisibility(View.GONE);
         try {
@@ -436,7 +440,8 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
         member_dialog.findViewById(R.id.update_ex).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateaddTP(matchesList.get(position).getTransport_id());
+                addTP();
+                //updateaddTP(matchesList.get(position).getTransport_id());
             }
         });
         member_dialog.getWindow().setGravity(Gravity.BOTTOM);
@@ -513,12 +518,20 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                 case 4:
                     JSONObject object11 = new JSONObject(results.toString());
                     if (object11.optString("statuscode").equalsIgnoreCase("200")) {
-                        String tid = object11.optString("tutor_id");
                         member_dialog.dismiss();
-                        db_tables.addTutorsList(tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, st_ids.toString(), tid, "0");
+                        String tut_Id = db_tables.getTutorId(object11.optString("tutor_id"));
+                        if (TextUtils.isEmpty(tut_Id)) {
+                            db_tables.addTutorsList(tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, st_ids.toString(), object11.optString("tutor_id"), "0");
+                        } else {
+
+                            db_tables.updateTutorsList(object11.optString("tutor_id"), tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, st_ids.toString());
+
+                        }
+
+
                         Toast.makeText(schoolMain, "Tutor Added Successfully", Toast.LENGTH_SHORT).show();
                         teachersList();
-                        //st_ids.clear();
+                        st_ids.clear();
                     } else {
                         member_dialog.dismiss();
                         Toast.makeText(getActivity(), object11.optString("statusdescription"), Toast.LENGTH_SHORT).show();
@@ -531,7 +544,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                         if (array.length() > 0) {
                             for (int p = 0; p < array.length(); p++) {
                                 JSONObject ob = array.getJSONObject(p);
-                                db_tables.addTutorsList(ob.optString("tutor_name"), SharedValues.getValue(getActivity(), "school_id"), ob.optString("phone_number"), ob.optString("student_id"), ob.optString("tutor_id"), ob.optString("status"));
+                                db_tables.addTutorsList(ob.optString("tutor_name"), SharedValues.getValue(getActivity(), "school_id"), ob.optString("phone_number"), "[" + ob.optString("student_id") + "]", ob.optString("tutor_id"), ob.optString("status"));
                             }
                             teachersList();
                         }
@@ -542,11 +555,18 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                     if (object12.optString("statuscode").equalsIgnoreCase("200")) {
                         member_dialog.dismiss();
                         // db_tables.addTutorsList(tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, st_ids.toString(), tras_id, "0");
-                        Toast.makeText(schoolMain, "Tutor Details Updated Successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Tutor Details Updated Successfully", Toast.LENGTH_SHORT).show();
                         teachersList();
                     } else {
 
                     }
+                    break;
+                case 121:
+                    JSONObject object121 = new JSONObject(results.toString());
+                    if (object121.optString("statuscode").equalsIgnoreCase("200")) {
+                        //member_dialog.dismiss();
+                    }
+
                     break;
             }
 
@@ -568,10 +588,44 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
         String id = studentModelList.get(position).getStudent_id();
         if (chk_name.isChecked()) {
             st_ids.add(id);
+            st_names.add(id);
             chk_name.setBackground(getResources().getDrawable(R.mipmap.ic_check));
         } else {
             st_ids.remove(id);
+            st_names.remove(id);
             chk_name.setBackground(getResources().getDrawable(R.mipmap.ic_uncheck));
+        }
+    }
+
+    @Override
+    public void onRowDelete(List<StudentModel> matchesList, boolean value, CheckBox chk_name, int position, LinearLayout view_list_main_content) {
+        String id = studentModelList.get(position).getStudent_id();
+        view_list_main_content.setVisibility(View.GONE);
+
+        for (String st_id : st_ids) {
+            if (id.equalsIgnoreCase(st_id)) {
+                st_ids.remove(id);
+                deleteStudentTutor(id);
+
+            }
+        }
+
+    }
+
+    private void deleteStudentTutor(String id) {
+        try {
+
+            JSONObject object = new JSONObject();
+            object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("student_id", id);
+            object.put("tutor_id", tras_id);
+
+            HTTPNewPost task = new HTTPNewPost(getActivity(), this);
+            task.disableProgress();
+            task.userRequest("Loading...", 121, Paths.base + "delete_tutor_student_v1", object.toString(), 1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

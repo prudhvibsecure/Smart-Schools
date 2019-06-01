@@ -1,7 +1,6 @@
 package com.bsecure.scsm_mobile.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -101,9 +100,13 @@ public class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapte
             if (matchesList.get(position).isSelected()) {
                 contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.ic_check));
                 contactViewHolder.chk_name.setChecked(true);
+                contactViewHolder.chk_name.setVisibility(View.GONE);
+                contactViewHolder.delete_v.setVisibility(View.VISIBLE);
             } else {
+                contactViewHolder.delete_v.setVisibility(View.GONE);
                 if (isChecked.containsKey(position)) {
                     contactViewHolder.chk_name.setChecked(isChecked.get(position));
+
                     contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.ic_check));
                 } else {
                     contactViewHolder.chk_name.setChecked(false);
@@ -113,7 +116,7 @@ public class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapte
             }
             boolean value = selectedItems.get(position);
             contactViewHolder.itemView.setActivated(selectedItems.get(position, false));
-            applyClickEvents(contactViewHolder, matchesList, position, value, contactViewHolder.chk_name);
+            applyClickEvents(contactViewHolder, matchesList, position, value, contactViewHolder.chk_name,contactViewHolder.view_list_main_content);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,17 +132,17 @@ public class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapte
         return position;
     }
 
-    private void applyClickEvents(ContactViewHolder contactViewHolder, final List<StudentModel> matchesList, final int position, final boolean value, final CheckBox chk_name) {
-//        contactViewHolder.chk_name.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                try {
-//                    listener.onRowClicked(matchesList, value, chk_name, position);
-//                } catch (Exception e) {
-//
-//                }
-//            }
-//        });
+    private void applyClickEvents(ContactViewHolder contactViewHolder, final List<StudentModel> matchesList, final int position, final boolean value, final CheckBox chk_name, final LinearLayout view_list_main_content) {
+        contactViewHolder.delete_v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    listener.onRowDelete(matchesList, value, chk_name, position,view_list_main_content);
+                } catch (Exception e) {
+
+                }
+            }
+        });
         contactViewHolder.chk_name.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -158,7 +161,7 @@ public class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapte
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.students_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.stu_new_row, parent, false);
         ContactViewHolder myHoder = new ContactViewHolder(view);
         return myHoder;
 
@@ -190,16 +193,19 @@ public class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapte
         protected TextView tv_title;
         protected TextView contact_ph;
         protected ImageView contact_image;
+        protected ImageView delete_v;
         protected CheckBox chk_name;
         RelativeLayout row_user_ll;
-        LinearLayout contact_user_ll;
+        LinearLayout view_list_main_content;
 
         public ContactViewHolder(View v) {
             super(v);
 
             tv_title = (TextView) v.findViewById(R.id.cl_name);
             contact_ph = (TextView) v.findViewById(R.id.section_tv);
+            delete_v = (ImageView) v.findViewById(R.id.delete_v);
             chk_name = (CheckBox) v.findViewById(R.id.chk_name);
+            view_list_main_content = v.findViewById(R.id.view_list_main_content);
             chk_name.setBackground(context.getDrawable(R.mipmap.ic_check));
 
         }
@@ -221,6 +227,8 @@ public class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapte
     public interface ContactAdapterListener {
 
         void onRowClicked(List<StudentModel> matchesList, boolean value, CheckBox chk_name, int position);
+
+        void onRowDelete(List<StudentModel> matchesList, boolean value, CheckBox chk_name, int position, LinearLayout view_list_main_content);
     }
 
 }

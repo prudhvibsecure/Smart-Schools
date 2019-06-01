@@ -606,7 +606,6 @@ public class DB_Tables {
     }
 
 
-
     public void addstudentsAttandence(String student_id, String roll_no, String student_name, String status, String class_id) {
         SQLiteDatabase db = null;
         try {
@@ -1364,7 +1363,6 @@ public class DB_Tables {
                 cv.put("phone_number", number);
                 cv.put("school_id", s_id);
                 cv.put("tutor_status", status);
-
                 db.insert("TUTORS", null, cv);
                 db.close();
             }
@@ -1372,6 +1370,35 @@ public class DB_Tables {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getTutorId(String id) {
+        String tutor_id = "";
+        try {
+            if (database != null) {
+
+                String cursor_q = "select * from TUTORS where tutor_id='" + id + "'";
+                SQLiteDatabase db = database.getWritableDatabase();
+                Cursor cursor = db
+                        .rawQuery(cursor_q,
+                                null);
+                try {
+                    if (null != cursor)
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToFirst();
+                            tutor_id = cursor.getString(cursor.getColumnIndex("tutor_id"));
+                        }
+                    cursor.close();
+                    db.close();
+                } finally {
+                    db.close();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tutor_id;
     }
 
     public void updateTutorsList(String tutor_id, String ad_xname, String school_id, String number, String st_id) {

@@ -176,6 +176,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
 
                 if (marks_list_vv.size() > 0) {
                     StringBuilder builder = new StringBuilder();
+                    Collections.sort(roll_ids);
                     Map<String, String> treeMap = new TreeMap<String, String>(marks_list_vv);
                     for (Map.Entry<String, String> entry : treeMap.entrySet()) {
 
@@ -183,7 +184,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                         String marksv = entry.getValue();
                         builder.append("," + marksv);
                        // Collections.sort(student_names);
-                        Collections.sort(roll_ids);
+
                         String roll_no = roll_ids.get(i);
                         String name = studentModelList.get(i).getStudent_name();
                         i = i + 1;
