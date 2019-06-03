@@ -110,7 +110,7 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
                         if (jsonarray2.length() > 0) {
                             for (int i = 0; i < jsonarray2.length(); i++) {
                                 JSONObject jsonobject = jsonarray2.getJSONObject(i);
-                                db_tables.addstudents(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"));
+                                db_tables.addstudents(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"), jsonobject.optString("section"), jsonobject.optString("class_name"));
                             }
                         }
                         getStudentsList();
@@ -172,7 +172,9 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
                     studentModel.setRoll_no(jsonobject.optString("roll_no"));
                     studentModel.setStatus(jsonobject.optString("status"));
                     studentModel.setClass_id(jsonobject.optString("class_id"));
+                    studentModel.setClass_name(jsonobject.optString("class_name"));
                     studentModel.setStudent_id(jsonobject.optString("student_id"));
+                    studentModel.setSection(jsonobject.optString("section"));
                     studentModelList.add(studentModel);
 
                 }

@@ -88,8 +88,9 @@ public class ParentStudentsListAdapter extends RecyclerView.Adapter<ParentStuden
         try {
             StudentModel classMode_lList = classModelList.get(position);
             contactViewHolder.tv_title.setText(classMode_lList.getStudent_name());
-            contactViewHolder.section_tv.setText("Roll Number: " + classMode_lList.getRoll_no());
+            contactViewHolder.section_tv.setText(classMode_lList.getClass_name()+ "-" + classMode_lList.getSection());
             contactViewHolder.section_n.setVisibility(View.GONE);
+           // contactViewHolder.section_n.setText(classMode_lList.getSection());
 
             int color = generator.getColor(classMode_lList.getStudent_name());
             TextDrawable ic1 = builder.build(classMode_lList.getStudent_name().substring(0, 1), color);

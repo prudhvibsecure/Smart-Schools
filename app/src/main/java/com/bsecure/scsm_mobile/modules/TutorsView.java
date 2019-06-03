@@ -247,7 +247,7 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
             object.put("tutor_id", SharedValues.getValue(this, "id"));
             object.put("student_id", classModelList.get(position).getStudent_id());
             HTTPNewPost task = new HTTPNewPost(this, this);
-            task.userRequest("Processing...", 2, Paths.tutor_delete_student, object.toString(), 1);
+            task.userRequest("Processing...", 2, Paths.delete_tutor_student, object.toString(), 1);
         } catch (Exception e) {
             e.printStackTrace();
         }

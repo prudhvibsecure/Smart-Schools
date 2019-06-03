@@ -98,6 +98,7 @@ public class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapte
             contactViewHolder.contact_ph.setText(mycontactlist.getRoll_no());
 
             if (matchesList.get(position).isSelected()) {
+
                 contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.ic_check));
                 contactViewHolder.chk_name.setChecked(true);
                 contactViewHolder.chk_name.setVisibility(View.GONE);

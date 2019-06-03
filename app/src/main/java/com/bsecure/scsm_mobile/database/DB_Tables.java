@@ -561,7 +561,7 @@ public class DB_Tables {
     }
 
 
-    public void addstudents(String student_id, String roll_no, String student_name, String status, String class_id) {
+    public void addstudents(String student_id, String roll_no, String student_name, String status, String class_id, String section, String class_name) {
         SQLiteDatabase db = null;
         try {
             long rawId;
@@ -574,6 +574,8 @@ public class DB_Tables {
                 cv.put("status", status);
                 cv.put("condition", "0");
                 cv.put("class_id", class_id);
+                cv.put("section", section);
+                cv.put("class_name", class_name);
                 db.insertWithOnConflict("Students", null, cv, SQLiteDatabase.CONFLICT_IGNORE);
                 db.close();
             }
@@ -688,6 +690,9 @@ public class DB_Tables {
                         json.put("condition", cursor.getString(cursor.getColumnIndex("condition")));
                         json.put("marks_obtained", cursor.getString(cursor.getColumnIndex("marks_obtained")));
                         json.put("subject", cursor.getString(cursor.getColumnIndex("subject")));
+                        json.put("section", cursor.getString(cursor.getColumnIndex("section")));
+                        json.put("class_name", cursor.getString(cursor.getColumnIndex("class_name")));
+
                         array.put(json);
                     }
 
@@ -1413,6 +1418,24 @@ public class DB_Tables {
                 cv.put("phone_number", number);
                 cv.put("school_id", school_id);
                 cv.put("tutor_status", "0");
+                cv.put("student_id", st_id);
+                db.update("TUTORS", cv, iwhereClause, null);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateTutorDelete(String tutor_id, String st_id) {
+
+        SQLiteDatabase db = null;
+        try {
+            if (database != null) {
+                db = database.getWritableDatabase();
+                String iwhereClause = "tutor_id='" + tutor_id + "'";
+                ContentValues cv = new ContentValues();
                 cv.put("student_id", st_id);
                 db.update("TUTORS", cv, iwhereClause, null);
                 db.close();

@@ -83,7 +83,7 @@ public class ParentView extends AppCompatActivity implements HttpHandler, Parent
                         if (jsonarray2.length() > 0) {
                             for (int i = 0; i < jsonarray2.length(); i++) {
                                 JSONObject jsonobject = jsonarray2.getJSONObject(i);
-                                db_tables.addstudents(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"));
+                                db_tables.addstudents(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"), jsonobject.optString("section"), jsonobject.optString("class_name"));
                             }
                         }
                         getStudentsList();

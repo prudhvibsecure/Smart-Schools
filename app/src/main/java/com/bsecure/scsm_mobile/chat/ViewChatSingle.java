@@ -155,7 +155,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     StringBuilder builder_copy;
     ImageView sec_Tag;
     private String readonce = "0", autodelete = "0", showtime = "0", validuntil = "0", pin = "0", nor_forwrd = "0", no_ptsc = "0", date, pin_default;
-    String class_id, studentName, tutors_ids, mss_id, message;
+    String class_id, studentName, tutors_ids, mss_id, message,typ_marks;
     Dialog rep_Dialog, member_dialog;
     List<Members> contactObjectList;
     private SweetAlertDialog pDialog;
@@ -776,7 +776,11 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
 
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();
-            task.userRequest("", 10, Paths.forward, object.toString(), 1);
+            if (typ_marks.startsWith("AM")||typ_marks.startsWith("EM")){
+                task.userRequest("", 10, Paths.forward_marks, object.toString(), 1);
+            }else {
+                task.userRequest("", 10, Paths.forward, object.toString(), 1);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1495,7 +1499,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
         rep_Dialog.setCancelable(true);
         rep_Dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         rep_Dialog.getWindow().setGravity(Gravity.BOTTOM);
-        if (matchesList.get(position).getnType().equalsIgnoreCase("AA") || matchesList.get(position).getnType().equalsIgnoreCase("EAA") || matchesList.get(position).getnType().equalsIgnoreCase("EAP")) {
+        if (matchesList.get(position).getnType().equalsIgnoreCase("AA") || matchesList.get(position).getnType().equalsIgnoreCase("EAA") || matchesList.get(position).getnType().equalsIgnoreCase("EAP") || matchesList.get(position).getnType().equalsIgnoreCase("BM")) {
             rep_Dialog.findViewById(R.id.rep_1).setVisibility(View.VISIBLE);
             rep_Dialog.findViewById(R.id.forward_msg).setVisibility(View.GONE);
         } else {
@@ -1522,7 +1526,8 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onClick(View v) {
 
-                        getForward(matchesList.get(position).getMessage(), matchesList.get(position).getMessage_id(), matchesList.get(position).getMessage_date(), matchesList.get(position).getClass_id());
+                        getForward(matchesList.get(position).getMessage(), matchesList.get(position).getMessage_id(), matchesList.get(position).getMessage_date(), matchesList.get(position).getClass_id(),matchesList.get(position).getnType());
+                        fr_ids.clear();
                         rep_Dialog.dismiss();
                     }
                 });
@@ -1551,13 +1556,14 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    private void getForward(String messages, String msgId, String msg_date, String class_id) {
+    private void getForward(String messages, String msgId, String msg_date, String class_id, String type) {
         try {
 
             getTutorsListM();
 
             mss_id = msgId;
             message = messages;
+            typ_marks = type;
             pDialog.dismiss();
 
         } catch (Exception e) {
@@ -1568,6 +1574,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onRowClicked(List<Members> matchesList, boolean value, CheckBox chk_name,
                              int position) {
+
         if (chk_name.isChecked()) {
             fwd_Id = matchesList.get(position).getTransport_name();
             fr_ids.remove(fwd_Id);
@@ -1578,7 +1585,8 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
 
             if (fr_ids.size() > 0) {
                 member_dialog.findViewById(R.id.list_fwd).setVisibility(View.VISIBLE);
-                ((TextView) member_dialog.findViewById(R.id.text_contcats)).setText(fr_ids.toString());
+                ((TextView) member_dialog.findViewById(R.id.text_contcats)).setText(fr_ids.toString().substring(1, fr_ids.toString().length()-1));
+
             } else {
                 member_dialog.findViewById(R.id.list_fwd).setVisibility(View.GONE);
             }
@@ -1592,7 +1600,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
             chk_name.setVisibility(View.VISIBLE);
             if (fr_ids.size() > 0) {
                 member_dialog.findViewById(R.id.list_fwd).setVisibility(View.VISIBLE);
-                ((TextView) member_dialog.findViewById(R.id.text_contcats)).setText(fr_ids.toString());
+                ((TextView) member_dialog.findViewById(R.id.text_contcats)).setText(fr_ids.toString().substring(1, fr_ids.toString().length()-1));
             } else {
                 member_dialog.findViewById(R.id.list_fwd).setVisibility(View.GONE);
             }

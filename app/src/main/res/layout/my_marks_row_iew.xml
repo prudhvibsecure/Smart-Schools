@@ -30,7 +30,7 @@
             <TextView
                 android:id="@+id/subject"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:background="@drawable/v_rectangle"
@@ -42,7 +42,7 @@
             <TextView
                 android:id="@+id/t_marks"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:background="@drawable/v_rectangle"
@@ -54,7 +54,7 @@
             <TextView
                 android:id="@+id/marks"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:background="@drawable/v_rectangle"
@@ -66,7 +66,7 @@
             <TextView
                 android:id="@+id/rank"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:background="@drawable/v_rectangle"

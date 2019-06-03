@@ -39,12 +39,13 @@ public class Paths {
     public static final String set_transport_status = base + "set_transport_status";
     public static final String add_tutor = base + "add_tutor_v1";
     public static final String edit_tutor = base + "edit_tutor_v1";
-    public static final String delete_tutor = base + "delete_tutor_v1";
+    public static final String delete_tutor = base + "delete_tutor_student_v1";
     public static final String set_tutor_status = base + "set_tutor_status";
     public static final String view_transport_location = base + "view_transport_location";
     public static final String get_coordinates = base + "get_coordinates";
     public static final String attendance_reply = base + "attendance_reply";
     public static final String forward = base + "forward_v1";
+    public static final String forward_marks= base + "forward_marks";
     public static final String previous_subject_wise_marks = base + "previous_subject_wise_marks";
     public static final String view_periods = base + "view_periods";
     public static final String check_holiday = base + "check_holiday";
@@ -52,4 +53,6 @@ public class Paths {
     public static final String tutor_delete_student = base + "delete_tutor_student_v1";
     public static final String start_transport = base + "start_transport";
     public static final String stop_transport = base + "stop_transport";
+    public static final String delete_tutor_student = base + "tutor_delete_student";
+
 }

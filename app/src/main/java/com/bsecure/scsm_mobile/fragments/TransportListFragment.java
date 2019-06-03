@@ -157,12 +157,12 @@ public class TransportListFragment extends Fragment implements TransportListAdap
         try {
             // transport_id, transport_name, phone_number, student_id, school_id
             tras_id = String.valueOf(System.currentTimeMillis());
-            tp_name = ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).getText().toString();
+            tp_name = ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).getText().toString().trim();
             if (tp_name.length() == 0) {
                 Toast.makeText(getActivity(), "Please Enter Transport Name", Toast.LENGTH_SHORT).show();
                 return;
             }
-            phone_number = ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).getText().toString();
+            phone_number = ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).getText().toString().trim();
             if (phone_number.length() < 10) {
                 Toast.makeText(getActivity(), "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
                 return;

@@ -1,11 +1,14 @@
 package com.bsecure.scsm_mobile.modules;
 
+import android.annotation.TargetApi;
 import android.app.PictureInPictureParams;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,20 +34,28 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+
 
 public class RoutesList extends AppCompatActivity implements HttpHandler, RouteListAdapter.ContactAdapterListener {
     ArrayList<TransportModel> transportArrayList;
     private RouteListAdapter adapter;
     private RecyclerView mRecyclerView;
-    PictureInPictureParams.Builder pictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
+    Handler habs;
+    Runnable myRunnable;
     Toolbar toolbar;
+    private String trns_id = "", trns_idstop = "";
+    private boolean runningThread = false;
+    ArrayList<String> tansport_ids = new ArrayList<>();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main_view);
 
-        toolbar= (Toolbar) findViewById(R.id.toolset);
+        toolbar = (Toolbar) findViewById(R.id.toolset);
         toolbar.setTitle("Transport");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
@@ -96,7 +107,9 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
                 case 2:
                     JSONObject object1 = new JSONObject(results.toString());
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
-                        Toast.makeText(this, object1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                        Thread.sleep(1000);
+                        // Toast.makeText(this, trns_id, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(this, object1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
                     break;
             }
@@ -122,11 +135,38 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
 
     @Override
     public void onClickStart(List<TransportModel> classModelList, int position) {
+
+        trns_id = classModelList.get(position).getTransport_id();
+        tansport_ids.add(trns_id);
+        getRoutes(tansport_ids);
+    }
+
+    private void getRoutes(final ArrayList<String> tansport_ids) {
+
+        habs = new Handler();
+        myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                for (String t_id : tansport_ids) {
+                    syncCall(t_id);
+                    habs.postDelayed(myRunnable, 60000);
+                }
+            }
+        };
+        habs.postDelayed(myRunnable, 3000);
+
+
+    }
+
+    private void syncCall(String tansport_ids) {
         try {
+            Thread.sleep(5000);
             JSONObject object = new JSONObject();
-            object.put("transport_id", classModelList.get(position).getTransport_id());
+            object.put("transport_id", tansport_ids);
             HTTPNewPost task = new HTTPNewPost(this, this);
+            task.disableProgress();
             task.userRequest("Processing...", 2, Paths.start_transport, object.toString(), 1);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,11 +174,18 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
 
     @Override
     public void onClickStop(List<TransportModel> classModelList, int position) {
+        trns_idstop = classModelList.get(position).getTransport_id();
         try {
-            JSONObject object = new JSONObject();
-            object.put("transport_id", classModelList.get(position).getTransport_id());
-            HTTPNewPost task = new HTTPNewPost(this, this);
-            task.userRequest("Processing...", 2, Paths.stop_transport, object.toString(), 1);
+            for (String t_id : tansport_ids) {
+                if (trns_idstop.startsWith(t_id)) {
+                    tansport_ids.remove(trns_idstop);
+                    JSONObject object = new JSONObject();
+                    object.put("transport_id", t_id);
+                    HTTPNewPost task = new HTTPNewPost(this, this);
+                    task.userRequest("Processing...", 2, Paths.stop_transport, object.toString(), 1);
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -146,26 +193,34 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
 
     @Override
     public void onBackPressed() {
-        startPictureInPictureFeature();
+
+        if (myRunnable != null) {
+            habs.removeCallbacks(myRunnable);
+        }
         super.onBackPressed();
     }
 
     private void startPictureInPictureFeature() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
+            PictureInPictureParams.Builder pictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
             Rational aspectRatio = new Rational(mRecyclerView.getWidth(), mRecyclerView.getHeight());
             pictureInPictureParamsBuilder.setAspectRatio(aspectRatio).build();
             enterPictureInPictureMode(pictureInPictureParamsBuilder.build());
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.O)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onUserLeaveHint() {
-        if (!isInPictureInPictureMode()) {
-            Rational aspectRatio = new Rational(mRecyclerView.getWidth(), mRecyclerView.getHeight());
-            pictureInPictureParamsBuilder.setAspectRatio(aspectRatio).build();
-            enterPictureInPictureMode(pictureInPictureParamsBuilder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!isInPictureInPictureMode()) {
+                Rational aspectRatio = new Rational(mRecyclerView.getWidth(), mRecyclerView.getHeight());
+                PictureInPictureParams.Builder pictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
+                pictureInPictureParamsBuilder.setAspectRatio(aspectRatio).build();
+                enterPictureInPictureMode(pictureInPictureParamsBuilder.build());
+            }
         }
     }
 
