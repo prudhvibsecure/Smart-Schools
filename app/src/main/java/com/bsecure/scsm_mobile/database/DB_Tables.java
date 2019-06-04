@@ -1428,6 +1428,24 @@ public class DB_Tables {
         }
     }
 
+    public void updateTutorStudents(String tutor_id, String st_id) {
+
+        SQLiteDatabase db = null;
+        try {
+            if (database != null) {
+                db = database.getWritableDatabase();
+                String iwhereClause = "tutor_id='" + tutor_id + "'";
+                ContentValues cv = new ContentValues();
+                cv.put("student_id", st_id);
+                db.update("TUTORS", cv, iwhereClause, null);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void updateTutorDelete(String tutor_id, String st_id) {
 
         SQLiteDatabase db = null;
@@ -1960,5 +1978,34 @@ public class DB_Tables {
             e.printStackTrace();
         }
         return students_id;
+    }
+
+    public String getTutorStudents(String tutor_id) {
+        String student_id = "";
+        try {
+            if (database != null) {
+
+                String cursor_q = "select * from TUTORS where tutor_id='" + tutor_id + "'";
+                SQLiteDatabase db = database.getWritableDatabase();
+                Cursor cursor = db
+                        .rawQuery(cursor_q,
+                                null);
+                try {
+                    if (null != cursor)
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToFirst();
+                            student_id = cursor.getString(cursor.getColumnIndex("student_id"));
+                        }
+                    cursor.close();
+                    db.close();
+                } finally {
+                    db.close();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return student_id;
     }
 }

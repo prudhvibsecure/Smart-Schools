@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.bsecure.scsm_mobile.Login_Phone;
 import com.bsecure.scsm_mobile.R;
+import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.fragments.MoreFragment;
 import com.bsecure.scsm_mobile.fragments.StudentsFragment;
 import com.bsecure.scsm_mobile.fragments.TransportListFragment;
@@ -31,16 +32,18 @@ import java.util.List;
 public class ParentActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private IntentFilter filter;
+    private IntentFilter filter,l_mfilter;
+    private DB_Tables db_tables;
+    String[] stu_ids;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.parent_vv);
-       // filter = new IntentFilter("com.scs.app.SESSION");
-        filter = new IntentFilter("com.parenttutor.refresh");
+        filter = new IntentFilter("com.scs.app.SESSION");
+        l_mfilter = new IntentFilter("com.parenttutor.refresh");
         registerReceiver(mBroadcastReceiver, filter);
-        registerReceiver(mBroadcastReceiver, filter);
+//
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
@@ -52,6 +55,13 @@ public class ParentActivity extends AppCompatActivity {
         createTabIcons();
     }
 
+    /*@Override
+    protected void onResume() {
+        registerReceiver(mBroadcastReceiver_ref, l_mfilter);
+
+        super.onResume();
+    }
+*/
     private void createTabIcons() {
 
         TextView tabOne = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
@@ -118,6 +128,7 @@ public class ParentActivity extends AppCompatActivity {
         super.onDestroy();
         try {
             unregisterReceiver(mBroadcastReceiver);
+           // unregisterReceiver(mBroadcastReceiver_ref);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -138,4 +149,18 @@ public class ParentActivity extends AppCompatActivity {
             }
         }
     };
+
+
+
+//    private final BroadcastReceiver mBroadcastReceiver_ref = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//
+//            try {
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    };
 }

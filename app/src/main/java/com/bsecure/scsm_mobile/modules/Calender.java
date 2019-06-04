@@ -80,7 +80,8 @@ public class Calender extends AppCompatActivity implements HttpHandler {
                                 JSONObject jsonobject = jsonarray2.getJSONObject(i);
                                 CalenderModel calenderModel = new CalenderModel();
                                 calenderModel.setOccassion(jsonobject.optString("occassion"));
-                                calenderModel.setFromdate(jsonobject.optString("calendar_date"));
+                                calenderModel.setFromdate(jsonobject.optString("calendar_from_date"));
+                                calenderModel.setTodate(jsonobject.optString("calendar_to_date"));
                                //calenderModel.setTodate(jsonobject.optString("student_id"));
                                 calenderList.add(calenderModel);
                             }

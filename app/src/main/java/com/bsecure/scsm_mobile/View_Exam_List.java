@@ -130,6 +130,7 @@ public class View_Exam_List extends AppCompatActivity implements HttpHandler, Ex
         st_edit.putExtra("class_id", class_id);
         st_edit.putExtra("roll_no", roll_no);
         st_edit.putExtra("student_id", student_id);
+        st_edit.putExtra("ename", matchesList.get(position).getExam_name());
         startActivity(st_edit);
     }
 }

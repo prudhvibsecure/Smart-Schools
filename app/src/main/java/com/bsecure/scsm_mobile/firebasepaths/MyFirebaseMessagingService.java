@@ -174,8 +174,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //                    db_tables.tutorDeleteStudent(student_id, phone);
                     String student_id = arry_data[1];
                     String tutor_id = arry_data[2];
-                    db_tables.parentDeleteTutor(student_id, tutor_id);
+                    //db_tables.parentDeleteTutor(student_id, tutor_id);
                     Intent refresh = new Intent("com.parenttutor.refresh");
+                    refresh.putExtra("student_id", student_id);
+                    refresh.putExtra("tutor_id", tutor_id);
                     sendBroadcast(refresh);
 
                 } else if (m_type.equalsIgnoreCase("DTUS")) {

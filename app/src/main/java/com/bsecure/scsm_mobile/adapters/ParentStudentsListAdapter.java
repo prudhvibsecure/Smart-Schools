@@ -88,7 +88,7 @@ public class ParentStudentsListAdapter extends RecyclerView.Adapter<ParentStuden
         try {
             StudentModel classMode_lList = classModelList.get(position);
             contactViewHolder.tv_title.setText(classMode_lList.getStudent_name());
-            contactViewHolder.section_tv.setText(classMode_lList.getClass_name()+ "-" + classMode_lList.getSection());
+            contactViewHolder.section_tv.setText(classMode_lList.getClass_name()+ "\t-\t" + classMode_lList.getSection());
             contactViewHolder.section_n.setVisibility(View.GONE);
            // contactViewHolder.section_n.setText(classMode_lList.getSection());
 

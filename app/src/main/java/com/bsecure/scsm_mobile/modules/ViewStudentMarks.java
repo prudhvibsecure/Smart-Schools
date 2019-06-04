@@ -29,7 +29,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ViewStudentMarks extends AppCompatActivity implements HttpHandler {
-    private String class_id, student_id, roll_no, exams_name;
+    private String class_id, student_id, roll_no, exams_name, ename;
     private StudentMarkViewListAdapter adapter;
     private ArrayList<MarksModel> marksModelArrayList;
     private RecyclerView mRecyclerView;
@@ -39,15 +39,6 @@ public class ViewStudentMarks extends AppCompatActivity implements HttpHandler {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_two);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
-        toolbar.setTitle("Marks");
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        setSupportActionBar(toolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        mRecyclerView = findViewById(R.id.content_list);
-        marksModelArrayList = new ArrayList<>();
         Intent getData = getIntent();
         if (getData != null) {
 
@@ -55,7 +46,19 @@ public class ViewStudentMarks extends AppCompatActivity implements HttpHandler {
             class_id = getData.getStringExtra("class_id");
             student_id = getData.getStringExtra("student_id");
             exams_name = getData.getStringExtra("exams_name");
+            ename = getData.getStringExtra("ename");
         }
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
+        toolbar.setTitle(ename+"\tMarks");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        mRecyclerView = findViewById(R.id.content_list);
+        marksModelArrayList = new ArrayList<>();
+
         getMarks();
     }
 

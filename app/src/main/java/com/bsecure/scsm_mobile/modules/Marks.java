@@ -35,6 +35,7 @@ public class Marks extends AppCompatActivity implements HttpHandler, ExamsListAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main_view);
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
         toolbar.setTitle("Exams");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));

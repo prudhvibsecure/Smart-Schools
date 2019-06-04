@@ -69,12 +69,14 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
     StudentsListAdapter studentsAdapter;
     int id = 0;
     String id_st = "";
+    String[] stu_ids;
 
     RecyclerView students;
     private ArrayList<String> st_ids;
     private ArrayList<String> st_names = new ArrayList<>();
     private IntentFilter filter;
     String match_ids[];
+    List<String> stids;
 
     @Override
     public void onAttach(Context context) {
@@ -117,15 +119,41 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
         super.onDestroy();
     }
 
-    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            String student_id = intent.getStringExtra("student_id");
+            String tutor_id = intent.getStringExtra("tutor_id");
+
+            String sids = db_tables.getTutorStudents(tutor_id);
+            sids = sids.substring(1, sids.length() - 1);
+            stu_ids = sids.split(",");
+            ArrayList<String> mm_ids = new ArrayList<>();
+            StringBuilder builder = new StringBuilder();
+            for (String id : stu_ids) {
+                mm_ids.add(id);
+                if (student_id.equalsIgnoreCase(id)) {
+//                    builder.append("," +id);
+                    mm_ids.remove(id);
+                }
+            }
+            for (String f_ids : mm_ids) {
+                builder.append("," + f_ids);
+            }
+            if (mm_ids.size() > 0) {
+                String fids = builder.toString();
+                fids = fids.substring(1);
+
+                db_tables.updateTutorStudents(tutor_id, "[" + fids + "");
+            } else {
+                db_tables.deleteTutor(tutor_id);
+            }
+
             if (adapter != null) {
                 adapter.clear();
                 adapter.notifyDataSetChanged();
                 teachersList();
             }
-
         }
     };
 
@@ -466,9 +494,8 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
             JSONObject object = new JSONObject();
             object.put("tutor_id", teach_Id);
             object.put("school_id", s_id);
-            String stu_ids = sids.substring(0, sids.length() - 1);
+            String stu_ids = sids.substring(1, sids.length() - 1);
             object.put("student_id", stu_ids);
-            Toast.makeText(schoolMain, object.toString(), Toast.LENGTH_LONG).show();
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Please Wait...", 1, Paths.delete_tutor, object.toString(), 1);
             adapter.removeItem(position);
@@ -600,10 +627,10 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                             db_tables.deleteTutor(tras_id);
                             member_dialog.dismiss();
                             //refresh list
+                            adapter.clear();
                             teachersList();
                         }
                     }
-
                     break;
             }
 
@@ -638,6 +665,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
         id_st = studentModelList.get(position).getStudent_id();
         view_list_main_content.setVisibility(View.GONE);
 
+
         for (String st_id : st_ids) {
             if (id_st.equalsIgnoreCase(st_id.trim())) {
                 st_ids.remove(id_st);
@@ -664,4 +692,5 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
             e.printStackTrace();
         }
     }
+
 }
