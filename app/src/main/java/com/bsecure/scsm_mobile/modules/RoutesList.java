@@ -107,7 +107,8 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
                 case 2:
                     JSONObject object1 = new JSONObject(results.toString());
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
-                        Thread.sleep(1000);
+                        //Thread.sleep(1000);
+                        getRoutes();
                         // Toast.makeText(this, trns_id, Toast.LENGTH_SHORT).show();
 //                        Toast.makeText(this, object1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
@@ -137,20 +138,21 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
     public void onClickStart(List<TransportModel> classModelList, int position) {
 
         trns_id = classModelList.get(position).getTransport_id();
-        tansport_ids.add(trns_id);
-        getRoutes(tansport_ids);
+        srtrtTranport(trns_id);
+//        tansport_ids.add(trns_id);
+//        getRoutes(tansport_ids);
     }
 
-    private void getRoutes(final ArrayList<String> tansport_ids) {
+    private void getRoutes() {
 
         habs = new Handler();
         myRunnable = new Runnable() {
             @Override
             public void run() {
-                for (String t_id : tansport_ids) {
-                    syncCall(t_id);
+//                for (String t_id : tansport_ids) {
+                    syncCall(trns_id);
                     habs.postDelayed(myRunnable, 60000);
-                }
+//                }
             }
         };
         habs.postDelayed(myRunnable, 3000);
@@ -159,6 +161,20 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
     }
 
     private void syncCall(String tansport_ids) {
+        try {
+            Thread.sleep(5000);
+            JSONObject object = new JSONObject();
+            object.put("transport_id", tansport_ids);
+//            object.put("lat", tansport_ids);
+//            object.put("lang", tansport_ids);
+            HTTPNewPost task = new HTTPNewPost(this, this);
+            task.disableProgress();
+            task.userRequest("Processing...", 3, Paths.send_coordinates, object.toString(), 1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }  private void srtrtTranport(String tansport_ids) {
         try {
             Thread.sleep(5000);
             JSONObject object = new JSONObject();
@@ -174,17 +190,17 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
 
     @Override
     public void onClickStop(List<TransportModel> classModelList, int position) {
-        trns_idstop = classModelList.get(position).getTransport_id();
+        trns_id = classModelList.get(position).getTransport_id();
         try {
-            for (String t_id : tansport_ids) {
-                if (trns_idstop.startsWith(t_id)) {
-                    tansport_ids.remove(trns_idstop);
+//            for (String t_id : tansport_ids) {
+//                if (trns_idstop.startsWith(t_id)) {
+//                    tansport_ids.remove(trns_idstop);
                     JSONObject object = new JSONObject();
-                    object.put("transport_id", t_id);
+                    object.put("transport_id", trns_id);
                     HTTPNewPost task = new HTTPNewPost(this, this);
                     task.userRequest("Processing...", 2, Paths.stop_transport, object.toString(), 1);
-                }
-            }
+//                }
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();

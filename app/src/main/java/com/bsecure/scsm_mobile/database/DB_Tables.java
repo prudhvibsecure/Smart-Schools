@@ -1233,6 +1233,7 @@ public class DB_Tables {
                         json.put("status", cursor.getString(cursor.getColumnIndex("status")));
                         json.put("school_id", cursor.getString(cursor.getColumnIndex("school_id")));
                         json.put("created_by", cursor.getString(cursor.getColumnIndex("created_by")));
+                        json.put("student_id", cursor.getString(cursor.getColumnIndex("student_id")));
                         // json.put("name", cursor.getString(cursor.getColumnIndex("name")));
                         array.put(json);
                     }

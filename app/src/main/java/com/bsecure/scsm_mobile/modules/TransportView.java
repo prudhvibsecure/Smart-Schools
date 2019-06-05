@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.TrasnsListAdapter;
@@ -83,6 +84,7 @@ public class TransportView extends AppCompatActivity implements HttpHandler, Tra
                                 JSONObject jsonobject = jsonarray2.getJSONObject(i);
                                 db_tables.addTransport(jsonobject.optString("transport_id"), jsonobject.optString("transport_name"), jsonobject.optString("phone_number"), jsonobject.optString("school_id"), "0", jsonobject.optString("student_id"));
                             }
+
                             getListTutors();
                         }
                     }
@@ -178,7 +180,7 @@ public class TransportView extends AppCompatActivity implements HttpHandler, Tra
         Intent nxt = new Intent(this, GoogleView.class);
         nxt.putExtra("t_id", matchesList.get(position).getTransport_id());
         nxt.putExtra("sc_id", matchesList.get(position).getSchool_id());
-        nxt.putExtra("st_id", matchesList.get(position).getStudent_id());
+       // nxt.putExtra("st_id", matchesList.get(position).getStudent_id());
         startActivity(nxt);
 
     }

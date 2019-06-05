@@ -164,6 +164,11 @@ public class TransportListFragment extends Fragment implements TransportListAdap
             }
             phone_number = ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).getText().toString().trim();
             if (phone_number.length() < 10) {
+                Toast.makeText(getActivity(), "Please Enter Valid Mobile Number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(phone_number.length() == 0)
+            {
                 Toast.makeText(getActivity(), "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -199,6 +204,8 @@ public class TransportListFragment extends Fragment implements TransportListAdap
                     transportModel.setName(jsonobject.optString("name"));
                     transportModel.setSchool_id(jsonobject.optString("school_id"));
                     transportModel.setCreated_by(jsonobject.optString("created_by"));
+                    transportModel.setStudent_id(jsonobject.optString("student_id"));
+                    transportModel.setTransport_id(jsonobject.optString("transport_id"));
                     teacherModelArrayList.add(transportModel);
 
                 }
@@ -263,41 +270,47 @@ public class TransportListFragment extends Fragment implements TransportListAdap
     public void onMessageRow(List<TransportModel> matchesList, int position) {
         try {
             Intent maps = new Intent(getActivity(), TrasportMaps.class);
+            maps.putExtra("transport_id",matchesList.get(position).getTransport_id());
+          //  maps.putExtra("student_id",matchesList.get(position).getStudent_id());//check its comming null
+            maps.putExtra("school_id",matchesList.get(position).getSchool_id());
+            maps.putExtra("p_con","0");
             startActivity(maps);
-            getEventShowTrasport(matchesList.get(position).getTransport_id(), matchesList.get(position).getStudent_id(), matchesList.get(position).getSchool_id());
+           // getEventShowTrasport(matchesList.get(position).getTransport_id(), matchesList.get(position).getStudent_id(), matchesList.get(position).getSchool_id());
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    private void getEventShowTrasport(String transport_id, String student_id, String school_id) {
-        try {
-            JSONObject object = new JSONObject();
-            object.put("transport_id", transport_id);
-            object.put("student_id", student_id);
-            object.put("school_id", school_id);
-            HTTPNewPost task = new HTTPNewPost(getActivity(), this);
-            task.disableProgress();
-            task.userRequest("Please Wait...", 10, Paths.view_transport_location, object.toString(), 1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void getEventShowTrasport(String transport_id, String student_id, String school_id) {
+////        try {
+////            JSONObject object = new JSONObject();
+////            object.put("transport_id", transport_id);
+////            object.put("student_id", student_id);
+////            object.put("school_id", school_id);
+////            HTTPNewPost task = new HTTPNewPost(getActivity(), this);
+////            task.disableProgress();
+////            task.userRequest("Please Wait...", 10, Paths.view_transport_location, object.toString(), 1);
+////        } catch (Exception e) {
+////            e.printStackTrace();
+////        }
+////    }
 
     @Override
     public void swipeToDelete(int position, List<TransportModel> classModelList) {
         if (classModelList.get(position).getCreated_by().equalsIgnoreCase("1")) {
-            Toast.makeText(getActivity(), "Can't Change Status", Toast.LENGTH_SHORT).show();
+
         } else {
             String s_id = SharedValues.getValue(getActivity(), "school_id");
+            String stu_id = classModelList.get(position).getStudent_id();
             teach_Id = classModelList.get(position).getTransport_id();
             try {
                 JSONObject object = new JSONObject();
                 object.put("transport_id", teach_Id);
                 object.put("school_id", s_id);
+                object.put("student_id", stu_id);
                 HTTPNewPost task = new HTTPNewPost(getActivity(), this);
                 task.userRequest("Please Wait...", 1, Paths.delete_transport, object.toString(), 1);
-                adapter.removeItem(position);
+                //adapter.removeItem(position);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -337,6 +350,7 @@ public class TransportListFragment extends Fragment implements TransportListAdap
                             for (int p = 0; p < array.length(); p++) {
                                 JSONObject ob = array.getJSONObject(p);
                                 db_tables.addTransportList(ob.optString("transport_name"), SharedValues.getValue(getActivity(), "school_id"), ob.optString("phone_number"), ob.optString("transport_id"), ob.optString("status"), ob.optString("created_by"));
+
                             }
                             teachersList();
                         }
@@ -347,8 +361,9 @@ public class TransportListFragment extends Fragment implements TransportListAdap
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
                         //schoolMain.onKeyDown(4, null);
                         adapter.notifyDataSetChanged();
-
+                        adapter.clear();
                         db_tables.deleteTransport(teach_Id);
+                        Toast.makeText(getActivity(), object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                         teachersList();
                         Snackbar snackbar = Snackbar
                                 .make(coordinatorLayout, "Removed Successfully", Snackbar.LENGTH_LONG);
@@ -373,6 +388,7 @@ public class TransportListFragment extends Fragment implements TransportListAdap
                     if (object11.optString("statuscode").equalsIgnoreCase("200")) {
                         member_dialog.dismiss();
                         db_tables.addTransportList(tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, tras_id, "0", "0");
+                        Toast.makeText(getActivity(), "Transport Added Successfully", Toast.LENGTH_SHORT).show();
                         teachersList();
                     } else {
                         member_dialog.dismiss();

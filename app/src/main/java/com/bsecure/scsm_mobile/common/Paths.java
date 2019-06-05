@@ -42,6 +42,7 @@ public class Paths {
     public static final String delete_tutor = base + "delete_tutor_student_v1";
     public static final String set_tutor_status = base + "set_tutor_status";
     public static final String view_transport_location = base + "view_transport_location";
+    public static final String get_transport_location = base + "get_transport_location";
     public static final String get_coordinates = base + "get_coordinates";
     public static final String attendance_reply = base + "attendance_reply";
     public static final String forward = base + "forward_v1";
@@ -54,5 +55,6 @@ public class Paths {
     public static final String start_transport = base + "start_transport";
     public static final String stop_transport = base + "stop_transport";
     public static final String delete_tutor_student = base + "tutor_delete_student";
+    public static final String send_coordinates = base + "send_coordinates";
 
 }

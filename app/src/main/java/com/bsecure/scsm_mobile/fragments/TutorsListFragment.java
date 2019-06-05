@@ -126,33 +126,35 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
             String tutor_id = intent.getStringExtra("tutor_id");
 
             String sids = db_tables.getTutorStudents(tutor_id);
-            sids = sids.substring(1, sids.length() - 1);
-            stu_ids = sids.split(",");
-            ArrayList<String> mm_ids = new ArrayList<>();
-            StringBuilder builder = new StringBuilder();
-            for (String id : stu_ids) {
-                mm_ids.add(id);
-                if (student_id.equalsIgnoreCase(id)) {
+            if(sids.length() != 0) {
+                sids = sids.substring(1, sids.length() - 1);
+                stu_ids = sids.split(",");
+                ArrayList<String> mm_ids = new ArrayList<>();
+                StringBuilder builder = new StringBuilder();
+                for (String id : stu_ids) {
+                    mm_ids.add(id);
+                    if (student_id.equalsIgnoreCase(id)) {
 //                    builder.append("," +id);
-                    mm_ids.remove(id);
+                        mm_ids.remove(id);
+                    }
                 }
-            }
-            for (String f_ids : mm_ids) {
-                builder.append("," + f_ids);
-            }
-            if (mm_ids.size() > 0) {
-                String fids = builder.toString();
-                fids = fids.substring(1);
+                for (String f_ids : mm_ids) {
+                    builder.append("," + f_ids);
+                }
+                if (mm_ids.size() > 0) {
+                    String fids = builder.toString();
+                    fids = fids.substring(1);
 
-                db_tables.updateTutorStudents(tutor_id, "[" + fids + "");
-            } else {
-                db_tables.deleteTutor(tutor_id);
-            }
+                    db_tables.updateTutorStudents(tutor_id, "[" + fids + "]");
+                } else {
+                    db_tables.deleteTutor(tutor_id);
+                }
 
-            if (adapter != null) {
-                adapter.clear();
-                adapter.notifyDataSetChanged();
-                teachersList();
+                if (adapter != null) {
+                    adapter.clear();
+                    adapter.notifyDataSetChanged();
+                    teachersList();
+                }
             }
         }
     };

@@ -136,13 +136,13 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
         try {
             String desc;
             if (roll_ids.size() > 0) {
-                desc = "Marks Are Going To Be Submitted";
+                desc = "Marks Are Going To <br/> Be Submitted";
             } else {
-                desc = "Please Fill Required Details";
+                desc = "Please Fill Required  <br/>Details";
             }
             SweetAlertDialog dialog = new SweetAlertDialog(this,SweetAlertDialog.NORMAL_TYPE);
             dialog.setTitle("Alert!");
-            dialog.setContentText(desc);
+            dialog.setContentText(String.valueOf(Html.fromHtml(desc)));
             dialog.setCancelable(false);
             dialog.setConfirmButton("Yes", new SweetAlertDialog.OnSweetClickListener() {
                 @Override
@@ -217,13 +217,13 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
         try {
             String desc;
             if (roll_ids.size() > 0) {
-                desc = "Marks Are Going To Be Submitted";
+                desc = "Marks Are Going <br/>To Be Submitted";
             } else {
                 desc = "Nothing To Update";
             }
             SweetAlertDialog dialog = new SweetAlertDialog(this);
             dialog.setTitle("Alert!");
-            dialog.setContentText(desc);
+            dialog.setContentText(String.valueOf(Html.fromHtml(desc)));
             dialog.setCancelable(false);
             dialog.setConfirmButton("Yes", new SweetAlertDialog.OnSweetClickListener() {
                 @Override

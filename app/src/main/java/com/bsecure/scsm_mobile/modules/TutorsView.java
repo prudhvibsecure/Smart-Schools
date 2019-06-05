@@ -60,7 +60,7 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
         db_tables = new DB_Tables(this);
         db_tables.openDB();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
-        toolbar.setTitle("Tutors");
+        toolbar.setTitle("Students");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
         mRecyclerView = findViewById(R.id.content_list);
