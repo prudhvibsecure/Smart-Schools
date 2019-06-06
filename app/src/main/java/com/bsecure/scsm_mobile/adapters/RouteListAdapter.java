@@ -111,7 +111,7 @@ public class RouteListAdapter extends RecyclerView.Adapter<RouteListAdapter.Cont
         contactViewHolder.tv_stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onClickStart(classModelList, position);
+                listener.onClickStop(classModelList, position);
                 contactViewHolder.tv_stop.setVisibility(View.GONE);
                 contactViewHolder.tv_start.setVisibility(View.VISIBLE);
             }

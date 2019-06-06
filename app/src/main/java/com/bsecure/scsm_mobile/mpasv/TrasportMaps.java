@@ -110,7 +110,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void run() {
                 getEventShowTrasport();
-                    habs.postDelayed(myRunnable, 60000);
+                    habs.postDelayed(myRunnable, 30000);
 
             }
         };
@@ -298,35 +298,35 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                 ((TextView) findViewById(R.id.loc_txt)).setText(addressText);
             }
             // Setting a click event handler for the map
-            googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-
-                @Override
-                public void onMapClick(LatLng arg0) {
-
-                    // Getting the Latitude and Longitude of the touched location
-                    latLng = arg0;
-
-                    // Clears the previously touched position
-                    googleMap.clear();
-
-                    // Animating to the touched position
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-
-                    // Creating a marker
-//                    markerOptions = new MarkerOptions();
+//            googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 //
-//                    // Setting the position for the marker
-//                    markerOptions.position(latLng);
+//                @Override
+//                public void onMapClick(LatLng arg0) {
 //
-//                    // Placing a marker on the touched position
-//                    googleMap.addMarker(markerOptions);
-                    googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_pickup)));
-
-                    // Adding Marker on the touched location with address
-                    new ReverseGeocodingTask(getBaseContext()).execute(latLng);
-
-                }
-            });
+//                    // Getting the Latitude and Longitude of the touched location
+//                    latLng = arg0;
+//
+//                    // Clears the previously touched position
+//                    googleMap.clear();
+//
+//                    // Animating to the touched position
+//                    googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+//
+//                    // Creating a marker
+////                    markerOptions = new MarkerOptions();
+////
+////                    // Setting the position for the marker
+////                    markerOptions.position(latLng);
+////
+////                    // Placing a marker on the touched position
+////                    googleMap.addMarker(markerOptions);
+//                    googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_pickup)));
+//
+//                    // Adding Marker on the touched location with address
+//                    new ReverseGeocodingTask(getBaseContext()).execute(latLng);
+//
+//                }
+//            });
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
         }
@@ -408,6 +408,8 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                                 ((TextView) findViewById(R.id.loc_txt)).setText(addressText);
                             }
                             break;
+                        }else{
+                            Toast.makeText(this, oo.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                         }
                 } catch (Exception e) {
                     e.printStackTrace();

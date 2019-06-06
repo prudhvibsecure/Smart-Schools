@@ -26,6 +26,7 @@ import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.Transport;
 import com.bsecure.scsm_mobile.models.TransportModel;
+import com.bsecure.scsm_mobile.mpasv.GPSTracker;
 import com.bsecure.scsm_mobile.mpasv.GoogleView;
 import com.bsecure.scsm_mobile.utils.SharedValues;
 
@@ -138,6 +139,7 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
     public void onClickStart(List<TransportModel> classModelList, int position) {
 
         trns_id = classModelList.get(position).getTransport_id();
+        tansport_ids.add(trns_id);
         srtrtTranport(trns_id);
 //        tansport_ids.add(trns_id);
 //        getRoutes(tansport_ids);
@@ -149,10 +151,14 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
         myRunnable = new Runnable() {
             @Override
             public void run() {
-//                for (String t_id : tansport_ids) {
-                    syncCall(trns_id);
-                    habs.postDelayed(myRunnable, 60000);
-//                }
+                StringBuilder builder = new StringBuilder();
+                for (String t_id : tansport_ids) {
+                    builder.append("," + t_id);
+                }
+                String ts_id = builder.substring(1).trim();
+                syncCall(ts_id);
+                habs.postDelayed(myRunnable, 30000);
+
             }
         };
         habs.postDelayed(myRunnable, 3000);
@@ -162,23 +168,33 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
 
     private void syncCall(String tansport_ids) {
         try {
-            Thread.sleep(5000);
-            JSONObject object = new JSONObject();
-            object.put("transport_id", tansport_ids);
-//            object.put("lat", tansport_ids);
-//            object.put("lang", tansport_ids);
-            HTTPNewPost task = new HTTPNewPost(this, this);
-            task.disableProgress();
-            task.userRequest("Processing...", 3, Paths.send_coordinates, object.toString(), 1);
-
+            GPSTracker gpsTracker = new GPSTracker(this);
+            if (gpsTracker.getIsGPSTrackingEnabled()) {
+                JSONObject object = new JSONObject();
+                object.put("transport_id", tansport_ids);
+                object.put("school_id", SharedValues.getValue(this, "school_id"));
+                object.put("lat", gpsTracker.getLatitude());
+                object.put("lang", gpsTracker.getLongitude());
+                HTTPNewPost task = new HTTPNewPost(this, this);
+                task.disableProgress();
+                task.userRequest("Processing...", 3, Paths.send_coordinates, object.toString(), 1);
+            } else {
+                // can't get location
+                // GPS or Network is not enabled
+                // Ask user to enable GPS/network in settings
+                gpsTracker.showSettingsAlert();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }  private void srtrtTranport(String tansport_ids) {
+    }
+
+    private void srtrtTranport(String tansport_ids) {
         try {
-            Thread.sleep(5000);
+            // Thread.sleep(5000);
             JSONObject object = new JSONObject();
             object.put("transport_id", tansport_ids);
+            object.put("school_id", SharedValues.getValue(this, "school_id"));
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();
             task.userRequest("Processing...", 2, Paths.start_transport, object.toString(), 1);
@@ -192,13 +208,17 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
     public void onClickStop(List<TransportModel> classModelList, int position) {
         trns_id = classModelList.get(position).getTransport_id();
         try {
-//            for (String t_id : tansport_ids) {
-//                if (trns_idstop.startsWith(t_id)) {
-//                    tansport_ids.remove(trns_idstop);
+            for (String t_id : tansport_ids) {
+                if (trns_id.startsWith(t_id)) {
+                    tansport_ids.remove(t_id);
                     JSONObject object = new JSONObject();
                     object.put("transport_id", trns_id);
+                    object.put("school_id", SharedValues.getValue(this, "school_id"));
                     HTTPNewPost task = new HTTPNewPost(this, this);
                     task.userRequest("Processing...", 2, Paths.stop_transport, object.toString(), 1);
+                }
+            }
+
 //                }
 //            }
 

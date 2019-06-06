@@ -290,7 +290,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
     private void getChatMessages() {
 
         try {
-            String msg_list = db_tables.getchatList_view(class_id);
+            String msg_list = db_tables.getchatList_view1(class_id);
             messageList = new ArrayList<>();
             JSONObject obj = new JSONObject(msg_list);
             JSONArray jsonarray2 = obj.getJSONArray("message_body");

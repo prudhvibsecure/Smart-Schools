@@ -1070,7 +1070,48 @@ public class DB_Tables {
         }
     }
 
-    public String getchatList_view(String class_id) {
+    public String getchatList_view(String class_id, String stu_id) {
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            JSONArray array = new JSONArray();
+            if (database != null) {
+                SQLiteDatabase db = database.getWritableDatabase();
+
+                String sql = "select * from Message where class_id='" + class_id + "' and student_id='" + stu_id + "'";
+                Cursor cursor = db.rawQuery(sql,
+                        null);
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
+
+                        final JSONObject json = new JSONObject();
+                        json.put("message_id", cursor.getString(cursor.getColumnIndex("message_id")));
+                        json.put("message", cursor.getString(cursor.getColumnIndex("message")));
+                        json.put("message_date", cursor.getString(cursor.getColumnIndex("message_date")));
+                        json.put("message_status", cursor.getString(cursor.getColumnIndex("message_status")));
+                        json.put("sender_name", cursor.getString(cursor.getColumnIndex("sender_name")));
+                        json.put("no_reply", cursor.getString(cursor.getColumnIndex("no_reply")));
+                        json.put("user_me", cursor.getString(cursor.getColumnIndex("user_me")));
+                        json.put("forward", cursor.getString(cursor.getColumnIndex("forward")));
+                        json.put("forward_status", cursor.getString(cursor.getColumnIndex("forward_status")));
+                        json.put("notifyType", cursor.getString(cursor.getColumnIndex("notifyType")));
+                        json.put("class_id", cursor.getString(cursor.getColumnIndex("class_id")));
+                        array.put(json);
+                    }
+
+                    jsonObject.put("message_body", array);
+                    cursor.close();
+                }
+                db.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }
+
+    public String getchatList_view1(String class_id) {
 
         JSONObject jsonObject = new JSONObject();
 

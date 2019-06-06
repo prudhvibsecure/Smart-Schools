@@ -382,7 +382,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     private void getChatMessages() {
 
         try {
-            String msg_list = db_tables.getchatList_view(class_id);
+            String msg_list = db_tables.getchatList_view(class_id,student_id);
             messageList = new ArrayList<>();
             JSONObject obj = new JSONObject(msg_list);
             JSONArray jsonarray2 = obj.getJSONArray("message_body");
