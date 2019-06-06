@@ -95,7 +95,7 @@ public class GoogleView extends AppCompatActivity implements OnMapReadyCallback,
 
     @Override
     protected void onResume() {
-        getUpdatetoNotify(location.getLatitude(), location.getLongitude());
+      //  getUpdatetoNotify(location.getLatitude(), location.getLongitude());
         super.onResume();
     }
 

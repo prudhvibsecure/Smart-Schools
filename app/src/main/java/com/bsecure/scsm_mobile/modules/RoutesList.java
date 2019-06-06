@@ -151,12 +151,18 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
         myRunnable = new Runnable() {
             @Override
             public void run() {
-                StringBuilder builder = new StringBuilder();
-                for (String t_id : tansport_ids) {
-                    builder.append("," + t_id);
+                if(tansport_ids.size()>0){
+                    StringBuilder builder = new StringBuilder();
+                    for (String t_id : tansport_ids) {
+                        builder.append("," + t_id);
+                    }
+                    String ts_id = builder.substring(1).trim();
+                    syncCall(ts_id);
+                }else{
+                    if (myRunnable != null) {
+                        habs.removeCallbacks(myRunnable);
+                    }
                 }
-                String ts_id = builder.substring(1).trim();
-                syncCall(ts_id);
                 habs.postDelayed(myRunnable, 30000);
 
             }
@@ -208,18 +214,24 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
     public void onClickStop(List<TransportModel> classModelList, int position) {
         trns_id = classModelList.get(position).getTransport_id();
         try {
-            for (String t_id : tansport_ids) {
-                if (trns_id.startsWith(t_id)) {
-                    tansport_ids.remove(t_id);
-                    JSONObject object = new JSONObject();
-                    object.put("transport_id", trns_id);
-                    object.put("school_id", SharedValues.getValue(this, "school_id"));
-                    HTTPNewPost task = new HTTPNewPost(this, this);
-                    task.userRequest("Processing...", 2, Paths.stop_transport, object.toString(), 1);
+            if( tansport_ids.size()>0){
+                for (String t_id : tansport_ids) {
+
+                    if (trns_id.startsWith(t_id)) {
+                        tansport_ids.remove(t_id);
+                        JSONObject object = new JSONObject();
+                        object.put("transport_id", trns_id);
+                        object.put("school_id", SharedValues.getValue(this, "school_id"));
+                        HTTPNewPost task = new HTTPNewPost(this, this);
+                        task.userRequest("Processing...", 2, Paths.stop_transport, object.toString(), 1);
+                    }
+                }
+
+            }else{
+                if (myRunnable != null) {
+                    habs.removeCallbacks(myRunnable);
                 }
             }
-
-//                }
 //            }
 
         } catch (Exception e) {

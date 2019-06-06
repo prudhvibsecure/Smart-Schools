@@ -71,8 +71,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
 
         intentData=getIntent();
         if (intentData!=null){
-            String condition ="";
-            condition=intentData.getStringExtra("0");
+            String condition=intentData.getStringExtra("p_con");
             if (condition.startsWith("0")){
                 transport_id=intentData.getStringExtra("transport_id");
                // student_id=intentData.getStringExtra("student_id");
@@ -382,7 +381,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                             String provider = locationManager.getBestProvider(criteria, true);
                             Location location = getLastKnownLocation();
 
-                            if (location != null) {
+
                                 try {
                                     addresses = geocoder.getFromLocation(latitude, longitude, 5);
                                 } catch (IOException e) {
@@ -402,11 +401,12 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
 
                                 }
                                 latLng = new LatLng(latitude, longitude);
-                                googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                                CameraUpdate cameraUpdate=CameraUpdateFactory.newLatLngZoom(latLng,25);
+                                googleMap.animateCamera(cameraUpdate);
                                 markerOptions = new MarkerOptions();
                                 googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_schoolbus)));
                                 ((TextView) findViewById(R.id.loc_txt)).setText(addressText);
-                            }
+
                             break;
                         }else{
                             Toast.makeText(this, oo.optString("statusdescription"), Toast.LENGTH_SHORT).show();

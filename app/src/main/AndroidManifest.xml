@@ -49,7 +49,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="icon, label,allowBackup,supportsRtl">
-        <activity android:name=".modules.Calender"></activity>
+        <activity android:name=".modules.NonScholasticTeacher"></activity>
+        <activity android:name=".modules.Calender" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
