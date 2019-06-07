@@ -9,6 +9,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
@@ -36,6 +38,7 @@ public class ExamsSubjects extends AppCompatActivity implements HttpHandler, Sub
     private SubjectListAdapter adapter;
     private List<Subjects> examsList;
     String exam_id, class_id, teacher_id, value;
+    Button bt_nscholastic;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +55,18 @@ public class ExamsSubjects extends AppCompatActivity implements HttpHandler, Sub
         toolbar.setTitle(exam_name);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
+        bt_nscholastic = findViewById(R.id.bt_nscholastic);
+        bt_nscholastic.setVisibility(View.VISIBLE);
+        bt_nscholastic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(ExamsSubjects.this, StudentsNonscholastic.class);
+                in.putExtra("class_id", class_id);
+                in.putExtra("exam_id", exam_id);
+                in.putExtra("teacher_id", teacher_id);
+                startActivity(in);
+            }
+        });
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);

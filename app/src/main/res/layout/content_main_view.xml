@@ -22,7 +22,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/content_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/bottom_list"
         android:layout_below="@+id/headerview_ll"
         android:padding="5dp" />
@@ -31,6 +31,16 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/bt_nscholastic"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:text="ADD NON SCHOLASTIC MARKS"
+        android:background="@color/green"
+        android:textColor="@color/white"
         android:visibility="gone"/>
 
     <android.support.design.widget.FloatingActionButton

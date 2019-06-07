@@ -56,5 +56,6 @@ public class Paths {
     public static final String stop_transport = base + "stop_transport";
     public static final String delete_tutor_student = base + "tutor_delete_student";
     public static final String send_coordinates = base + "send_coordinates";
+    public static final String get_non_scholastic_details = base + "get_non_scholastic_details";
 
 }

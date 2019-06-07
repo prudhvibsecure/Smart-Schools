@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.modules.NonScholasticTeacher;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -55,6 +56,8 @@ public class HTTPNewPost {
         this.context = context;
         this.callback = callback;
     }
+
+
 
     public void disableProgress() {
         progressFlag = false;
