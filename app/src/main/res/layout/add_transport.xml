@@ -82,12 +82,12 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/layout_bg" >
 
-        <Spinner
+        <com.bsecure.scsm_mobile.adapters.NoDefaultSpinner
             android:id="@+id/st_spinner"
             android:layout_width="0dp"
             android:layout_height="45dp"
-           android:layout_weight="1"
-            />
+            android:spinnerMode="dialog"
+           android:layout_weight="1" />
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -38,7 +38,7 @@ import java.util.List;
 
 public class NonScholasticTeacher extends AppCompatActivity implements HttpHandler, NonScholasticAdapter.ContactAdapterListener {
 
-    ExpandableListView list;
+    private ExpandableListView list;
     ArrayList<String>categories;
    // ArrayList<String>grades;
     String[] grades;

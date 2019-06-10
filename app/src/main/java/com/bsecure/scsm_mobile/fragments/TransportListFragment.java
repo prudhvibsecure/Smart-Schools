@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
+import com.bsecure.scsm_mobile.adapters.StudentsListAdapter;
 import com.bsecure.scsm_mobile.adapters.TransportListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.common.Paths;
@@ -83,7 +85,8 @@ public class TransportListFragment extends Fragment implements TransportListAdap
             }
         });
         mRecyclerView = view_layout.findViewById(R.id.content_list);
-        teachersList();
+        getServiceTtansport();
+        // teachersList();
         mCallback = new ItemTouchHelperCallback_Trns();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
@@ -103,6 +106,7 @@ public class TransportListFragment extends Fragment implements TransportListAdap
             }
         });
         m_spinner = (Spinner) member_dialog.findViewById(R.id.st_spinner);
+        m_spinner.setPrompt("Select Student");
         getStudentsList(m_spinner);
         m_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -163,13 +167,23 @@ public class TransportListFragment extends Fragment implements TransportListAdap
                 return;
             }
             phone_number = ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).getText().toString().trim();
+            if (phone_number.length() == 0) {
+                Toast.makeText(getActivity(), "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (phone_number.length() < 10) {
                 Toast.makeText(getActivity(), "Please Enter Valid Mobile Number", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(phone_number.length() == 0)
-            {
-                Toast.makeText(getActivity(), "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
+            StudentModel selectedCity = (StudentModel) m_spinner.getSelectedItem();
+
+            if (selectedCity == null) {
+                Toast.makeText(getActivity(), " Please Select Student Name", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            student_id = selectedCity.getStudent_id();
+            if (student_id == null) {
+                Toast.makeText(getActivity(), " Please Select Student Name", Toast.LENGTH_SHORT).show();
                 return;
             }
             JSONObject object = new JSONObject();
@@ -270,13 +284,13 @@ public class TransportListFragment extends Fragment implements TransportListAdap
     public void onMessageRow(List<TransportModel> matchesList, int position) {
         try {
             Intent maps = new Intent(getActivity(), TrasportMaps.class);
-            maps.putExtra("transport_id",matchesList.get(position).getTransport_id());
-          //  maps.putExtra("student_id",matchesList.get(position).getStudent_id());//check its comming null
-            maps.putExtra("school_id",matchesList.get(position).getSchool_id());
-            maps.putExtra("p_con","0");
+            maps.putExtra("transport_id", matchesList.get(position).getTransport_id());
+            //  maps.putExtra("student_id",matchesList.get(position).getStudent_id());//check its comming null
+            maps.putExtra("school_id", matchesList.get(position).getSchool_id());
+            maps.putExtra("p_con", "0");
             startActivity(maps);
-           // getEventShowTrasport(matchesList.get(position).getTransport_id(), matchesList.get(position).getStudent_id(), matchesList.get(position).getSchool_id());
-        }catch (Exception e){
+            // getEventShowTrasport(matchesList.get(position).getTransport_id(), matchesList.get(position).getStudent_id(), matchesList.get(position).getSchool_id());
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -405,7 +419,18 @@ public class TransportListFragment extends Fragment implements TransportListAdap
                     }
                     break;
                 case 10:
-
+                    break;
+                case 7:
+                    JSONObject object111 = new JSONObject(results.toString());
+                    if (object111.optString("statuscode").equalsIgnoreCase("200")) {
+                        member_dialog.dismiss();
+                        db_tables.updateTransportList(tras_id, tp_name, phone_number, SharedValues.getValue(getActivity(), "school_id"));
+                        Toast.makeText(getActivity(), "Transport Updated Successfully", Toast.LENGTH_SHORT).show();
+                        teachersList();
+                    } else {
+                        member_dialog.dismiss();
+                        Toast.makeText(getActivity(), object111.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                    }
                     break;
             }
 
@@ -419,4 +444,115 @@ public class TransportListFragment extends Fragment implements TransportListAdap
     public void onFailure(String errorCode, int requestType) {
 
     }
+
+    @Override
+    public void swipeToUpdate(final int position, final List<TransportModel> matchesList) {
+        tras_id = matchesList.get(position).getTransport_id();
+        member_dialog = new Dialog(getActivity(), R.style.MyAlertDialogStyle);
+        member_dialog.setContentView(R.layout.add_transport);
+        member_dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        member_dialog.setCancelable(true);
+        member_dialog.setCanceledOnTouchOutside(true);
+        member_dialog.getWindow().setGravity(Gravity.BOTTOM);
+        ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).setHint("Transport Name");
+        ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).setText(matchesList.get(position).getTransport_name());
+        ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).setText(matchesList.get(position).getPhone_number());
+        ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).setEnabled(false);
+        final String student_ids = matchesList.get(position).getStudent_id();
+        m_spinner = (Spinner) member_dialog.findViewById(R.id.st_spinner);
+        m_spinner.setEnabled(false);
+        m_spinner.setVisibility(View.GONE);
+        try {
+            String msg_list = db_tables.getstudentsList();
+            studentModelList = new ArrayList<>();
+            JSONObject obj = new JSONObject(msg_list);
+            JSONArray jsonarray2 = obj.getJSONArray("student_details");
+            if (jsonarray2.length() > 0) {
+                for (int i = 0; i < jsonarray2.length(); i++) {
+                    StudentModel studentModel = new StudentModel();
+
+                    JSONObject jsonobject = jsonarray2.getJSONObject(i);
+                    studentModel.setStudent_name(jsonobject.optString("student_name"));
+                    studentModel.setRoll_no(jsonobject.optString("roll_no"));
+                    studentModel.setStatus(jsonobject.optString("status"));
+                    studentModel.setClass_id(jsonobject.optString("class_id"));
+                    studentModel.setStudent_id(jsonobject.optString("student_id"));
+                    studentModelList.add(studentModel);
+                }
+                ArrayAdapter<StudentModel> dataAdapter = new ArrayAdapter<StudentModel>(getContext(),
+                        android.R.layout.simple_spinner_item, studentModelList);
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                this.m_spinner.setAdapter(dataAdapter);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        getStudentsList(m_spinner);
+        m_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int mpos, long l) {
+                StudentModel studentModel = null;
+                studentModel = (StudentModel) m_spinner.getSelectedItem();
+                student_id = studentModel.getStudent_id();
+                if (student_ids.equalsIgnoreCase(student_id)) {
+                    m_spinner.setSelection(mpos);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        member_dialog.findViewById(R.id.update_ex).setVisibility(View.VISIBLE);
+        member_dialog.findViewById(R.id.add_cls).setVisibility(View.GONE);
+        member_dialog.findViewById(R.id.update_ex).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateaddTP(matchesList.get(position).getTransport_id());
+            }
+        });
+        member_dialog.getWindow().setGravity(Gravity.BOTTOM);
+        member_dialog.show();
+    }
+
+    private void updateaddTP(String tr_id) {
+        try {
+            String tp_name = ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).getText().toString();
+            if (tp_name.length() == 0) {
+                Toast.makeText(getActivity(), "Please Enter Tutor Name", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String phone_number = ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).getText().toString();
+            if (phone_number.length() == 0) {
+                Toast.makeText(getActivity(), "Please Enter Mobile Number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (phone_number.length() < 10) {
+                Toast.makeText(getActivity(), "Please Enter Valid Mobile Number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+//            if (st_ids.size() == 0) {
+//                Toast.makeText(getActivity(), "Please Assign Atleast One Student", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            StringBuilder builder = new StringBuilder();
+//            for (String s : st_ids) {
+//                builder.append("," + s);
+//            }
+            //   student_id = builder.substring(1);
+            JSONObject object = new JSONObject();
+            object.put("tutor_id", tr_id);
+            object.put("tutor_name", tp_name);
+            // object.put("phone_number", phone_number);
+            // object.put("student_id", student_id);
+            object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            HTTPNewPost task = new HTTPNewPost(getActivity(), this);
+            task.userRequest("Please Wait...", 7, Paths.edit_transport, object.toString(), 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
+

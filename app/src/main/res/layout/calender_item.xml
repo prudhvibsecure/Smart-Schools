@@ -1,42 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="horizontal"
-    android:padding="10dp"
-    android:weightSum="1">
+    android:id="@+id/vv_mm"
+    android:weightSum="3">
 
     <TextView
         android:id="@+id/name"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text="pongal"
-        android:textStyle="bold"
-        android:padding="5dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:inputType="textMultiLine"
-        android:layout_weight="0.4"
+        android:padding="8dp"
+        android:background="@drawable/v_rectangle"
         android:textColor="@color/black"
-        />
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/from"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:layout_weight=".3"
-        android:text="date from"
-        android:layout_gravity="center"/>
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:background="@drawable/v_rectangle"
+        android:textSize="14sp" />
 
 
     <TextView
         android:id="@+id/to"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:layout_weight=".3"
-        android:gravity="center"/>
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:background="@drawable/v_rectangle"
+        android:gravity="center"
+        android:textSize="14sp" />
 
 
 </LinearLayout>

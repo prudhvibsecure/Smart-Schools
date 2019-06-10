@@ -185,7 +185,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                         builder.append("," + marksv);
                        // Collections.sort(student_names);
 
-                        String roll_no = roll_ids.get(i);
+                        String roll_no = studentModelList.get(i).getRoll_no();
                         String name = studentModelList.get(i).getStudent_name();
                         i = i + 1;
                         db_tables.insertMarks(student_id, exam_id, marksv, teacher_id, class_id, subject, name, roll_no);
@@ -437,6 +437,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                     studentModel.setStudent_id(jsonobject.optString("student_id"));
                     // String st_name=db_tables.get
                     studentModel.setMarkslist(jsonobject.optString("marks_obtained"));
+                    studentModel.setSelected(true);
                     studentModelList.add(studentModel);
 
 

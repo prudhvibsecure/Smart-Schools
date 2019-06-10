@@ -95,12 +95,7 @@ public class StudentsMarksAdapter extends RecyclerView.Adapter<StudentsMarksAdap
 
             contactViewHolder.tv_title.setText(mycontactlist.getStudent_name());
             contactViewHolder.roll_no.setText(Html.fromHtml("<b>Roll No<b/>-" + mycontactlist.getRoll_no()));
-            if (isChecked.size() == 0) {
-                if (mycontactlist.getMarkslist() != null) {
-                    contactViewHolder.chk_name.setText(mycontactlist.getMarkslist());
-                    contactViewHolder.chk_box.setChecked(false);
-                }
-            } else {
+            if (matchesList.get(position).isSelected()){
                 if (isChecked.containsKey(position)) {
                     contactViewHolder.chk_box.setChecked(isChecked.get(position));
                     if (mycontactlist.getMarkslist() != null) {
@@ -111,6 +106,26 @@ public class StudentsMarksAdapter extends RecyclerView.Adapter<StudentsMarksAdap
                     contactViewHolder.chk_box.setChecked(false);
                     if (mycontactlist.getMarkslist() != null) {
                         contactViewHolder.chk_name.setText(mycontactlist.getMarkslist());
+                    }
+                }
+            }else {
+                if (isChecked.size() == 0) {
+                    if (mycontactlist.getMarkslist() != null) {
+                        contactViewHolder.chk_name.setText(mycontactlist.getMarkslist());
+                        contactViewHolder.chk_box.setChecked(false);
+                    }
+                } else {
+                    if (isChecked.containsKey(position)) {
+                        contactViewHolder.chk_box.setChecked(isChecked.get(position));
+                        if (mycontactlist.getMarkslist() != null) {
+                            contactViewHolder.chk_name.setText(mycontactlist.getMarkslist());
+                        }
+                        contactViewHolder.chk_box.setChecked(true);
+                    } else {
+                        contactViewHolder.chk_box.setChecked(false);
+                        if (mycontactlist.getMarkslist() != null) {
+                            contactViewHolder.chk_name.setText(mycontactlist.getMarkslist());
+                        }
                     }
                 }
             }

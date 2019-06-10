@@ -35,6 +35,7 @@ public class Paths {
     public static final String get_members = base + "get_members";
     public static final String up_load = base + "assets/upload/avatar/";
     public static final String add_transport = base + "add_transport";
+    public static final String edit_transport = base + "edit_transport";
     public static final String delete_transport = base + "delete_transport";
     public static final String set_transport_status = base + "set_transport_status";
     public static final String add_tutor = base + "add_tutor_v1";

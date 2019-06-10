@@ -24,7 +24,7 @@ import java.util.List;
  * Created by Admin on 2018-12-04.
  */
 
-public class TransportListAdapter extends RecyclerView.Adapter<TransportListAdapter.ContactViewHolder> {
+public class TransportListAdapter_New extends RecyclerView.Adapter<TransportListAdapter_New.ContactViewHolder> {
 
 
     public static final int ITEM_TYPE_ACTION_WIDTH = 1001;
@@ -39,7 +39,7 @@ public class TransportListAdapter extends RecyclerView.Adapter<TransportListAdap
     private static int currentSelectedIndex = -1;
     private ItemTouchHelperExtension mItemTouchHelperExtension;
 
-    public TransportListAdapter(List<TransportModel> list, Context context, ContactAdapterListener listener) {
+    public TransportListAdapter_New(List<TransportModel> list, Context context, ContactAdapterListener listener) {
         this.context = context;
         this.classModelList = list;
         this.listener = listener;
@@ -128,16 +128,6 @@ public class TransportListAdapter extends RecyclerView.Adapter<TransportListAdap
                         @Override
                         public void onClick(View view) {
                             listener.swipeToStatus(position, classModelList, "0");
-
-                        }
-                    }
-
-            );
-            viewHolder.mActionViewEdit_update.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            listener.swipeToUpdate(position, classModelList);
 
                         }
                     }
@@ -243,7 +233,6 @@ public class TransportListAdapter extends RecyclerView.Adapter<TransportListAdap
 
         void swipeToStatus(int position, List<TransportModel> classModelList, String s);
 
-        void swipeToUpdate(int position, List<TransportModel> classModelList);
     }
 
     class ItemSwipeWithActionWidthViewHolder extends ContactViewHolder implements Extension {
@@ -259,7 +248,6 @@ public class TransportListAdapter extends RecyclerView.Adapter<TransportListAdap
             mActionViewstatus = itemView.findViewById(R.id.view_list_repo_action_status);
             mActionViewEdit = itemView.findViewById(R.id.view_list_repo_action_update);
             mActionViewEdit_update = itemView.findViewById(R.id.view_list_edit_view);
-            mActionViewEdit_update.setVisibility(View.VISIBLE);
         }
 
         @Override

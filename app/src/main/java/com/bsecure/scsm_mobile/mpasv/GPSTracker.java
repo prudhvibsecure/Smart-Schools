@@ -123,6 +123,17 @@ public class GPSTracker extends Service implements LocationListener {
 
                 if (locationManager != null) {
                     location = locationManager.getLastKnownLocation(provider_info);
+                    List<String> providers = locationManager.getProviders(true);
+                    for (String provider : providers) {
+                        Location l = locationManager.getLastKnownLocation(provider);
+                        if (l == null) {
+                            continue;
+                        }
+                        if (location == null || l.getAccuracy() < location.getAccuracy()) {
+                            // Found best last known location: %s", l);
+                            location = l;
+                        }
+                    }
                     updateGPSCoordinates();
                 }
             }

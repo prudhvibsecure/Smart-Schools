@@ -1,12 +1,16 @@
 package com.bsecure.scsm_mobile.mpasv;
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.PictureInPictureParams;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Location;
@@ -16,11 +20,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Rational;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,17 +70,24 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
     private Intent intentData;
     private Handler habs;
     private Runnable myRunnable;
+    RelativeLayout vv;
+    Toolbar toolbar;
+    String condition ="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.usermaps);
 
-
+        toolbar= (Toolbar) findViewById(R.id.toolset);
+        toolbar.setTitle("Transport");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        setSupportActionBar(toolbar);
         myIntentFilter = new IntentFilter("com.scm.mapsview");
 
         intentData=getIntent();
         if (intentData!=null){
-            String condition=intentData.getStringExtra("p_con");
+
+            condition=intentData.getStringExtra("p_con");
             if (condition.startsWith("0")){
                 transport_id=intentData.getStringExtra("transport_id");
                // student_id=intentData.getStringExtra("student_id");
@@ -84,6 +100,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
 
 
         findViewById(R.id.get_loc).setOnClickListener(this);
+        vv=findViewById(R.id.vv);
         SupportMapFragment supportMapFragment = (SupportMapFragment)
                 getSupportFragmentManager().findFragmentById(R.id.map);
         // Getting a reference to the map
@@ -283,7 +300,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
 
 
                 LatLng coordinate = new LatLng(latitude, longitude);
-                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 19);
+                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 25);
                 googleMap.animateCamera(yourLocation);
 //                markerOptions = new MarkerOptions();
 //
@@ -327,7 +344,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
 //                }
 //            });
         } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 20);
         }
 
     }
@@ -337,15 +354,10 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
         List<String> providers = mLocationManager.getProviders(true);
         Location bestLocation = null;
         for (String provider : providers) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return bestLocation;
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{
+                        android.Manifest.permission.ACCESS_FINE_LOCATION
+                }, 10);
             }
             Location l = mLocationManager.getLastKnownLocation(provider);
             if (l == null) {
@@ -381,7 +393,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                             String provider = locationManager.getBestProvider(criteria, true);
                             Location location = getLastKnownLocation();
 
-
+                            if (location != null) {
                                 try {
                                     addresses = geocoder.getFromLocation(latitude, longitude, 5);
                                 } catch (IOException e) {
@@ -401,12 +413,11 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
 
                                 }
                                 latLng = new LatLng(latitude, longitude);
-                                CameraUpdate cameraUpdate=CameraUpdateFactory.newLatLngZoom(latLng,25);
-                                googleMap.animateCamera(cameraUpdate);
+                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,25));
                                 markerOptions = new MarkerOptions();
                                 googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_schoolbus)));
                                 ((TextView) findViewById(R.id.loc_txt)).setText(addressText);
-
+                            }
                             break;
                         }else{
                             Toast.makeText(this, oo.optString("statusdescription"), Toast.LENGTH_SHORT).show();
@@ -478,13 +489,48 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case 200: {
+            case 20: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // {Some Code}
                     setUpMap();
 
                 }
             }
+        }
+    }
+    private void startPictureInPictureFeature() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            PictureInPictureParams.Builder pictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
+            Rational aspectRatio = new Rational(vv.getWidth(), vv.getHeight());
+            pictureInPictureParamsBuilder.setAspectRatio(aspectRatio).build();
+            enterPictureInPictureMode(pictureInPictureParamsBuilder.build());
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onUserLeaveHint() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!isInPictureInPictureMode()) {
+                Rational aspectRatio = new Rational(vv.getWidth(), vv.getHeight());
+                PictureInPictureParams.Builder pictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
+                pictureInPictureParamsBuilder.setAspectRatio(aspectRatio).build();
+                enterPictureInPictureMode(pictureInPictureParamsBuilder.build());
+            }
+        }
+    }
+
+    @Override
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode,
+                                              Configuration newConfig) {
+        if (isInPictureInPictureMode) {
+
+            toolbar.setVisibility(View.GONE);
+        } else {
+
+            toolbar.setVisibility(View.VISIBLE);
         }
     }
 }

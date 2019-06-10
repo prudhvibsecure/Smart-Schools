@@ -30,7 +30,7 @@ import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.StudentsListAdapter;
-import com.bsecure.scsm_mobile.adapters.TransportListAdapter;
+import com.bsecure.scsm_mobile.adapters.TransportListAdapter_New;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
@@ -49,7 +49,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TutorsListFragment extends Fragment implements TransportListAdapter.ContactAdapterListener, HttpHandler, StudentsListAdapter.ContactAdapterListener {
+public class TutorsListFragment extends Fragment implements TransportListAdapter_New.ContactAdapterListener, HttpHandler, StudentsListAdapter.ContactAdapterListener {
 
     private ParentActivity schoolMain;
     View view_layout;
@@ -59,7 +59,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
     public ItemTouchHelperExtension.Callback mCallback;
     private DB_Tables db_tables;
     ArrayList<TransportModel> teacherModelArrayList;
-    private TransportListAdapter adapter;
+    private TransportListAdapter_New adapter;
     private String teach_Id, t_status, student_id;
     private Dialog member_dialog;
     private Spinner m_spinner;
@@ -335,7 +335,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                 }
 
 
-                adapter = new TransportListAdapter(teacherModelArrayList, getActivity(), this);
+                adapter = new TransportListAdapter_New(teacherModelArrayList, getActivity(), this);
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
                 mRecyclerView.setLayoutManager(linearLayoutManager);
                 mRecyclerView.setAdapter(adapter);

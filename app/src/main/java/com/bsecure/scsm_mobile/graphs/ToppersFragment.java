@@ -46,7 +46,7 @@ public class ToppersFragment extends Fragment implements HttpHandler, View.OnCli
     BarData BARDATA,BARDATA1,BARDATA2;
     private SubWisePercentageAdapter percentageAdapter;
     RecyclerView mRecyclerView;
-
+    ArrayList<BarDataSet> dataSets = null;
     public ToppersFragment() {
         // Required empty public constructor
     }
@@ -152,6 +152,7 @@ public class ToppersFragment extends Fragment implements HttpHandler, View.OnCli
                                 BarEntryLabels.add(obss.optString("examination_name"));
 
                             }
+                            dataSets = new ArrayList<>();
                             Bardataset = new BarDataSet(BARENTRY, "Marks");
                             Bardataset.setColor(Color.RED);
                             Bardataset2 = new BarDataSet(BARENTRY2, "Marks");
@@ -160,14 +161,20 @@ public class ToppersFragment extends Fragment implements HttpHandler, View.OnCli
                             //Bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
                             Bardataset.setBarSpacePercent(70f);
                             Bardataset2.setBarSpacePercent(70f);
-                            BARDATA = new BarData(BarEntryLabels, Bardataset);
-                            BARDATA2 = new BarData(BarEntryLabels, Bardataset2);
+//                            BARDATA = new BarData(BarEntryLabels, Bardataset);
+//                            BARDATA2 = new BarData(BarEntryLabels, Bardataset2);
+
+                            dataSets.add(Bardataset);
+                            dataSets.add(Bardataset2);
+                            BarData data = new BarData(BarEntryLabels, dataSets);
                             YAxis yAxis = chart.getAxisLeft();
                             YAxis yAxis1 = chart.getAxisRight();
                             yAxis.setAxisMinValue(0);
                             yAxis1.setAxisMinValue(0);
-                            chart.setData(BARDATA);
-                            chart.setData(BARDATA2);
+
+
+                            chart.setData(data);
+                            //chart.setData(BARDATA2);
                             chart.setDescription("");
                             chart.animateY(2000);
                         }
