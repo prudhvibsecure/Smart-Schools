@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.bsecure.scsm_mobile.View_Exam_List;
 import com.bsecure.scsm_mobile.R;
@@ -183,6 +184,11 @@ public class ParentView extends AppCompatActivity implements HttpHandler, Parent
 
     @Override
     public void onMessageTimeTable(int position, List<StudentModel> classModelList) {
+
+    }
+
+    @Override
+    public void swipeToMore(int position, List<StudentModel> classModelList, View view_list_repo_action_more) {
 
     }
 }

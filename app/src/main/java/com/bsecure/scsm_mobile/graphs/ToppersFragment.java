@@ -137,6 +137,7 @@ public class ToppersFragment extends Fragment implements HttpHandler, View.OnCli
             switch (requestType) {
                 case 2:
                     BARENTRY = new ArrayList<>();
+                    BARENTRY2 = new ArrayList<>();
                     BarEntryLabels = new ArrayList<>();
                     JSONObject ob3 = new JSONObject(results.toString());
                     if (ob3.optString("statuscode").equalsIgnoreCase("200")) {
@@ -155,7 +156,7 @@ public class ToppersFragment extends Fragment implements HttpHandler, View.OnCli
                             dataSets = new ArrayList<>();
                             Bardataset = new BarDataSet(BARENTRY, "Marks");
                             Bardataset.setColor(Color.RED);
-                            Bardataset2 = new BarDataSet(BARENTRY2, "Marks");
+                            Bardataset2 = new BarDataSet(BARENTRY2, "Topper AVG.");
                             Bardataset2.setColor(Color.GREEN);
 
                             //Bardataset.setColors(ColorTemplate.COLORFUL_COLORS);

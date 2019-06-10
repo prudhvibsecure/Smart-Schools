@@ -49,11 +49,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="icon, label,allowBackup,supportsRtl">
-        <activity android:name=".modules.PeriodsTeacherView"></activity>
-        <activity android:name=".modules.ParentNonScholasticView" />
-        <activity android:name=".modules.StudentsNonscholastic" />
-        <activity android:name=".modules.NonScholasticTeacher" />
-        <activity android:name=".modules.Calender" />
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -299,6 +295,42 @@
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".modules.PeriodsTeacherView">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".modules.ParentNonScholasticView">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".modules.StudentsNonscholastic">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".modules.NonScholasticTeacher">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".modules.Calender">
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

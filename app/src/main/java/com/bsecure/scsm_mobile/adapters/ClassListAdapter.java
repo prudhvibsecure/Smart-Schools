@@ -93,13 +93,13 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.Cont
             contactViewHolder.tv_title.setText(classMode_lList.getClsName());
             contactViewHolder.section_tv.setText(newNames);
             contactViewHolder.section_n.setText(classMode_lList.getSectionName());
-            contactViewHolder.periods.setVisibility(View.VISIBLE);
-            contactViewHolder.periods.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onMessageTimeTable(position, classModelList);
-                }
-            });
+//            contactViewHolder.periods.setVisibility(View.VISIBLE);
+//            contactViewHolder.periods.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    listener.onMessageTimeTable(position, classModelList);
+//                }
+//            });
             int color = generator.getColor(classMode_lList.getClsName());
             TextDrawable ic1 = builder.build(classMode_lList.getClsName().substring(0, 1), color);
 
@@ -119,7 +119,7 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.Cont
     private void applyEvents(ContactViewHolder contactViewHolder, final List<ClassModel> classModelList, final int position) {
 
         if (contactViewHolder instanceof ItemSwipeWithActionWidthViewHolder) {
-            ItemSwipeWithActionWidthViewHolder viewHolder = (ItemSwipeWithActionWidthViewHolder) contactViewHolder;
+            final ItemSwipeWithActionWidthViewHolder viewHolder = (ItemSwipeWithActionWidthViewHolder) contactViewHolder;
             viewHolder.mActionViewDelete.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
@@ -144,6 +144,16 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.Cont
                         @Override
                         public void onClick(View view) {
                             listener.swipeToSyllabus(position, classModelList);
+
+                        }
+                    }
+
+            );
+            viewHolder.view_list_repo_action_more.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            listener.swipeToMore(position, classModelList,viewHolder.view_list_repo_action_more);
 
                         }
                     }
@@ -226,6 +236,7 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.Cont
             super(v);
 
             periods = v.findViewById(R.id.periods);
+            periods.setVisibility(View.GONE);
             tv_title = (TextView) v.findViewById(R.id.cl_name);
             section_tv = (TextView) v.findViewById(R.id.section_tv);
             section_n = (TextView) v.findViewById(R.id.section_n);
@@ -257,6 +268,7 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.Cont
 
         void onMessageTimeTable(int position, List<ClassModel> classModelList);
 
+        void swipeToMore(int position, List<ClassModel> classModelList, View view_list_repo_action_more);
     }
 
     class ItemSwipeWithActionWidthViewHolder extends ContactViewHolder implements Extension {
@@ -265,7 +277,7 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.Cont
         public View mActionViewEdit;
         public View mActionViewstatus;
         public View mActionViewsper;
-
+        public View view_list_repo_action_more;
 
         public ItemSwipeWithActionWidthViewHolder(View itemView) {
             super(itemView);
@@ -273,6 +285,7 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.Cont
             mActionViewstatus = itemView.findViewById(R.id.view_list_repo_action_status);
             mActionViewEdit = itemView.findViewById(R.id.view_list_repo_action_update);
             mActionViewsper = itemView.findViewById(R.id.view_list_repo_action_per);
+            view_list_repo_action_more = itemView.findViewById(R.id.view_list_repo_action_more);
             mActionViewsper.setVisibility(View.GONE);
         }
 

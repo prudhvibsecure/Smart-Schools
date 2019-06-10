@@ -22,12 +22,13 @@
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_below="@id/headerview_ll"
         android:weightSum="6"
         android:background="@color/green"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:padding="2dp">
 
         <TextView
             android:id="@+id/monday"
@@ -35,6 +36,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="MON"
+            android:padding="5dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="14sp"/>
@@ -45,6 +47,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="TUE"
+            android:padding="5dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="14sp"/>
@@ -55,6 +58,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="WED"
+            android:padding="5dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="14sp"/>
@@ -65,6 +69,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="THU"
+            android:padding="5dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="14sp"/>
@@ -75,6 +80,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="FRI"
+            android:padding="5dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="14sp"/>
@@ -85,6 +91,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="SAT"
+            android:padding="5dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="14sp"/>

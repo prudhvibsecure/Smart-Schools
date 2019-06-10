@@ -15,7 +15,6 @@ import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.firebasepaths.SharedPrefManager;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.modules.ParentActivity;
-import com.bsecure.scsm_mobile.modules.ParentView;
 import com.bsecure.scsm_mobile.modules.RoutesList;
 import com.bsecure.scsm_mobile.modules.StaffView;
 import com.bsecure.scsm_mobile.modules.TeacherView;

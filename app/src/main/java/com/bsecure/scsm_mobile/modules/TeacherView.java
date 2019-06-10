@@ -10,12 +10,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,6 +35,7 @@ import com.bsecure.scsm_mobile.controls.TextDrawable;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.ClassModel;
+import com.bsecure.scsm_mobile.models.StudentModel;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperCallback;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperCallback_Staff;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperExtension;
@@ -199,14 +202,42 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
     }
 
     @Override
-    public void onMessageTimeTable(int position, List<ClassModel>classModel)
-    {
+    public void onMessageTimeTable(int position, List<ClassModel> classModel) {
         Intent chat = new Intent(getApplicationContext(), PeriodsTeacherView.class);
         chat.putExtra("school_id", SharedValues.getValue(this, "school_id"));
         chat.putExtra("class_id", classModel.get(position).getClass_id());
         chat.putExtra("day", "1");
         startActivity(chat);
     }
+
+    @Override
+    public void swipeToMore(final int position, final List<ClassModel> classModelList, View view_list_repo_action_more) {
+        PopupMenu popup = new PopupMenu(this, view_list_repo_action_more);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.teacher_menu_more, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                //do your things in each of the following cases
+                switch (menuItem.getItemId()) {
+                    case R.id.timerr:
+                        adapter.notifyDataSetChanged();
+                        getListTeachers();
+                        Intent next = new Intent(TeacherView.this, PeriodsTeacherView.class);
+                        next.putExtra("school_id", SharedValues.getValue(getApplicationContext(), "school_id"));
+                        next.putExtra("class_id", classModelList.get(position).getClass_id());
+                        next.putExtra("day", "1");
+                        startActivity(next);
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+        });
+        popup.show();
+    }
+
     @Override
     public void onMessageRowClicked(List<ClassModel> matchesList, int position) {
 

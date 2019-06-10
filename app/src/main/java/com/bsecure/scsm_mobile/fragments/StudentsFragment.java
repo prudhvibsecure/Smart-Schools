@@ -6,9 +6,12 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -22,13 +25,11 @@ import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.chat.ViewChatSingle;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
-import com.bsecure.scsm_mobile.graphs.CompetativeGraph;
 import com.bsecure.scsm_mobile.graphs.GrapsMain;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.Exams;
 import com.bsecure.scsm_mobile.models.StudentModel;
 import com.bsecure.scsm_mobile.modules.TimeTableView;
-import com.bsecure.scsm_mobile.provider.WebVPage;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperCallback_Parent;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperExtension;
 import com.bsecure.scsm_mobile.utils.SharedValues;
@@ -262,6 +263,44 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
         next.putExtra("roll_no", classModelList.get(position).getRoll_no());
         next.putExtra("class_id", classModelList.get(position).getClass_id());
         startActivity(next);
+    }
+
+    @Override
+    public void swipeToMore(final int position, final List<StudentModel> classModelList, View view_list_repo_action_more) {
+        PopupMenu popup = new PopupMenu(getActivity(), view_list_repo_action_more);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.parent_menu_more, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                //do your things in each of the following cases
+                switch (menuItem.getItemId()) {
+                    case R.id.reply:
+                        adapter.notifyDataSetChanged();
+                        getStudentsList();
+                        id = classModelList.get(position).getStudent_id();
+                        name = classModelList.get(position).getStudent_name();
+                        roll_no = classModelList.get(position).getRoll_no();
+                        class_id = classModelList.get(position).getClass_id();
+                        //chekGraphs();
+                        getExams();
+                        return true;
+                    case R.id.replayall:
+                        adapter.notifyDataSetChanged();
+                        getStudentsList();
+                        Intent next = new Intent(getActivity(), TimeTableView.class);
+                        next.putExtra("student_id", classModelList.get(position).getStudent_id());
+                        next.putExtra("roll_no", classModelList.get(position).getRoll_no());
+                        next.putExtra("class_id", classModelList.get(position).getClass_id());
+                        startActivity(next);
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+        });
+        popup.show();
     }
 
     private void chekGraphs(String ex_name) {

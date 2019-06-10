@@ -59,7 +59,21 @@
             android:padding="10dp"
             android:layout_weight="1"
             android:text="Performance"
+            android:visibility="gone"
             android:textSize="12sp"
+            android:textColor="@android:color/white" />
+        <TextView
+            android:id="@+id/view_list_repo_action_more"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/red"
+            android:gravity="center"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:text="More"
+            android:textSize="12sp"
+            android:drawablePadding="5dp"
+            android:drawableRight="@mipmap/ic_menu_dot"
             android:textColor="@android:color/white" />
 
     </LinearLayout>

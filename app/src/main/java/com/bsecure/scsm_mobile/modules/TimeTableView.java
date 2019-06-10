@@ -3,6 +3,7 @@ package com.bsecure.scsm_mobile.modules;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,7 +34,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimeTableView extends AppCompatActivity implements HttpHandler ,TimeTableListAdapter.ContactAdapterListener{
+public class TimeTableView extends AppCompatActivity implements HttpHandler, TimeTableListAdapter.ContactAdapterListener {
     ArrayList<Periods> periodsArrayList;
     private TimeTableListAdapter adapter;
     private RecyclerView mRecyclerView;
@@ -48,7 +49,7 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
         setContentView(R.layout.content_main_view);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
-        toolbar.setTitle("Time Table");
+        toolbar.setTitle("Period Time Table");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
 
@@ -65,6 +66,14 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
             @Override
             public void onClick(View v) {
                 getTimeTable("1");
+                monday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                monday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+
+                tuesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                wednesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                thursday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                friday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                saturday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
             }
         });
 
@@ -72,6 +81,15 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
             @Override
             public void onClick(View v) {
                 getTimeTable("2");
+
+                tuesday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                tuesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+
+                monday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                wednesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                thursday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                friday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                saturday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
             }
         });
 
@@ -79,6 +97,15 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
             @Override
             public void onClick(View v) {
                 getTimeTable("3");
+
+                wednesday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                wednesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+
+                monday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                tuesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                thursday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                friday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                saturday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
             }
         });
 
@@ -86,6 +113,15 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
             @Override
             public void onClick(View v) {
                 getTimeTable("4");
+
+                thursday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                thursday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+
+                monday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                tuesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                wednesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                friday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                saturday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
             }
         });
 
@@ -93,6 +129,15 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
             @Override
             public void onClick(View v) {
                 getTimeTable("5");
+
+                friday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                friday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+
+                monday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                tuesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                wednesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                thursday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                saturday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
             }
         });
 
@@ -100,6 +145,15 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
             @Override
             public void onClick(View v) {
                 getTimeTable("6");
+
+                saturday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                saturday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+
+                monday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                tuesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                wednesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                thursday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                friday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
             }
         });
 
@@ -111,8 +165,17 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
         Intent data = getIntent();
         school_id = SharedValues.getValue(this, "school_id");
         class_id = data.getStringExtra("class_id");
+        monday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+        monday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+
+        tuesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+        wednesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+        thursday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+        friday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+        saturday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
         getTimeTable("1");
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -124,6 +187,7 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
         }
         return super.onOptionsItemSelected(item);
     }
+
     private void getTimeTable(String day) {
         try {
             try {
@@ -151,9 +215,8 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
                     if (jsonObject.optString("statuscode").equalsIgnoreCase("200")) {
 
                         JSONArray narray = jsonObject.getJSONArray("period_time_table_details");
-                        if(narray.length() > 0)
-                        {
-                            for(int k = 0;k<narray.length();k++) {
+                        if (narray.length() > 0) {
+                            for (int k = 0; k < narray.length(); k++) {
                                 JSONObject nobj = narray.getJSONObject(k);
                                 String names = nobj.getString("subject");
                                 snames = names.split(",");
@@ -164,15 +227,12 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
                             for (int y = 0; y < array.length(); y++) {
                                 Periods periods = new Periods();
                                 JSONObject object = array.getJSONObject(y);
-                               // periods.setDay(jsonObject.optString("day"));
+                                // periods.setDay(jsonObject.optString("day"));
                                 periods.setPeriod_num(object.optString("period_no"));
                                 periods.setPeriod_name(object.optString("period_name"));
-                                if(y < snames.length)
-                                {
+                                if (y < snames.length) {
                                     periods.setPeriod_name(snames[y]);
-                                }
-                                else
-                                {
+                                } else {
                                     periods.setPeriod_name("");
                                 }
                                 periods.setFrom_time(object.optString("from_time"));

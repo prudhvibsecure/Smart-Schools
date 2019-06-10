@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.controls.ColorGenerator;
 import com.bsecure.scsm_mobile.controls.TextDrawable;
-import com.bsecure.scsm_mobile.models.ClassModel;
 import com.bsecure.scsm_mobile.models.StudentModel;
 import com.bsecure.scsm_mobile.recyclertouch.Extension;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperExtension;
@@ -88,9 +87,9 @@ public class ParentStudentsListAdapter extends RecyclerView.Adapter<ParentStuden
         try {
             StudentModel classMode_lList = classModelList.get(position);
             contactViewHolder.tv_title.setText(classMode_lList.getStudent_name());
-            contactViewHolder.section_tv.setText(classMode_lList.getClass_name()+ "\t-\t" + classMode_lList.getSection());
+            contactViewHolder.section_tv.setText(classMode_lList.getClass_name() + "\t-\t" + classMode_lList.getSection());
             contactViewHolder.section_n.setVisibility(View.GONE);
-           // contactViewHolder.section_n.setText(classMode_lList.getSection());
+            // contactViewHolder.section_n.setText(classMode_lList.getSection());
 
             int color = generator.getColor(classMode_lList.getStudent_name());
             TextDrawable ic1 = builder.build(classMode_lList.getStudent_name().substring(0, 1), color);
@@ -111,7 +110,7 @@ public class ParentStudentsListAdapter extends RecyclerView.Adapter<ParentStuden
     private void applyEvents(ContactViewHolder contactViewHolder, final List<StudentModel> classModelList, final int position) {
 
         if (contactViewHolder instanceof ItemSwipeWithActionWidthViewHolder) {
-            ItemSwipeWithActionWidthViewHolder viewHolder = (ItemSwipeWithActionWidthViewHolder) contactViewHolder;
+            final ItemSwipeWithActionWidthViewHolder viewHolder = (ItemSwipeWithActionWidthViewHolder) contactViewHolder;
             viewHolder.mActionViewDelete.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
@@ -146,6 +145,16 @@ public class ParentStudentsListAdapter extends RecyclerView.Adapter<ParentStuden
                         @Override
                         public void onClick(View view) {
                             listener.swipeToprofomance(position, classModelList);
+
+                        }
+                    }
+
+            );
+            viewHolder.view_list_repo_action_more.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            listener.swipeToMore(position, classModelList,viewHolder.view_list_repo_action_more);
 
                         }
                     }
@@ -242,7 +251,7 @@ public class ParentStudentsListAdapter extends RecyclerView.Adapter<ParentStuden
             section_tv = (TextView) v.findViewById(R.id.section_tv);
             section_n = (TextView) v.findViewById(R.id.section_n);
             periods = (TextView) v.findViewById(R.id.periods);
-            periods.setVisibility(View.VISIBLE);
+            periods.setVisibility(View.GONE);
             imgProfile = (ImageView) v.findViewById(R.id.img_cls);
             //contact_user_ll = (LinearLayout) v.findViewById(R.id.contact_user_ll);
             mViewContent = itemView.findViewById(R.id.view_list_main_content);
@@ -272,6 +281,8 @@ public class ParentStudentsListAdapter extends RecyclerView.Adapter<ParentStuden
         void swipeToprofomance(int position, List<StudentModel> classModelList);
 
         void onMessageTimeTable(int position, List<StudentModel> classModelList);
+
+        void swipeToMore(int position, List<StudentModel> classModelList, View view_list_repo_action_more);
     }
 
     class ItemSwipeWithActionWidthViewHolder extends ContactViewHolder implements Extension {
@@ -280,6 +291,7 @@ public class ParentStudentsListAdapter extends RecyclerView.Adapter<ParentStuden
         public View mActionViewEdit;
         public View mActionViewstatus;
         public View view_list_repo_action_per;
+        public View view_list_repo_action_more;
 
 
         public ItemSwipeWithActionWidthViewHolder(View itemView) {
@@ -289,6 +301,7 @@ public class ParentStudentsListAdapter extends RecyclerView.Adapter<ParentStuden
             //mActionViewstatus.setVisibility(View.GONE);
             mActionViewEdit = itemView.findViewById(R.id.view_list_repo_action_update);
             view_list_repo_action_per = itemView.findViewById(R.id.view_list_repo_action_per);
+            view_list_repo_action_more = itemView.findViewById(R.id.view_list_repo_action_more);
         }
 
         @Override
