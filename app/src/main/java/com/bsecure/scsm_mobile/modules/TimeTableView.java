@@ -9,6 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
@@ -22,6 +25,7 @@ import com.bsecure.scsm_mobile.models.Periods;
 import com.bsecure.scsm_mobile.models.Subjects;
 import com.bsecure.scsm_mobile.models.Transport;
 import com.bsecure.scsm_mobile.utils.SharedValues;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,6 +38,9 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
     private TimeTableListAdapter adapter;
     private RecyclerView mRecyclerView;
     String class_id, school_id;
+    TextView monday, tuesday, wednesday, thursday, friday, saturday;
+    LinearLayout header;
+    String[] snames;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,14 +52,66 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
 
+        monday = findViewById(R.id.monday);
+        tuesday = findViewById(R.id.tuesday);
+        wednesday = findViewById(R.id.wednesday);
+        thursday = findViewById(R.id.thursday);
+        friday = findViewById(R.id.friday);
+        saturday = findViewById(R.id.saturday);
+        header = findViewById(R.id.header);
+        header.setVisibility(View.VISIBLE);
+
+        monday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getTimeTable("1");
+            }
+        });
+
+        tuesday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getTimeTable("2");
+            }
+        });
+
+        wednesday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getTimeTable("3");
+            }
+        });
+
+        thursday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getTimeTable("4");
+            }
+        });
+
+        friday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getTimeTable("5");
+            }
+        });
+
+        saturday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getTimeTable("6");
+            }
+        });
+
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         mRecyclerView = findViewById(R.id.content_list);
 
         Intent data = getIntent();
-        school_id = data.getStringExtra("student_id");
+        school_id = SharedValues.getValue(this, "school_id");
         class_id = data.getStringExtra("class_id");
-        getTimeTable();
+        getTimeTable("1");
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -65,12 +124,13 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
         }
         return super.onOptionsItemSelected(item);
     }
-    private void getTimeTable() {
+    private void getTimeTable(String day) {
         try {
             try {
                 JSONObject object = new JSONObject();
                 object.put("school_id", school_id);
                 object.put("class_id", class_id);
+                object.put("day", day);
                 HTTPNewPost task = new HTTPNewPost(this, this);
                 task.userRequest("Processing...", 101, Paths.view_periods, object.toString(), 1);
             } catch (Exception e) {
@@ -89,15 +149,34 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler ,Tim
                     periodsArrayList = new ArrayList<>();
                     JSONObject jsonObject = new JSONObject(results.toString());
                     if (jsonObject.optString("statuscode").equalsIgnoreCase("200")) {
+
+                        JSONArray narray = jsonObject.getJSONArray("period_time_table_details");
+                        if(narray.length() > 0)
+                        {
+                            for(int k = 0;k<narray.length();k++) {
+                                JSONObject nobj = narray.getJSONObject(k);
+                                String names = nobj.getString("subject");
+                                snames = names.split(",");
+                            }
+                        }
                         JSONArray array = jsonObject.getJSONArray("period_details");
                         if (array.length() > 0) {
                             for (int y = 0; y < array.length(); y++) {
                                 Periods periods = new Periods();
-                                periods.setDay(jsonObject.optString("day"));
-                                periods.setPeriod_num(jsonObject.optString("period_num"));
-                                periods.setPeriod_name(jsonObject.optString("period_name"));
-                                periods.setFrom_time(jsonObject.optString("from_time"));
-                                periods.setTo_time(jsonObject.optString("to_time"));
+                                JSONObject object = array.getJSONObject(y);
+                               // periods.setDay(jsonObject.optString("day"));
+                                periods.setPeriod_num(object.optString("period_no"));
+                                periods.setPeriod_name(object.optString("period_name"));
+                                if(y < snames.length)
+                                {
+                                    periods.setPeriod_name(snames[y]);
+                                }
+                                else
+                                {
+                                    periods.setPeriod_name("");
+                                }
+                                periods.setFrom_time(object.optString("from_time"));
+                                periods.setTo_time(object.optString("to_time"));
                                 periodsArrayList.add(periods);
                             }
                             adapter = new TimeTableListAdapter(periodsArrayList, this, this);

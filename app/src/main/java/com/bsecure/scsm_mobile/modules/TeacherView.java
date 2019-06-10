@@ -199,6 +199,15 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
     }
 
     @Override
+    public void onMessageTimeTable(int position, List<ClassModel>classModel)
+    {
+        Intent chat = new Intent(getApplicationContext(), PeriodsTeacherView.class);
+        chat.putExtra("school_id", SharedValues.getValue(this, "school_id"));
+        chat.putExtra("class_id", classModel.get(position).getClass_id());
+        chat.putExtra("day", "1");
+        startActivity(chat);
+    }
+    @Override
     public void onMessageRowClicked(List<ClassModel> matchesList, int position) {
 
         Intent chat = new Intent(getApplicationContext(), ChatSingle.class);

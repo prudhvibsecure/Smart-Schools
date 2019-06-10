@@ -20,6 +20,7 @@ import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.controls.ColorGenerator;
 import com.bsecure.scsm_mobile.controls.TextDrawable;
 import com.bsecure.scsm_mobile.models.ClassModel;
+import com.bsecure.scsm_mobile.models.StudentModel;
 import com.bsecure.scsm_mobile.recyclertouch.Extension;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperExtension;
 
@@ -83,7 +84,7 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.Cont
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onBindViewHolder(ContactViewHolder contactViewHolder, int position) {
+    public void onBindViewHolder(ContactViewHolder contactViewHolder, final int position) {
 
         try {
             ClassModel classMode_lList = classModelList.get(position);
@@ -92,7 +93,13 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.Cont
             contactViewHolder.tv_title.setText(classMode_lList.getClsName());
             contactViewHolder.section_tv.setText(newNames);
             contactViewHolder.section_n.setText(classMode_lList.getSectionName());
-
+            contactViewHolder.periods.setVisibility(View.VISIBLE);
+            contactViewHolder.periods.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onMessageTimeTable(position, classModelList);
+                }
+            });
             int color = generator.getColor(classMode_lList.getClsName());
             TextDrawable ic1 = builder.build(classMode_lList.getClsName().substring(0, 1), color);
 
@@ -205,6 +212,7 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.Cont
 
     public class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
+        TextView periods;
         public TextView tv_title;
         public TextView section_tv;
         public TextView section_n;
@@ -217,6 +225,7 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.Cont
         public ContactViewHolder(View v) {
             super(v);
 
+            periods = v.findViewById(R.id.periods);
             tv_title = (TextView) v.findViewById(R.id.cl_name);
             section_tv = (TextView) v.findViewById(R.id.section_tv);
             section_n = (TextView) v.findViewById(R.id.section_n);
@@ -245,6 +254,9 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.Cont
         void swipeToMarks(int position, List<ClassModel> classModelList);
 
         void swipeToAttendence(int position, List<ClassModel> classModelList);
+
+        void onMessageTimeTable(int position, List<ClassModel> classModelList);
+
     }
 
     class ItemSwipeWithActionWidthViewHolder extends ContactViewHolder implements Extension {

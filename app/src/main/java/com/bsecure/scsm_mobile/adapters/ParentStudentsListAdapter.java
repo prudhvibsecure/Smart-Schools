@@ -242,7 +242,7 @@ public class ParentStudentsListAdapter extends RecyclerView.Adapter<ParentStuden
             section_tv = (TextView) v.findViewById(R.id.section_tv);
             section_n = (TextView) v.findViewById(R.id.section_n);
             periods = (TextView) v.findViewById(R.id.periods);
-            periods.setVisibility(View.GONE);
+            periods.setVisibility(View.VISIBLE);
             imgProfile = (ImageView) v.findViewById(R.id.img_cls);
             //contact_user_ll = (LinearLayout) v.findViewById(R.id.contact_user_ll);
             mViewContent = itemView.findViewById(R.id.view_list_main_content);

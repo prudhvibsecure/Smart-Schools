@@ -74,8 +74,17 @@
         android:id="@+id/content_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_list"
+        android:layout_above="@+id/bt_view"
         android:layout_below="@+id/header" />
+
+    <Button
+        android:id="@+id/bt_view"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/green"
+        android:text="VIEW NON SCHOLASTIC MARKS"
+        android:textColor="@color/white"
+        android:layout_above="@+id/bottom_list"/>
 
     <include
         android:id="@+id/bottom_list"

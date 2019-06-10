@@ -9,6 +9,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.ExamsListAdapter;
@@ -29,6 +31,7 @@ public class Marks extends AppCompatActivity implements HttpHandler, ExamsListAd
     private RecyclerView mRecyclerView;
     private ExamsListAdapter adapter;
     private List<Exams> examsList;
+    Button bt_view;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

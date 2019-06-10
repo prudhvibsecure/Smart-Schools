@@ -49,7 +49,7 @@ public class Paths {
     public static final String forward = base + "forward_v1";
     public static final String forward_marks= base + "forward_marks";
     public static final String previous_subject_wise_marks = base + "previous_subject_wise_marks";
-    public static final String view_periods = base + "view_periods";
+    public static final String view_periods = base + "view_period_time_table";
     public static final String check_holiday = base + "check_holiday";
     public static final String check_prformance = base + "check_student_performance";
     public static final String tutor_delete_student = base + "delete_tutor_student_v1";
@@ -58,5 +58,7 @@ public class Paths {
     public static final String delete_tutor_student = base + "tutor_delete_student";
     public static final String send_coordinates = base + "send_coordinates";
     public static final String get_non_scholastic_details = base + "get_non_scholastic_details";
+    public static final String add_non_scholastic_marks = base + "add_non_scholastic_marks";
+    public static final String edit_non_scholastic_marks = base + "edit_non_scholastic_marks";
 
 }

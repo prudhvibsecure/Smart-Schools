@@ -51,20 +51,22 @@
                     android:paddingLeft="10dp"
                     android:textSize="7pt" />
 
-                <TextView
-                    android:id="@+id/periods"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Time Table"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:padding="5dp"
-                    android:visibility="gone"
-                    android:textColor="@color/white"
-                    android:background="@drawable/red_button_background"
-                    android:textSize="7pt" />
+
             </LinearLayout>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/periods"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Time Table"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:textColor="@color/white"
+            android:background="@drawable/red_button_background"
+            android:textSize="7pt" />
 
         <TextView
             android:id="@+id/section_n"

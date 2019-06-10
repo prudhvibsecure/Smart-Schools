@@ -16,9 +16,9 @@
         android:layout_weight=".45"
         android:text="skill"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
+        android:gravity="start|center_vertical"
         android:textColor="@color/black"
+        android:paddingStart="10dp"
         />
 
     <TextView
@@ -28,9 +28,9 @@
         android:layout_weight=".10"
         android:text="A"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
+        android:gravity="start|center_vertical"
         android:textColor="@color/black"
+        android:paddingStart="10dp"
         />
 
     <TextView
@@ -40,9 +40,9 @@
         android:layout_weight=".45"
         android:text="comment"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
+        android:gravity="start|center_vertical"
         android:textColor="@color/black"
+        android:paddingStart="10dp"
         />
 
 </LinearLayout>

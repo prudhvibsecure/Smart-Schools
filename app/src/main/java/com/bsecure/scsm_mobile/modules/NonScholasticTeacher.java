@@ -47,6 +47,7 @@ public class NonScholasticTeacher extends AppCompatActivity implements HttpHandl
     NonScholasticAdapter adapter;
     String class_id, student_id, teacher_id, exam_id;
     Button bt_submit;
+    int check = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,23 +80,65 @@ public class NonScholasticTeacher extends AppCompatActivity implements HttpHandl
 
     private void checkData() {
         if(categories.size() >0) {
-            for (int i = 0; i < categories.size(); i++) {
+           /* for (int i = 0; i < categories.size(); i++) {
                 for(int j = 0;j< data.get(categories.get(i)).size(); j++)
-                {
-                    if(data.get(categories.get(i)).get(j).getGrade().length() == 0)
+                {*/
+                   /* if(data.get(categories.get(i)).get(j).getGrade().length() == 0)
                     {
-                        Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+                        check = 1;
                     }
                     else if(data.get(categories.get(i)).get(j).getComment().length() == 0)
                     {
-                        Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+                        check = 1;
                     }
                     else
-                    {
+                    {*/
+                        try{
+                            JSONObject sobj = new JSONObject();
+                            sobj.put("exam_id", exam_id);
+                            sobj.put("student_id", student_id);
+                            sobj.put("school_id", SharedValues.getValue(this, "school_id"));
 
-                    }
-                }
-            }
+                            JSONArray marray = new JSONArray();
+                            for(int p = 0; p<categories.size();p++)
+                            {
+                                for(int q = 0;q < data.get(categories.get(p)).size(); q++)
+                                {
+
+                                    if(data.get(categories.get(p)).get(q).getGrade().length() == 0)
+                                    {
+                                        Toast.makeText(this, "Please Fill All The Fields", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    else if(data.get(categories.get(p)).get(q).getComment().length() == 0)
+                                    {
+                                        Toast.makeText(this, "Please Fill All The Fields", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
+                                    JSONObject object = new JSONObject();
+                                    object.put("non_scholastic_subject_id", data.get(categories.get(p)).get(q).getId());
+                                    object.put("category_name", categories.get(p));
+                                    object.put("subject", data.get(categories.get(p)).get(q).getName());
+                                    object.put("grade", data.get(categories.get(p)).get(q).getGrade());
+                                    object.put("comments", data.get(categories.get(p)).get(q).getComment());
+
+                                    marray.put(object);
+                                }
+                            }
+
+                            sobj.put("non_scholastic_marks", marray);
+                            HTTPNewPost task = new HTTPNewPost(this, this);
+                            task.userRequest("Processing...", 2, Paths.add_non_scholastic_marks, sobj.toString(), 1);
+
+                        }catch(Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    //}
+
+                //}
+           // }
         }
         else
         {
@@ -153,8 +196,11 @@ public class NonScholasticTeacher extends AppCompatActivity implements HttpHandl
                                     nsubject.setId(obj2.optString("non_scholastic_subject_id"));
                                     nsubject.setName(obj2.optString("subject"));
                                     nsubject.setGrade(obj2.optString("grade"));
+                                    if(obj2.optString("grade").length() != 0)
+                                    {
+                                        bt_submit.setVisibility(View.GONE);
+                                    }
                                     nsubject.setComment(obj2.optString("comments"));
-                                    Toast.makeText(this,obj2.optString("comments") , Toast.LENGTH_SHORT).show();
                                     subjects.add(nsubject);
 
                                 }
@@ -197,6 +243,15 @@ public class NonScholasticTeacher extends AppCompatActivity implements HttpHandl
                         Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
                     break;
+                    case 2:
+                        JSONObject object2 = new JSONObject(results.toString());
+                            Toast.makeText(this,object2.optString("statusdescription") , Toast.LENGTH_SHORT).show();
+                            break;
+                case 3:
+                    JSONObject object3 = new JSONObject(results.toString());
+                    Toast.makeText(this,object3.optString("statusdescription") , Toast.LENGTH_SHORT).show();
+                    break;
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -223,6 +278,30 @@ public class NonScholasticTeacher extends AppCompatActivity implements HttpHandl
                 }
             });
             builder.show();
+        }
+        else if(v.getId() == R.id.bt_update)
+        {
+           // EditText comment  = v.findViewById(R.id.comment);
+            String ucomment =  data.get(categories.get(group)).get(child).getComment();
+            data.get(categories.get(group)).get(child).setComment(ucomment);
+            adapter.notifyDataSetChanged();
+            String grade = data.get(categories.get(group)).get(child).getGrade();
+            String id = data.get(categories.get(group)).get(child).getId();
+
+            try {
+                JSONObject object = new JSONObject();
+                object.put("non_scholastic_subject_id", id);
+                object.put("exam_id", exam_id);
+                object.put("student_id", student_id);
+                object.put("grade", grade);
+                object.put("comments", ucomment);
+                object.put("school_id", SharedValues.getValue(this, "school_id"));
+                HTTPNewPost task = new HTTPNewPost(this, this);
+                task.userRequest("Processing...", 3, Paths.edit_non_scholastic_marks, object.toString(), 1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
     }

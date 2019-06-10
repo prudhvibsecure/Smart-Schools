@@ -78,14 +78,14 @@ public class TimeTableListAdapter extends RecyclerView.Adapter<TimeTableListAdap
 
         try {
             Periods classMode_lList = tutorsModelList.get(position);
-            contactViewHolder.tv_title.setText("Day :" + classMode_lList.getDay());
-            contactViewHolder.section_tv.setText("From :" + classMode_lList.getFrom_time());
-            contactViewHolder.marks.setText("To :" + classMode_lList.getTo_time());
-            contactViewHolder.ex_date.setText("Name :" + classMode_lList.getPeriod_name());
+            contactViewHolder.number.setText(classMode_lList.getPeriod_num());
+            contactViewHolder.from.setText(classMode_lList.getFrom_time());
+            contactViewHolder.to.setText(classMode_lList.getTo_time());
+            contactViewHolder.name.setText(classMode_lList.getPeriod_name());
 
             boolean value = selectedItems.get(position);
             contactViewHolder.itemView.setActivated(selectedItems.get(position, false));
-            applyClickEvents(contactViewHolder, tutorsModelList, position);
+            //applyClickEvents(contactViewHolder, tutorsModelList, position);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -103,7 +103,7 @@ public class TimeTableListAdapter extends RecyclerView.Adapter<TimeTableListAdap
         }
     }
 
-    private void applyClickEvents(ContactViewHolder contactViewHolder, final List<Periods> matchesList, final int position) {
+   /* private void applyClickEvents(ContactViewHolder contactViewHolder, final List<Periods> matchesList, final int position) {
         contactViewHolder.check_row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,7 +115,7 @@ public class TimeTableListAdapter extends RecyclerView.Adapter<TimeTableListAdap
             }
         });
 
-    }
+    }*/
 
     public interface ContactAdapterListener {
 
@@ -125,7 +125,7 @@ public class TimeTableListAdapter extends RecyclerView.Adapter<TimeTableListAdap
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.periods_view, parent, false);
+                .inflate(R.layout.periods_list, parent, false);
 
         return new ContactViewHolder(itemView);
     }
@@ -149,24 +149,19 @@ public class TimeTableListAdapter extends RecyclerView.Adapter<TimeTableListAdap
 
     public class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
-        public TextView tv_title;
-        public TextView section_tv;
-        public TextView rank;
-        public TextView ex_date;
-        public TextView marks;
-        public LinearLayout check_row;
+        public TextView number;
+        public TextView from;
+        public TextView to;
+        public TextView name;
+
 
         public ContactViewHolder(View v) {
             super(v);
 
-            tv_title = (TextView) v.findViewById(R.id.subject);
-            ex_date = (TextView) v.findViewById(R.id.ex_date);
-            ex_date.setVisibility(View.VISIBLE);
-            section_tv = (TextView) v.findViewById(R.id.t_marks);
-            marks = (TextView) v.findViewById(R.id.marks);
-            rank = (TextView) v.findViewById(R.id.rank);
-            check_row = v.findViewById(R.id.check_row);
-
+            number = (TextView) v.findViewById(R.id.num);
+            from = (TextView) v.findViewById(R.id.from);
+            to = (TextView) v.findViewById(R.id.to);
+            name = (TextView) v.findViewById(R.id.name);
         }
 
         @Override

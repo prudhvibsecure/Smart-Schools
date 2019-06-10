@@ -49,7 +49,9 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="icon, label,allowBackup,supportsRtl">
-        <activity android:name=".modules.StudentsNonscholastic"></activity>
+        <activity android:name=".modules.PeriodsTeacherView"></activity>
+        <activity android:name=".modules.ParentNonScholasticView" />
+        <activity android:name=".modules.StudentsNonscholastic" />
         <activity android:name=".modules.NonScholasticTeacher" />
         <activity android:name=".modules.Calender" />
 

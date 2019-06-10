@@ -10,16 +10,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
-import com.bsecure.scsm_mobile.adapters.ExamsListAdapter;
 import com.bsecure.scsm_mobile.adapters.StudentMarkViewListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
-import com.bsecure.scsm_mobile.models.Exams;
 import com.bsecure.scsm_mobile.models.MarksModel;
 import com.bsecure.scsm_mobile.utils.SharedValues;
 
@@ -29,10 +28,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ViewStudentMarks extends AppCompatActivity implements HttpHandler {
-    private String class_id, student_id, roll_no, exams_name, ename;
+    private String class_id, student_id, roll_no, exams_name, ename, exam_id;
     private StudentMarkViewListAdapter adapter;
     private ArrayList<MarksModel> marksModelArrayList;
     private RecyclerView mRecyclerView;
+    Button bt_view;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,9 +46,21 @@ public class ViewStudentMarks extends AppCompatActivity implements HttpHandler {
             class_id = getData.getStringExtra("class_id");
             student_id = getData.getStringExtra("student_id");
             exams_name = getData.getStringExtra("exams_name");
+            exam_id = getData.getStringExtra("exams_id");
             ename = getData.getStringExtra("ename");
         }
 
+        bt_view = findViewById(R.id.bt_view);
+        bt_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ViewStudentMarks.this, ParentNonScholasticView.class);
+                i.putExtra("sid", student_id);
+                i.putExtra("eid", exam_id);
+                i.putExtra("school_id",SharedValues.getValue(ViewStudentMarks.this, "school_id"));
+                startActivity(i);
+            }
+        });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
         toolbar.setTitle(ename+"\tMarks");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
