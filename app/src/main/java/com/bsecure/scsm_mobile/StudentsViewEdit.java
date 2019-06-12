@@ -94,7 +94,33 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
 //                rollno_list_id2.add(element_ro);
 //            }
         }
-        getStudentsList();
+
+        if(roll_nos.length() > 0 && student_ids.length() > 0)
+        {
+            getStudentsList();
+        }else
+        {
+            syncStudents();
+        }
+
+
+    }
+
+    private void syncStudents() {
+
+        try{
+            JSONObject object = new JSONObject();
+            object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("class_id", class_id);
+            object.put("teacher_id", teacher_id);
+            HTTPNewPost task = new HTTPNewPost(this, this);
+            task.userRequest("Processing...", 3, Paths.sync_attendance, object.toString(), 1);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -295,6 +321,16 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                         db_tables.updateAttendance(String.valueOf(time_stamp), class_id, st_ids, String.valueOf(time_stamp), teacher_id, roll_nos, attendDate);
                         finish();
 
+                    }
+                    break;
+
+                case 3:
+                    JSONObject object2 = new JSONObject(results.toString());
+                    if (object2.optString("statuscode").equalsIgnoreCase("200")) {
+                        time_stamp = System.currentTimeMillis();
+                        String attendDate = getDate(time_stamp);
+                        db_tables.updateSyncAttendance(String.valueOf(time_stamp), class_id, st_ids, String.valueOf(time_stamp), teacher_id, roll_nos, attendDate);
+                        finish();
                     }
                     break;
             }

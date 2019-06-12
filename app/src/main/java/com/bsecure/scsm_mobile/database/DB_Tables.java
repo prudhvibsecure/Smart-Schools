@@ -784,6 +784,31 @@ public class DB_Tables {
 
     }
 
+    public void addSyncAttendance(String attendance_id, String class_id, String student_ids, String s1, String teacher_id, String roll_no_ids, String adate) {
+        SQLiteDatabase db = null;
+        try {
+            long rawId;
+            if (database != null) {
+                db = database.getWritableDatabase();
+                ContentValues cv = new ContentValues();
+                cv.put("attendance_id", attendance_id);
+                cv.put("class_id", class_id);
+                cv.put("student_ids", student_ids);
+                cv.put("attendance_date", s1);
+                cv.put("teacher_id", teacher_id);
+                cv.put("roll_no_ids", roll_no_ids);
+                cv.put("aDate", adate);
+                db.insertWithOnConflict("Attendance", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
     public void updateAttendance(String attendance_id, String class_id, String student_ids, String s1, String teacher_id, String roll_no_ids, String aDate) {
         try {
             if (database != null) {
@@ -806,6 +831,30 @@ public class DB_Tables {
         }
 
     }
+
+    public void updateSyncAttendance(String attendance_id, String class_id, String student_ids, String s1, String teacher_id, String roll_no_ids, String aDate) {
+        try {
+            if (database != null) {
+                db = database.getWritableDatabase();
+                String iwhereClause = "aDate='" + aDate + "' and class_id='" + class_id + "'";
+
+                ContentValues cv = new ContentValues();
+                cv.put("attendance_id", attendance_id);
+                cv.put("student_ids", student_ids);
+                cv.put("attendance_date", s1);
+                cv.put("attendance_con", "Yes");
+                cv.put("aDate", aDate);
+                cv.put("roll_no_ids", roll_no_ids);
+                db.update("Attendance", cv, iwhereClause, null);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     public String getAttandeceDate(String section, String class_id) {
         String Id = "";
@@ -871,6 +920,41 @@ public class DB_Tables {
         return jsonObject.toString();
     }
 
+
+    public String getSyncAttandenceList(String class_id, String attendDate) {
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            JSONArray array = new JSONArray();
+            if (database != null) {
+                SQLiteDatabase db = database.getWritableDatabase();
+
+                String sql = "select * from Attendance where class_id='" + class_id + "' and attendance_date='" + attendDate + "' and attendance_date is not null";
+                Cursor cursor = db.rawQuery(sql,
+                        null);
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
+
+                        final JSONObject json = new JSONObject();
+                        json.put("attendance_id", cursor.getString(cursor.getColumnIndex("attendance_id")));
+                        json.put("class_id", cursor.getString(cursor.getColumnIndex("class_id")));
+                        json.put("student_ids", cursor.getString(cursor.getColumnIndex("student_ids")));
+                        json.put("attendance_date", cursor.getString(cursor.getColumnIndex("attendance_date")));
+                        json.put("teacher_id", cursor.getString(cursor.getColumnIndex("teacher_id")));
+                        json.put("roll_no_ids", cursor.getString(cursor.getColumnIndex("roll_no_ids")));
+                        array.put(json);
+                    }
+
+                    jsonObject.put("attendance_details", array);
+                    cursor.close();
+                }
+                db.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }
 
     public void updateStudents1(String student_id, String status) {
 

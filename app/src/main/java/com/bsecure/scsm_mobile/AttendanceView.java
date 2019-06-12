@@ -220,6 +220,22 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
                         Toast.makeText(this, object11.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
                     break;
+
+                case 3:
+                    JSONObject object12 = new JSONObject(results.toString());
+                    if (object12.optString("statuscode").equalsIgnoreCase("200")) {
+                        JSONArray att_array = object12.getJSONArray("attendance_details");
+                        for (int j = 0; j < att_array.length(); j++) {
+                            JSONObject aobj = att_array.getJSONObject(j);
+                            String date = String.valueOf(getDateN(Long.parseLong(aobj.optString("attendance_date"))));
+                            db_tables.addSyncAttendance("", class_id, "", aobj.optString("attendance_date"), teacher_id, "", date);
+                           // db_tables.updateAttendance("", class_id, "", aobj.optString("attendance_date"), teacher_id, "");
+                        }
+                        getAttandenceList();
+                    } else {
+                        Toast.makeText(this, object12.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                    }
+                    break;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -229,7 +245,7 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
     @Override
     protected void onResume() {
         super.onResume();
-        getAttandenceList();
+       // getAttandenceList();
     }
 
     private void getAttandenceList() {
@@ -237,6 +253,7 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
         try {
             String attendDate = getDateN(System.currentTimeMillis());
             String msg_list = db_tables.getAttandenceList(class_id, attendDate);
+            //if (msg_list.length() > 0) {
             attandenceList = new ArrayList<>();
             JSONObject obj = new JSONObject(msg_list);
             JSONArray jsonarray2 = obj.getJSONArray("attendance_details");
@@ -253,15 +270,22 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
                     attandence.setRoll_no_ids(jsonobject.optString("roll_no_ids"));
                     attandenceList.add(attandence);
 
-
                 }
-
 
                 adapter = new AttandenceListAdapter(attandenceList, this, this);
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                 mRecyclerView.setLayoutManager(linearLayoutManager);
                 mRecyclerView.setAdapter(adapter);
+            } else {
+                //sync data from server
+                JSONObject object = new JSONObject();
+                object.put("school_id", SharedValues.getValue(this, "school_id"));
+                object.put("class_id", class_id);
+                object.put("teacher_id", teacher_id);
+                HTTPNewPost task = new HTTPNewPost(this, this);
+                task.userRequest("Processing...", 3, Paths.sync_dates, object.toString(), 1);
             }
+            // }
         } catch (JSONException e) {
             e.printStackTrace();
         }
