@@ -14,7 +14,7 @@ public class Database extends SQLiteOpenHelper {
     public final String CREATE_Teacher_classes = "CREATE TABLE Teacher_classes(teacher_classes_id integer primary key, teacher_id TEXT, class_name TEXT, section TEXT, subjects TEXT,class_id TEXT);";
     public final String CREATE_Students = "CREATE TABLE Students(student_id integer primary key,roll_no TEXT,student_name TEXT,parent_phone_number TEXT,class_id TEXT,status TEXT,extra_subjects TEXT,condition TEXT,examinations_id TEXT,marks_obtained TEXT,teacher_id TEXT,subject TEXT, section TEXT, class_name TEXT);";
     public final String CREATE_Attendance = "CREATE TABLE Attendance(attendance_id integer,class_id TEXT,student_ids TEXT,attendance_date TEXT,attendance TEXT,teacher_id TEXT,roll_no_ids TEXT,student_name TEXT,condition TEXT,status TEXT,student_id TEXT,roll_no TEXT,attendance_con TEXT,aDate TEXT);";
-    public final String CREATE_Message = "CREATE TABLE Message(message_id TEXT,teacher_id TEXT,message TEXT,message_date TEXT, message_time TEXT, message_status TEXT, no_reply TEXT,sender_name TEXT,user_me TEXT,class_id TEXT,school_id TEXT,attendance_date TEXT,forward TEXT,tutor_id TEXT,forward_status TEXT,notifyType TEXT,student_id TEXT);";
+    public final String CREATE_Message = "CREATE TABLE Message(message_id TEXT,teacher_id TEXT,message TEXT,message_date TEXT, message_time TEXT, message_status TEXT, no_reply TEXT,sender_name TEXT,user_me TEXT,class_id TEXT,school_id TEXT,attendance_date TEXT,forward TEXT,tutor_id TEXT,forward_status TEXT,notifyType TEXT,student_id TEXT,offlineTag TEXT);";
     public final String CREATE_Transport = "CREATE TABLE Transport(transport_id integer primary key, phone_number TEXT, transport_name TEXT, school_id TEXT, status TEXT,name TEXT,student_id TEXT,created_by TEXT);";
     public final String CREATE_Staff = "CREATE TABLE Staff(staff_id integer primary key,name TEXT,designation TEXT,phone_number TEXT,school_id TEXT,status TEXT);";
     public final String CREATE_TUTORS = "CREATE TABLE TUTORS(tutor_id TEXT primary key,tutor_name TEXT,student_id TEXT,phone_number TEXT,school_id TEXT,tutor_status TEXT);";
@@ -22,6 +22,7 @@ public class Database extends SQLiteOpenHelper {
     public final String CREATE_SYLLABUS = "CREATE TABLE SYLLABUS(syllabus_id TEXT primary key,lesson TEXT,description TEXT,subject TEXT,class_id TEXT);";//FOREIGN KEY (student_id) REFERENCES Students (student_id)
     public final String CREATE_PARENT = "CREATE TABLE PARENT_MSG(message_id TEXT,message TEXT,message_date TEXT,message_time TEXT,user_me TEXT,sender_name TEXT,attendance_date TEXT,class_id TEXT);";//FOREIGN KEY (student_id) REFERENCES Students (student_id)
     public final String CREATE_PSTUDENTS = "CREATE TABLE PSTUDENTS(id integer primary key,tutor_id TEXT,student_id TEXT,student_name TEXT, class TEXT, section TEXT);";
+    public final String CREATE_SYNCDATA = "CREATE TABLE SYNC(id integer primary key,action_v TEXT,data TEXT);";
 
     public Database(Context context) {
         super(context, APP_DATABASE_NAME, null, APP_DATABASE_VERSION);
@@ -46,6 +47,7 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(CREATE_SYLLABUS);
         db.execSQL(CREATE_PARENT);
         db.execSQL(CREATE_PSTUDENTS);
+        db.execSQL(CREATE_SYNCDATA);
     }
 
     @Override
