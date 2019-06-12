@@ -1,13 +1,18 @@
 package com.bsecure.scsm_mobile.fragments;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -62,7 +67,7 @@ public class TransportListFragment extends Fragment implements TransportListAdap
     private Dialog member_dialog;
     private List<StudentModel> studentModelList;
     private Spinner m_spinner;
-    private String tras_id = null, tp_name, phone_number;
+    private String tras_id = null, tp_name, phone_number,school_id;
 
     @Override
     public void onAttach(Context context) {
@@ -283,16 +288,32 @@ public class TransportListFragment extends Fragment implements TransportListAdap
     @Override
     public void onMessageRow(List<TransportModel> matchesList, int position) {
         try {
-            Intent maps = new Intent(getActivity(), TrasportMaps.class);
-            maps.putExtra("transport_id", matchesList.get(position).getTransport_id());
-            //  maps.putExtra("student_id",matchesList.get(position).getStudent_id());//check its comming null
-            maps.putExtra("school_id", matchesList.get(position).getSchool_id());
-            maps.putExtra("p_con", "0");
-            startActivity(maps);
+            tras_id=matchesList.get(position).getTransport_id();
+            school_id=matchesList.get(position).getTransport_id();
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED ) {
+                passData();
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                            102);
+                }
+            }
+
             // getEventShowTrasport(matchesList.get(position).getTransport_id(), matchesList.get(position).getStudent_id(), matchesList.get(position).getSchool_id());
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void passData() {
+        Intent maps = new Intent(getActivity(), TrasportMaps.class);
+        maps.putExtra("transport_id", tras_id);
+        //  maps.putExtra("student_id",matchesList.get(position).getStudent_id());//check its comming null
+        maps.putExtra("school_id", school_id);
+        maps.putExtra("p_con", "0");
+        startActivity(maps);
     }
 
 //    private void getEventShowTrasport(String transport_id, String student_id, String school_id) {
@@ -553,6 +574,14 @@ public class TransportListFragment extends Fragment implements TransportListAdap
             e.printStackTrace();
         }
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 102
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        passData();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+    }
 }
 

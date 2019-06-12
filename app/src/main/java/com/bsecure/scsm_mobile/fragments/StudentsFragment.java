@@ -1,6 +1,7 @@
 package com.bsecure.scsm_mobile.fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import com.bsecure.scsm_mobile.graphs.GrapsMain;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.Exams;
 import com.bsecure.scsm_mobile.models.StudentModel;
+import com.bsecure.scsm_mobile.modules.ParentActivity;
 import com.bsecure.scsm_mobile.modules.TimeTableView;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperCallback_Parent;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperExtension;
@@ -54,11 +56,16 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
     private List<Exams> examsList = null;
     List<StudentModel> classModelList;
     String id, name, roll_no, class_id, exam_name;
-
+    private ParentActivity schoolMain;
     public StudentsFragment() {
         // Required empty public constructor
     }
+    @Override
+    public void onAttach(Context context) {
 
+        super.onAttach(context);
+        this.schoolMain = (ParentActivity) context;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

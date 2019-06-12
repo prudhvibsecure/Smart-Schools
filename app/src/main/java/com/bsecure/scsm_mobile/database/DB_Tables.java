@@ -1348,7 +1348,8 @@ public class DB_Tables {
                 cv.put("status", status);
                 cv.put("created_by", created);
                 cv.put("phone_number", number);
-                db.insert("Transport", null, cv);
+                db.insertWithOnConflict("Transport", null, cv, SQLiteDatabase.CONFLICT_IGNORE);
+               // db.insert("Transport", null, cv);
                 db.close();
             }
 

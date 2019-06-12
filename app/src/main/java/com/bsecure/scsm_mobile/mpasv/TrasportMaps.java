@@ -2,7 +2,6 @@ package com.bsecure.scsm_mobile.mpasv;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.PictureInPictureParams;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,22 +12,20 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Rational;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,21 +37,15 @@ import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import android.location.Address;
-import android.location.Geocoder;
-import android.os.AsyncTask;
-
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, HttpHandler {
@@ -67,7 +58,6 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
     Geocoder geocoder;
     IntentFilter myIntentFilter;
     LocationManager mLocationManager;
-    private Intent intentData;
     private Handler habs;
     private Runnable myRunnable;
     RelativeLayout vv;
@@ -82,40 +72,38 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
         toolbar.setTitle("Transport");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
-        myIntentFilter = new IntentFilter("com.scm.mapsview");
+       // myIntentFilter = new IntentFilter("com.scm.mapsview");
+        vv=findViewById(R.id.vv_mm);
+        Intent intentData =getIntent();
+       // findViewById(R.id.get_loc).setOnClickListener(this);
 
-        intentData=getIntent();
+        SupportMapFragment supportMapFragment = (SupportMapFragment)
+                getSupportFragmentManager().findFragmentById(R.id.map);
+        // Getting a reference to the map
+        supportMapFragment.getMapAsync(this);
+        geocoder = new Geocoder(this);
         if (intentData!=null){
 
             condition=intentData.getStringExtra("p_con");
             if (condition.startsWith("0")){
                 transport_id=intentData.getStringExtra("transport_id");
-               // student_id=intentData.getStringExtra("student_id");
+                // student_id=intentData.getStringExtra("student_id");
                 school_id=intentData.getStringExtra("school_id");
                 getRoutes();
 
             }
 
         }
-
-
-        findViewById(R.id.get_loc).setOnClickListener(this);
-        vv=findViewById(R.id.vv);
-        SupportMapFragment supportMapFragment = (SupportMapFragment)
-                getSupportFragmentManager().findFragmentById(R.id.map);
-        // Getting a reference to the map
-        supportMapFragment.getMapAsync(this);
-        geocoder = new Geocoder(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        try {
-            registerReceiver(mBroadcatNotification, myIntentFilter);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            registerReceiver(mBroadcatNotification, myIntentFilter);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
     }
 
@@ -161,7 +149,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mBroadcatNotification);
+        //unregisterReceiver(mBroadcatNotification);
     }
 
     private BroadcastReceiver mBroadcatNotification = new BroadcastReceiver() {
@@ -357,7 +345,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{
                         android.Manifest.permission.ACCESS_FINE_LOCATION
-                }, 10);
+                }, 101);
             }
             Location l = mLocationManager.getLastKnownLocation(provider);
             if (l == null) {
@@ -380,6 +368,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                         try {
                         JSONObject oo = new JSONObject(results.toString());
                         if (oo.optString("statuscode").equalsIgnoreCase("200")) {
+                            ((TextView)findViewById(R.id.get_loc)).setText("Journy Started");
                             latitude = Double.valueOf(oo.optString("lat"));//change lat from response
                             longitude = Double.valueOf(oo.optString("lang"));//change lat from response
                             googleMap.clear();
@@ -420,7 +409,8 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                             }
                             break;
                         }else{
-                            Toast.makeText(this, oo.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                            ((TextView)findViewById(R.id.get_loc)).setText("Journy Not Started");
+                           // Toast.makeText(this, oo.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                         }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -507,7 +497,6 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
             enterPictureInPictureMode(pictureInPictureParamsBuilder.build());
         }
     }
-
     @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override

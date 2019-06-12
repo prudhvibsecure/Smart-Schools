@@ -63,6 +63,9 @@ public class MoreFragment extends Fragment {
 
     private ArrayList<String> st_ids = new ArrayList<>();
     private IntentFilter filter;
+    public MoreFragment() {
+        // Required empty public constructor
+    }
 
     @Override
     public void onAttach(Context context) {
