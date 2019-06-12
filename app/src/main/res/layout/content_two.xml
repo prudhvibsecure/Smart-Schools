@@ -77,14 +77,17 @@
         android:layout_above="@+id/bt_view"
         android:layout_below="@+id/header" />
 
-    <Button
+    <TextView
         android:id="@+id/bt_view"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/green"
+        android:layout_height="wrap_content"
         android:text="VIEW NON SCHOLASTIC MARKS"
-        android:textColor="@color/white"
-        android:layout_above="@+id/bottom_list"/>
+        android:textColor="@color/black"
+        android:gravity="center|center_vertical"
+        android:textStyle="bold"
+        android:layout_above="@+id/bottom_list"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"/>
 
     <include
         android:id="@+id/bottom_list"

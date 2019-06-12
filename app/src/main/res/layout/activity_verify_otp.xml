@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
-
+    android:gravity="center"
+    tools:context=".VerifyOtp">
 
     <ImageView
         android:id="@+id/logo"
@@ -20,10 +22,10 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:padding="10dp"
-        android:text="Login"
-        android:textColor="@color/transparent_black"
-        android:textSize="9pt"
-        android:textStyle="bold" />
+        android:text="Verification code"
+        android:textColor="@color/green"
+        android:textSize="7pt"
+         />
 
     <LinearLayout
         android:id="@+id/ll_login"
@@ -38,24 +40,23 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-
             android:layout_weight="1"
             android:background="@drawable/t_shape"
             android:focusable="true"
-            android:hint="Mobile number"
-            android:inputType="number"
-            android:maxLength="10"
+            android:hint="OTP"
+            android:inputType="textPassword"
+            android:maxLength="4"
             android:padding="10dp"
             android:singleLine="true" />
 
-       <!-- <ImageView
-            android:id="@+id/done_v"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:paddingLeft="10dp"
-            android:src="@mipmap/ic_done_b" />-->
+        <!-- <ImageView
+             android:id="@+id/done_v"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_centerInParent="true"
+             android:layout_gravity="center"
+             android:paddingLeft="10dp"
+             android:src="@mipmap/ic_done_b" />-->
     </LinearLayout>
 
     <Button
@@ -65,10 +66,27 @@
         android:layout_below="@+id/ll_login"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="Send otp"
+        android:text="Submit otp"
         android:background="@drawable/ellipse"
         android:padding="15dp"
         android:textColor="@color/black"
         android:elevation="4dp"
         />
+
+    <TextView
+        android:id="@+id/resend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/done_v"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="RESEND OTP"
+        android:textColor="@color/green"
+        android:layout_marginTop="10dp"
+        android:textSize="7pt"
+        />
+
+
+
 </RelativeLayout>

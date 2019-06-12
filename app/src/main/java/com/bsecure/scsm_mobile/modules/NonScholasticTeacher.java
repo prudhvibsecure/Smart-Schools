@@ -107,14 +107,10 @@ public class NonScholasticTeacher extends AppCompatActivity implements HttpHandl
 
                                     if(data.get(categories.get(p)).get(q).getGrade().length() == 0)
                                     {
-                                        Toast.makeText(this, "Please Fill All The Fields", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this, "Please Fill Grades For All The Subjects", Toast.LENGTH_SHORT).show();
                                         return;
                                     }
-                                    else if(data.get(categories.get(p)).get(q).getComment().length() == 0)
-                                    {
-                                        Toast.makeText(this, "Please Fill All The Fields", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
+
 
                                     JSONObject object = new JSONObject();
                                     object.put("non_scholastic_subject_id", data.get(categories.get(p)).get(q).getId());

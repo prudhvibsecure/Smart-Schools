@@ -57,6 +57,11 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
     List<StudentModel> classModelList;
     String id, name, roll_no, class_id, exam_name;
     private ParentActivity schoolMain;
+    String stu_id, sch_id;
+    String[]stu_ids;
+    String [] sids;
+    ArrayList<String>school_ids;
+
     public StudentsFragment() {
         // Required empty public constructor
     }
@@ -77,6 +82,7 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
         // Inflate the layout for this fragment
         layout = inflater.inflate(R.layout.content_main_view, container, false);
 
+        school_ids = new ArrayList<>();
         db_tables = new DB_Tables(getActivity());
         db_tables.openDB();
         Toolbar toolbar = (Toolbar) layout.findViewById(R.id.toolset);
@@ -89,17 +95,30 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
+        stu_id = SharedValues.getValue(getActivity(), "id");
+        sch_id = SharedValues.getValue(getActivity(), "school_id");
 
-        getStudents();
+        stu_ids = stu_id.split("'");
+        sids = sch_id.split(",");
+        for(int i = 0; i< sids.length; i++)
+        {
+            if(!school_ids.contains(sids[i]))
+            {
+                school_ids.add(sids[i]);
+                getStudents(sids[i]);
+            }
+        }
+
+       // getStudents(SharedValues.getValue(getActivity(), "school_id"));
         return layout;
     }
 
-    private void getStudents() {
+    private void getStudents(String schoolid) {
 
         try {
             JSONObject object = new JSONObject();
             object.put("phone_number", SharedValues.getValue(getActivity(), "ph_number"));
-            object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("school_id", schoolid);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Processing...", 1, Paths.get_parent_students, object.toString(), 1);
         } catch (Exception e) {

@@ -344,6 +344,15 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".VerifyOtp">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".firebasepaths.MyFirebaseInstanceIDService"
             android:enabled="true"

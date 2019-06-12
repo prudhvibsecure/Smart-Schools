@@ -7,5 +7,14 @@
         android:id="@+id/next"
         android:title="Period"
         android:visible="false"/>
+    <item
+        android:id="@+id/marks"
+        android:title="Marks"
+        />
+
+    <item
+        android:id="@+id/syllabus"
+        android:title="Syllabus"
+        />
 
 </menu>

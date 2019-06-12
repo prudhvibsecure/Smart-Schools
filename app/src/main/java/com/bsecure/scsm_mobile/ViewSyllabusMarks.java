@@ -43,7 +43,7 @@ public class ViewSyllabusMarks extends AppCompatActivity implements HttpHandler,
         setContentView(R.layout.content_two);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
-        toolbar.setTitle("Exams Timmings");
+        toolbar.setTitle("Exams Timings");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
 

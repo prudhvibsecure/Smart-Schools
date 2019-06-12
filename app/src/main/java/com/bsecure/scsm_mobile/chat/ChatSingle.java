@@ -295,34 +295,44 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
 
         try {
             String msg_list = db_tables.getchatList_view1(class_id);
-            messageList = new ArrayList<>();
-            JSONObject obj = new JSONObject(msg_list);
-            JSONArray jsonarray2 = obj.getJSONArray("message_body");
+            if(msg_list.length() != 0) {
+                messageList = new ArrayList<>();
+                JSONObject obj = new JSONObject(msg_list);
+                JSONArray jsonarray2 = obj.getJSONArray("message_body");
 
-            if (jsonarray2.length() > 0) {
-                for (int i = 0; i < jsonarray2.length(); i++) {
-                    MessageObject messageObject = new MessageObject();
+                if (jsonarray2.length() > 0) {
+                    for (int i = 0; i < jsonarray2.length(); i++) {
+                        MessageObject messageObject = new MessageObject();
 
-                    JSONObject jsonobject = jsonarray2.getJSONObject(i);
-                    messageObject.setMessage_date(jsonobject.optString("message_date"));
-                    messageObject.setMessage(jsonobject.optString("message"));
-                    messageObject.setSender_member_id(jsonobject.optString("class_id"));
-                    messageObject.setReply_id(jsonobject.optString("no_reply"));
-                    messageObject.setSender_name(jsonobject.optString("sender_name"));
-                    messageObject.setUser_me(jsonobject.optString("user_me"));
-                    messageObject.setMessage_id(jsonobject.optString("message_id"));
-                    messageList.add(messageObject);
+                        JSONObject jsonobject = jsonarray2.getJSONObject(i);
+                        messageObject.setMessage_date(jsonobject.optString("message_date"));
+                        messageObject.setMessage(jsonobject.optString("message"));
+                        messageObject.setSender_member_id(jsonobject.optString("class_id"));
+                        messageObject.setReply_id(jsonobject.optString("no_reply"));
+                        messageObject.setSender_name(jsonobject.optString("sender_name"));
+                        messageObject.setUser_me(jsonobject.optString("user_me"));
+                        messageObject.setMessage_id(jsonobject.optString("message_id"));
+                        messageList.add(messageObject);
 
+                    }
+
+
+                    adapter = new MessageListAdapter(messageList, this, this, mediaUriList);
+                    linearLayoutManager = new LinearLayoutManager(this);
+                    //linearLayoutManager.setStackFromEnd(true);
+                    mRecyclerView.setLayoutManager(linearLayoutManager);
+                    // mRecyclerView.setHasStableIds(true);
+                    linearLayoutManager.scrollToPosition(messageList.size() - 1);
+                    mRecyclerView.setAdapter(adapter);
                 }
-
-
-                adapter = new MessageListAdapter(messageList, this, this, mediaUriList);
-                linearLayoutManager = new LinearLayoutManager(this);
-                //linearLayoutManager.setStackFromEnd(true);
-                mRecyclerView.setLayoutManager(linearLayoutManager);
-                // mRecyclerView.setHasStableIds(true);
-                linearLayoutManager.scrollToPosition(messageList.size() - 1);
-                mRecyclerView.setAdapter(adapter);
+            }
+            else
+            {
+               /* JSONObject object = new JSONObject();
+                object.put("school_id", SharedValues.getValue(this, "school_id"));
+                object.put("class_id", class_id);
+                HTTPNewPost task = new HTTPNewPost(this, this);
+                task.userRequest("Processing...", 1, Paths.get_students, object.toString(), 1);*/
             }
         } catch (Exception e) {
             e.printStackTrace();
