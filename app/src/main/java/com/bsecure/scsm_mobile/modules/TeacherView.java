@@ -28,7 +28,9 @@ import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.ClassListAdapter;
 import com.bsecure.scsm_mobile.adapters.OrgListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.callbacks.OfflineDataInterface;
 import com.bsecure.scsm_mobile.chat.ChatSingle;
+import com.bsecure.scsm_mobile.common.NetworkInfoAPI;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.controls.ColorGenerator;
 import com.bsecure.scsm_mobile.controls.TextDrawable;
@@ -45,10 +47,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TeacherView extends AppCompatActivity implements HttpHandler, ClassListAdapter.ContactAdapterListener {
+public class TeacherView extends AppCompatActivity implements HttpHandler, ClassListAdapter.ContactAdapterListener ,NetworkInfoAPI.OnNetworkChangeListener,OfflineDataInterface{
     private DB_Tables db_tables;
     ArrayList<ClassModel> classModelArrayList;
     private ClassListAdapter adapter;
@@ -58,7 +61,9 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
     private TextDrawable.IBuilder builder = null;
     private ColorGenerator generator = ColorGenerator.MATERIAL;
     private Dialog m_dialog;
+    protected List<WeakReference<OfflineDataInterface>> mObservers = new ArrayList<WeakReference<OfflineDataInterface>>();
     private IntentFilter filter, re_filter;
+    private NetworkInfoAPI networkInfoAPI;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,6 +86,12 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
         mCallback = new ItemTouchHelperCallback();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+
+        networkInfoAPI = new NetworkInfoAPI(); //here net fails and connect every time..
+        networkInfoAPI.initialize(this);
+        networkInfoAPI.setOnNetworkChangeListener(this);
+
+        addObserver(this);
         getTeachers();
     }
 
@@ -331,4 +342,73 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
         }
     };
 
+    @Override
+    public void onNetworkChange(String status) {
+        if (SharedValues.getValue(this,"inapp1st").length() > 0) {
+            SharedValues.saveValue(this,"inapp1st","");
+            return;
+        }
+
+        if (status.equalsIgnoreCase("none")) {
+            for (WeakReference<OfflineDataInterface> observer : mObservers) {
+                if (observer.get() != null) {
+                    observer.get().loadOfflineData();
+                    observer.get().hideOfflineOptions();
+                }
+            }
+        } else if (status.equalsIgnoreCase("wifi") || status.equalsIgnoreCase("3g") || status.equalsIgnoreCase("4g")) {
+            for (WeakReference<OfflineDataInterface> observer : mObservers) {
+                if (observer.get() != null) {
+                    observer.get().showOptions();
+                    observer.get().loadActualData();
+                }
+            }
+        }
+
+    }
+    public void addObserver(OfflineDataInterface observer) {
+        if (hasObserver(observer) == -1) {
+            mObservers.add(new WeakReference<OfflineDataInterface>(
+                    observer));
+        }
+    }
+
+    public int hasObserver(OfflineDataInterface observer) {
+        final int size = mObservers.size();
+
+        for (int n = size - 1; n >= 0; n--) {
+            OfflineDataInterface potentialMatch = mObservers.get(n).get();
+
+            if (potentialMatch == null) {
+                mObservers.remove(n);
+                continue;
+            }
+
+            if (potentialMatch == observer) {
+                return n;
+            }
+        }
+
+        return -1;
+    }
+
+    @Override
+    public void loadOfflineData() {
+        getTeachers();
+    }
+
+    @Override
+    public void loadActualData() {
+
+    }
+
+    @Override
+    public void hideOfflineOptions() {
+
+    }
+
+    @Override
+    public void showOptions() {
+
+    }
 }

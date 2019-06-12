@@ -60,6 +60,7 @@ import com.bsecure.scsm_mobile.adapters.IndividualStudentsAdapter;
 import com.bsecure.scsm_mobile.adapters.MessageListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.callbacks.IDownloadCallback;
+import com.bsecure.scsm_mobile.callbacks.OfflineDataInterface;
 import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Item;
 import com.bsecure.scsm_mobile.common.Paths;
@@ -70,6 +71,7 @@ import com.bsecure.scsm_mobile.https.FileUploader;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.MessageObject;
 import com.bsecure.scsm_mobile.models.StudentModel;
+import com.bsecure.scsm_mobile.modules.TeacherView;
 import com.bsecure.scsm_mobile.provider.CameraPreview;
 import com.bsecure.scsm_mobile.utils.ContactUtils;
 import com.bsecure.scsm_mobile.utils.SharedValues;
@@ -86,6 +88,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -100,7 +103,7 @@ import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
  * Created by Admin on 2018-11-20.
  */
 
-public class ChatSingle extends AppCompatActivity implements View.OnClickListener, HttpHandler, MessageListAdapter.ChatAdapterListener, IndividualStudentsAdapter.ContactAdapterListener, IDownloadCallback {
+public class ChatSingle extends AppCompatActivity implements View.OnClickListener, HttpHandler, MessageListAdapter.ChatAdapterListener, IndividualStudentsAdapter.ContactAdapterListener, IDownloadCallback, OfflineDataInterface {
 
     private ImageView mFabButton, mEmoji;
     private RecordButton mAudioButton;
@@ -139,7 +142,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
     private String delete_Id, reply_Id = "", forword_Id, Ids = "", rep_Id = "", rep_msg, rp_name, path_r = "", gt_name;
     ArrayList<String> delete_ids = new ArrayList<>();
     ArrayList<String> reply_ids = new ArrayList<>();
-
+    protected List<WeakReference<OfflineDataInterface>> mObservers = new ArrayList<WeakReference<OfflineDataInterface>>();
     int count;
     private String msg_fwd, m_types, aName, secure_settings, m_status, restrict_msg, Contact_N;
     boolean conditonLv = false;
@@ -188,7 +191,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
             section = getData.getStringExtra("section");
             ((TextView) findViewById(R.id.user_name)).setText(class_name + "(" + section + ")");
         }
-        inputLL=findViewById(R.id.inputLL);
+        inputLL = findViewById(R.id.inputLL);
         mRecyclerView = (RecyclerView) findViewById(R.id.chat_view_suer);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -224,6 +227,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
         initViews();
 
         mNetworkReceiver = new NetworkChangeReceiver();
+        addObserver(this);
 
 
     }
@@ -613,9 +617,9 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
 
                 HTTPNewPost task = new HTTPNewPost(this, this);
                 task.disableProgress();
-                if (student_id==""||student_id.isEmpty()) {
+                if (student_id == "" || student_id.isEmpty()) {
                     task.userRequest("", 1, Paths.send_message2, object.toString(), 1);
-                }else{
+                } else {
                     task.userRequest("", 1, Paths.send_message, object.toString(), 1);
 
                 }
@@ -1361,7 +1365,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                     forword_Id = "";
                     fr_ids = null;
                     fr_ids_l = null;
-                    displayname=null;
+                    displayname = null;
                     fr_ids = new ArrayList<>();
                     fr_ids_l = new ArrayList<>();
                     JSONObject object = new JSONObject(results.toString());
@@ -1564,7 +1568,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
 //
 //        }
         Intent attend_view = new Intent(getApplicationContext(), ParentsReplys.class);
-        attend_view.putExtra("class_id",class_id);
+        attend_view.putExtra("class_id", class_id);
         startActivity(attend_view);
     }
 
@@ -1688,6 +1692,26 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
 
     }
 
+    @Override
+    public void loadOfflineData() {
+
+    }
+
+    @Override
+    public void loadActualData() {
+
+    }
+
+    @Override
+    public void hideOfflineOptions() {
+
+    }
+
+    @Override
+    public void showOptions() {
+
+    }
+
 
     public class NetworkChangeReceiver extends BroadcastReceiver {
 
@@ -1767,4 +1791,29 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
         }
     }
 
+    public void addObserver(OfflineDataInterface observer) {
+        if (hasObserver(observer) == -1) {
+            mObservers.add(new WeakReference<OfflineDataInterface>(
+                    observer));
+        }
+    }
+
+    public int hasObserver(OfflineDataInterface observer) {
+        final int size = mObservers.size();
+
+        for (int n = size - 1; n >= 0; n--) {
+            OfflineDataInterface potentialMatch = mObservers.get(n).get();
+
+            if (potentialMatch == null) {
+                mObservers.remove(n);
+                continue;
+            }
+
+            if (potentialMatch == observer) {
+                return n;
+            }
+        }
+
+        return -1;
+    }
 }
