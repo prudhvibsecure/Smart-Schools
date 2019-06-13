@@ -10,7 +10,9 @@ public class ContentValues {
 
     public static String PATH = Environment.getExternalStorageDirectory()
             .toString();
+
     public static final String VOICE_FOLDERs = "/SCS/SCS VoiceNote";
+    public static final String DOMAIN = "1";
     public static final String Images = PATH +"/SCS/SCS SentImages";
     public static final String REC_IMAGES = PATH + "/SCS/SCS ReceivedImages";
     public static final String upload_file = "https://sendsafe.com.au/Developerv1/compose/";

@@ -32,7 +32,7 @@ public class ViewStudentMarks extends AppCompatActivity implements HttpHandler {
     private StudentMarkViewListAdapter adapter;
     private ArrayList<MarksModel> marksModelArrayList;
     private RecyclerView mRecyclerView;
-    Button bt_view;
+    TextView bt_view;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

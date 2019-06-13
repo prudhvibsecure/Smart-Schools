@@ -5,7 +5,8 @@ public class Paths {
     //public static final String base = "https://bsecuresoftechsolutions.com/scs/";
     public static final String base = "https://gogosmartschool.com/scs/";
    // public static final String base = "https://bsecuresoftechsolutions.com/scs/prod/";
-    public static final String member_verify = base + "member_login";
+    public static final String member_verify = base + "login/member_login";
+    public static final String verify_otp = base + "login/verify_otp";
     public static final String member_register = base + "member_register";
     public static final String get_tutor = base + "get_tutor";
     public static final String get_tutor_students =  base + "get_tutor_students";
@@ -61,7 +62,10 @@ public class Paths {
     public static final String add_non_scholastic_marks = base + "add_non_scholastic_marks";
     public static final String edit_non_scholastic_marks = base + "edit_non_scholastic_marks";
 
-    //Synce Message Teacher
+    //
     public static final String sync_message = base + "sync_message";
+    public static final String sync_dates = base + "sync_dates";
+    public static final String sync_attendance = base + "sync_attendance";
+
 
 }

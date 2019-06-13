@@ -120,7 +120,7 @@
         android:text="ADD NON SCHOLASTIC MARKS"
         android:background="@color/green"
         android:textColor="@color/white"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

@@ -228,8 +228,8 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler, Tim
                                 Periods periods = new Periods();
                                 JSONObject object = array.getJSONObject(y);
                                 // periods.setDay(jsonObject.optString("day"));
-                                periods.setPeriod_num(object.optString("period_no"));
-                                periods.setPeriod_name(object.optString("period_name"));
+                                periods.setPeriod_num(object.optString("period_name"));
+                               // periods.setPeriod_name(object.optString("period_name"));
                                 if (y < snames.length) {
                                     periods.setPeriod_name(snames[y]);
                                 } else {

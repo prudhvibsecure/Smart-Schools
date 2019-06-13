@@ -3,9 +3,8 @@ package com.bsecure.scsm_mobile;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -27,41 +26,62 @@ import org.json.JSONObject;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class Login_Phone extends AppCompatActivity implements HttpHandler {
+public class VerifyOtp extends AppCompatActivity implements HttpHandler {
 
+    String member_id, school_id, phone, id;
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_phone);
+        setContentView(R.layout.activity_verify_otp);
+
+         Intent in = getIntent();
+         if(in!= null)
+         {
+             member_id = in.getStringExtra("member_id");
+             school_id = in.getStringExtra("school_id");
+             phone = in.getStringExtra("phone");
+             id = in.getStringExtra("id");
+         }
 
         findViewById(R.id.done_v).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getLogin();
+                verifyOTP();
+            }
+        });
+
+        findViewById(R.id.resend).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resendOTP();
             }
         });
     }
 
-    private void getLogin() {
+    private void resendOTP() {
+    }
+
+    private void verifyOTP() {
 
         if (isNetworkConnected()) {
 
-            String mob_number = ((EditText) findViewById(R.id.mob_number)).getText().toString();
+            String mob_number = ((EditText) findViewById(R.id.mob_number)).getText().toString().trim();
             if (mob_number.length() == 0) {
-                getError("Enter Your Mobile Number");
+                getError("OTP Cannot be Blank");
                 return;
             }
-            if (mob_number.length() < 10) {
-                getError("Enter Valid Mobile Number");
+            if (mob_number.length() < 4) {
+                getError("OTP Must be 4 Digits");
                 return;
             }
             try {
                 JSONObject object = new JSONObject();
-                object.put("phone_number", mob_number);
-                object.put("regidand", SharedPrefManager.getInstance(this).getDeviceToken());
+                object.put("phone_number", phone);
+                object.put("member_id", member_id);
                 object.put("domain", ContentValues.DOMAIN);
+                object.put("otp", mob_number);
                 HTTPNewPost task = new HTTPNewPost(this, this);
-                task.userRequest("Processing...", 1, Paths.member_verify, object.toString(), 1);
+                task.userRequest("Processing...", 1, Paths.verify_otp, object.toString(), 1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -72,41 +92,42 @@ public class Login_Phone extends AppCompatActivity implements HttpHandler {
 
     @Override
     public void onResponse(Object results, int requestType) {
+
         try {
 
             switch (requestType) {
                 case 1:
                     JSONObject object = new JSONObject(results.toString());
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
-                        Intent in = new Intent(Login_Phone.this, VerifyOtp.class);
-                        in.putExtra("member_id",object.optString("member_id"));
-                        in.putExtra("school_id", object.optString("school_id"));
-                        in.putExtra("id", object.optString("id"));
-                        in.putExtra("phone",object.optString("phone_number"));
-                        startActivity(in);
-
-                       /* if (object.optString("member_id").equalsIgnoreCase("1")) {
+                        SharedValues.saveValue(this, "member_id", member_id);
+                        SharedValues.saveValue(this, "school_id", school_id);
+                        SharedValues.saveValue(this, "id", id);
+                        SharedValues.saveValue(this, "ph_number", phone);
+                        //Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                        String id = member_id;
+                        if (id.equalsIgnoreCase("1")) {
                             //Teacher
                             startPages(TeacherView.class);
-                        } else if (object.optString("member_id").equalsIgnoreCase("2")) {
-
+                        } else if (id.equalsIgnoreCase("2")) {
                             // Parent
                             startPages(ParentActivity.class);
-                        } else if (object.optString("member_id").equalsIgnoreCase("3")) {
+                        } else if (id.equalsIgnoreCase("3")) {
                             // Staff
                             startPages(StaffView.class);
-                        } else if (object.optString("member_id").equalsIgnoreCase("4")) {
+                        } else if (id.equalsIgnoreCase("4")) {
                             // Tutor
                             startPages(TutorsView.class);
-                        } else if (object.optString("member_id").equalsIgnoreCase("5")) {
+                        } else if (id.equalsIgnoreCase("5")) {
                             startPages(TransportView.class);
                             // Transport
                         } else {
                             startPages(RoutesList.class);
-                        }*/
+                        }
                         return;
                     }
-                    getError(object.optString("statusdescription"));
+                    else {
+                        getError(object.optString("statusdescription"));
+                    }
                     break;
             }
 
@@ -116,17 +137,15 @@ public class Login_Phone extends AppCompatActivity implements HttpHandler {
 
     }
 
-    /*private void startPages(Class<?> cls) {
-
-        Intent st = new Intent(getApplicationContext(), cls);
-        st.putExtra("number", ((EditText) findViewById(R.id.mob_number)).getText().toString());
-        startActivity(st);
-        finish();
-    }*/
-
     @Override
     public void onFailure(String errorCode, int requestType) {
 
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 
     private void getError(String text) {
@@ -145,9 +164,11 @@ public class Login_Phone extends AppCompatActivity implements HttpHandler {
 
     }
 
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    private void startPages(Class<?> cls) {
 
-        return cm.getActiveNetworkInfo() != null;
+        Intent st = new Intent(getApplicationContext(), cls);
+        st.putExtra("number", SharedValues.getValue(this, "ph_number"));
+        startActivity(st);
+        finish();
     }
 }

@@ -28,7 +28,7 @@ public class GrapsMain extends AppCompatActivity {
         setContentView(R.layout.view_main_gphs);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Perfomance Analyzer");
+        toolbar.setTitle("Performance Analyzer");
         setSupportActionBar(toolbar);
 
 
