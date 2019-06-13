@@ -98,7 +98,7 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
         stu_id = SharedValues.getValue(getActivity(), "id");
         sch_id = SharedValues.getValue(getActivity(), "school_id");
 
-        stu_ids = stu_id.split("'");
+        /*stu_ids = stu_id.split("'");
         sids = sch_id.split(",");
         for(int i = 0; i< sids.length; i++)
         {
@@ -108,8 +108,8 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
                 getStudents(sids[i]);
             }
         }
-
-       // getStudents(SharedValues.getValue(getActivity(), "school_id"));
+*/
+        getStudents(SharedValues.getValue(getActivity(), "school_id"));
         return layout;
     }
 

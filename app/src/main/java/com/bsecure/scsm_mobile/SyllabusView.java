@@ -35,6 +35,7 @@ import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperCallback;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperCallbackSyllabus;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperExtension;
 import com.bsecure.scsm_mobile.utils.SharedValues;
+import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -113,9 +114,27 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
                 mRecyclerView.setLayoutManager(linearLayoutManager);
                 mRecyclerView.setAdapter(adapter);
             } else {
-                getSyllabusData();
+                syncSyllabus();
             }
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void syncSyllabus() {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("examination_time_table_id", exam_id);
+            object.put("class_id", class_id);
+            object.put("teacher_id", teacher_id);
+            object.put("subject", subject);
+
+            HTTPNewPost task = new HTTPNewPost(this, this);
+            task.userRequest("Processing...", 14, Paths.base + "sync_syllabus", object.toString(), 1);
+        }
+        catch(Exception e)
+        {
             e.printStackTrace();
         }
     }
@@ -288,6 +307,20 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
                     }
                     break;
                 case 13:
+                    break;
+
+                case 14:
+                    JSONObject obj = new JSONObject(results.toString());
+                    if(obj.optString("statuscode").equalsIgnoreCase("200"))
+                    {
+                        JSONArray array = obj.getJSONArray("syllabus_details");
+                        for(int i = 0; i<array.length();i++)
+                        {
+                            JSONObject obj1 = array.getJSONObject(i);
+                            db_tables.addSyllabus(Long.parseLong(obj1.optString("syllabus_id")),obj1.optString("lesson"),obj1.optString("description"), subject, class_id );
+                        }
+                        getSyllabusList();
+                    }
                     break;
             }
 

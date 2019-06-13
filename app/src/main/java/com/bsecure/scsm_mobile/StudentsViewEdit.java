@@ -95,9 +95,9 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
 //            }
         }
 
-        if(roll_nos.length() > 0 && student_ids.length() > 0)
+        if(roll_nos.length() ==0 && student_ids.length()== 0)
         {
-            getStudentsList();
+            getStudents();
         }else
         {
             syncStudents();
@@ -307,10 +307,11 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                         if (jsonarray2.length() > 0) {
                             for (int i = 0; i < jsonarray2.length(); i++) {
                                 JSONObject jsonobject = jsonarray2.getJSONObject(i);
-                                db_tables.addstudents(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"), jsonobject.optString("section"), jsonobject.optString("class_name"));
+                                db_tables.addstudentsAttandence(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"));
                             }
                         }
-                        getStudentsList();
+                        syncStudents();
+                       // getStudentsList();
                     }
                     break;
                 case 2:
@@ -327,10 +328,24 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                 case 3:
                     JSONObject object2 = new JSONObject(results.toString());
                     if (object2.optString("statuscode").equalsIgnoreCase("200")) {
-                        time_stamp = System.currentTimeMillis();
-                        String attendDate = getDate(time_stamp);
-                        db_tables.updateSyncAttendance(String.valueOf(time_stamp), class_id, st_ids, String.valueOf(time_stamp), teacher_id, roll_nos, attendDate);
-                        finish();
+                        JSONArray array = object2.getJSONArray("attendance_details");
+                        for(int i = 0; i< array.length();i++)
+                        {
+                            JSONObject obja = array.getJSONObject(i);
+                            time_stamp = System.currentTimeMillis();
+                            String attendDate = getDate(Long.parseLong(obja.optString("attendance_date")));
+                            if (obja.optString("student_ids").contains(",")||obja.optString("roll_nos").contains(",")) {
+                                String[] st_ids = obja.optString("student_ids").split(",");
+                                String[] roll_nos = obja.optString("roll_nos").split(",");
+                                //for (int k = 0; k< st_ids.length;k++){
+                                    db_tables.updateSyncAttendance(obja.optString("attendance_date"), obja.optString("attendance_id"), obja.optString("class_id"),obja.optString("student_ids"), "1", obja.optString("roll_nos"), attendDate);
+                                //}
+                            }else {
+                                db_tables.updateSyncAttendance(obja.optString("attendance_date"), obja.optString("attendance_id"), obja.optString("class_id"), obja.optString("student_ids"), "1", obja.optString("roll_nos"), attendDate);
+                            }
+                        }
+                            getStudentsList();
+
                     }
                     break;
             }

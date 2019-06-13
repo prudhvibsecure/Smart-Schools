@@ -67,6 +67,10 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
     private int sizeList;
     int i = 0;
     StringBuilder builder = null, builder11 = null;
+    String [] Student_ids;
+    String [] markss;
+    String [] stu_names;
+    String [] rollnos;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -345,6 +349,9 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
                         JSONArray jsonarray2 = object.getJSONArray("student_details");
                         if (jsonarray2.length() > 0) {
+                            Student_ids = new String[jsonarray2.length()];
+                            stu_names = new String[jsonarray2.length()];
+                            rollnos = new String[jsonarray2.length()];
                             for (int i = 0; i < jsonarray2.length(); i++) {
                                 JSONObject jsonobject = jsonarray2.getJSONObject(i);
                                 StudentModel studentModel = new StudentModel();
@@ -353,6 +360,9 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                                 //studentModel.setStatus(jsonobject.optString("status"));
                                 studentModel.setClass_id(jsonobject.optString("class_id"));
                                 studentModel.setStudent_id(jsonobject.optString("student_id"));
+                                Student_ids[i] = jsonobject.optString("student_id");
+                                stu_names[i] = jsonobject.optString("student_name");
+                                rollnos[i] = jsonobject.optString("roll_no");
                                 // studentModel.setMarkslist(jsonobject.optString("marks_obtained"));
                                 studentModelList.add(studentModel);
                                 // db_tables.addstudents(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"));
@@ -367,6 +377,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                             mRecyclerView.setLayoutManager(linearLayoutManager);
                             mRecyclerView.setAdapter(adapter);
+                            syncMarks();
 
                         }
                         // getStudentsList(exam_id);
@@ -381,11 +392,48 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
 
                     }
                     break;
+                case 3:
+                    JSONObject obj = new JSONObject(results.toString());
+                    if(obj.optString("statuscode").equalsIgnoreCase("200"))
+                    {
+                        JSONArray array = obj.getJSONArray("marks_details");
+                        for(int i = 0; i<array.length();i++)
+                        {
+                            JSONObject objin = array.getJSONObject(i);
+                            String exam_id = objin.optString("examinations_id");
+                            String marks = objin.optString("marks_obtained");
+                            String teacher_id = objin.optString("teacher_id");
+                            String class_id = objin.optString("class_id");
+                            String subject = objin.optString("subject");
+                            markss = marks.split(",");
+                            for(int j = 0;j<markss.length;j++) {
+                                db_tables.insertMarks(Student_ids[j],exam_id,markss[j],teacher_id,class_id,subject,stu_names[j],rollnos[j]);
+                            }
+
+                        }
+                        getStudentsList2();
+                    }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void syncMarks() {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("class_id", class_id);
+            object.put("teacher_id", teacher_id);
+            object.put("examinations_id", exam_id);
+            object.put("subject", subject);
+            HTTPNewPost task = new HTTPNewPost(this, this);
+            task.userRequest("Processing...", 3, Paths.sync_marks, object.toString(), 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void getStudentsList(String e_id) {

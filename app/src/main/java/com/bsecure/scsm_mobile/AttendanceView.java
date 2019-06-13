@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -69,7 +70,9 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
             teacher_id = getData.getStringExtra("teacher_id");
         }
         // SharedValues.saveValue(this, "firstCall", "No");
-        getAttandenceList();
+        //getAttandenceList();
+        //getSyncAttandenceList();
+        callSynce();
     }
 
     @Override
@@ -228,10 +231,13 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
                         for (int j = 0; j < att_array.length(); j++) {
                             JSONObject aobj = att_array.getJSONObject(j);
                             String date = String.valueOf(getDateN(Long.parseLong(aobj.optString("attendance_date"))));
-                            db_tables.addSyncAttendance("", class_id, "", aobj.optString("attendance_date"), teacher_id, "", date);
+                            String datef = db_tables.getAttandeceDate("", date);
+                            if(TextUtils.isEmpty(datef)) {
+                                db_tables.addSyncAttendance(aobj.optString("attendance_id"), class_id, "", aobj.optString("attendance_date"), teacher_id, "", date);
+                            }
                            // db_tables.updateAttendance("", class_id, "", aobj.optString("attendance_date"), teacher_id, "");
                         }
-                        getAttandenceList();
+                        getSyncAttandenceList();
                     } else {
                         Toast.makeText(this, object12.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
@@ -276,17 +282,64 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                 mRecyclerView.setLayoutManager(linearLayoutManager);
                 mRecyclerView.setAdapter(adapter);
-            } else {
-                //sync data from server
-                JSONObject object = new JSONObject();
-                object.put("school_id", SharedValues.getValue(this, "school_id"));
-                object.put("class_id", class_id);
-                object.put("teacher_id", teacher_id);
-                HTTPNewPost task = new HTTPNewPost(this, this);
-                task.userRequest("Processing...", 3, Paths.sync_dates, object.toString(), 1);
+            }
+            else
+            {
+                getSyncAttandenceList();
             }
             // }
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getSyncAttandenceList() {
+
+        try {
+            String attendDate = getDateN(System.currentTimeMillis());
+            String msg_list = db_tables.getSyncAttandenceList(class_id);
+            //if (msg_list.length() > 0) {
+            attandenceList = new ArrayList<>();
+            JSONObject obj = new JSONObject(msg_list);
+            JSONArray jsonarray2 = obj.getJSONArray("attendance_details");
+            if (jsonarray2.length() > 0) {
+                for (int i = 0; i < jsonarray2.length(); i++) {
+                    Attandence attandence = new Attandence();
+
+                    JSONObject jsonobject = jsonarray2.getJSONObject(i);
+                    attandence.setAttendance_id(jsonobject.optString("attendance_id"));
+                    attandence.setStudent_ids(jsonobject.optString("student_ids"));
+                    attandence.setAttendance_date(jsonobject.optString("attendance_date"));
+                    attandence.setClass_id(jsonobject.optString("class_id"));
+                    attandence.setTeacher_id(jsonobject.optString("teacher_id"));
+                    attandence.setRoll_no_ids(jsonobject.optString("roll_no_ids"));
+                    attandenceList.add(attandence);
+
+                }
+
+                adapter = new AttandenceListAdapter(attandenceList, this, this);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+                mRecyclerView.setLayoutManager(linearLayoutManager);
+                mRecyclerView.setAdapter(adapter);
+            } else {
+                //sync data from server
+               callSynce();
+            }
+            // }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void callSynce() {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("class_id", class_id);
+            object.put("teacher_id", teacher_id);
+            HTTPNewPost task = new HTTPNewPost(this, this);
+            task.userRequest("Processing...", 3, Paths.sync_dates, object.toString(), 1);
+        }catch (Exception e){
             e.printStackTrace();
         }
     }

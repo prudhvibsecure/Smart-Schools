@@ -415,6 +415,18 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                 linearLayoutManager.scrollToPosition(messageList.size() - 1);
                 mRecyclerView.setAdapter(adapter);
             }
+            else
+            {
+                JSONObject objs = new JSONObject();
+                objs.put("class_id", class_id);
+                //objs.put("teacher_id",teacher_id);
+                objs.put("school_id", SharedValues.getValue(this, "school_id"));
+                objs.put("student_id", student_id);
+                objs.put("pageno", "0");
+                HTTPNewPost pp = new HTTPNewPost(this, this);
+                pp.disableProgress();
+                pp.userRequest("", 501, Paths.base + Paths.sync_parent_message, objs.toString(), 1);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

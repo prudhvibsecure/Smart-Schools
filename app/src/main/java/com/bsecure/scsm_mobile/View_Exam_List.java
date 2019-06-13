@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.adapters.ExamsListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
@@ -43,8 +44,10 @@ public class View_Exam_List extends AppCompatActivity implements HttpHandler, Ex
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
 
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+
 
         Intent getData = getIntent();
         if (getData != null) {
@@ -76,6 +79,7 @@ public class View_Exam_List extends AppCompatActivity implements HttpHandler, Ex
         try {
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
+            //object.put("class_id", class_id);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.get_examinations, object.toString(), 1);
         } catch (Exception e) {
