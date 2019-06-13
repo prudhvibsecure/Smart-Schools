@@ -323,6 +323,16 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                 // mRecyclerView.setHasStableIds(true);
                 linearLayoutManager.scrollToPosition(messageList.size() - 1);
                 mRecyclerView.setAdapter(adapter);
+            } else {
+                //class_id, teacher_id, school_id, pageno
+                JSONObject objs = new JSONObject();
+                objs.put("class_id", class_id);
+                objs.put("teacher_id", techaer_id);
+                objs.put("school_id", SharedValues.getValue(this, "school_id"));
+                objs.put("pageno", "0");
+                HTTPNewPost pp = new HTTPNewPost(this, this);
+                pp.disableProgress();
+                pp.userRequest("", 501, Paths.base + Paths.sync_message, objs.toString(), 1);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -613,6 +623,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                 object.put("school_id", SharedValues.getValue(this, "school_id"));
                 object.put("teacher_id", techaer_id);
                 object.put("attatach_orgname", displayname);
+                object.put("message_status", "0");
                 db_tables.messageData(message, null, mesg_date_time, fr_ids_l.toString(), class_id, SharedValues.getValue(this, "school_id"), "0", techaer_id, student_id, null, null, "0", "0", "Yes", "none");
 
                 HTTPNewPost task = new HTTPNewPost(this, this);
@@ -1403,6 +1414,21 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                         } else {
                             member_dialog.findViewById(R.id.n_data).setVisibility(View.VISIBLE);
                         }
+                    }
+                    break;
+                case 501:
+                    JSONObject ood = new JSONObject(results.toString());
+                    if (ood.optString("statuscode").equalsIgnoreCase("200")) {
+                        // message_id, message, message_date, student_ids, message_status
+                        JSONArray jsonarray2 = ood.getJSONArray("message_details");
+                        if (jsonarray2.length() > 0) {
+                            for (int i = 0; i < jsonarray2.length(); i++) {
+                                JSONObject m_data = jsonarray2.getJSONObject(i);
+                                db_tables.messageData(m_data.optString("message"), m_data.optString("message_id"), m_data.optString("message_date"), null, class_id, SharedValues.getValue(this, "school_id"), m_data.optString("message_status"), techaer_id, student_id, sender_name, null, "0", "0", "Yes", "none");
+                            }
+                            getChatMessages();
+                        }
+
                     }
                     break;
             }

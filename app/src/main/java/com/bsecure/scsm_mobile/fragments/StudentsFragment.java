@@ -97,9 +97,10 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
     private void getStudents() {
 
         try {
+            String id=SharedValues.getValue(getActivity(), "school_id");
             JSONObject object = new JSONObject();
             object.put("phone_number", SharedValues.getValue(getActivity(), "ph_number"));
-            object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("school_id", id);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Processing...", 1, Paths.get_parent_students, object.toString(), 1);
         } catch (Exception e) {

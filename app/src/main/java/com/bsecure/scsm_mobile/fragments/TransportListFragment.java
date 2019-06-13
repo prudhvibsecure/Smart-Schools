@@ -289,7 +289,7 @@ public class TransportListFragment extends Fragment implements TransportListAdap
     public void onMessageRow(List<TransportModel> matchesList, int position) {
         try {
             tras_id=matchesList.get(position).getTransport_id();
-            school_id=matchesList.get(position).getTransport_id();
+            school_id=matchesList.get(position).getSchool_id();
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED ) {

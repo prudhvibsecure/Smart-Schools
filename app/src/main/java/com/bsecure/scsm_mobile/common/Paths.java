@@ -61,4 +61,7 @@ public class Paths {
     public static final String add_non_scholastic_marks = base + "add_non_scholastic_marks";
     public static final String edit_non_scholastic_marks = base + "edit_non_scholastic_marks";
 
+    //Synce Message Teacher
+    public static final String sync_message = base + "sync_message";
+
 }
