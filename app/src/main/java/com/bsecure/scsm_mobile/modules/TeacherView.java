@@ -8,6 +8,8 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -28,7 +30,9 @@ import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.ClassListAdapter;
 import com.bsecure.scsm_mobile.adapters.OrgListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.callbacks.OfflineDataInterface;
 import com.bsecure.scsm_mobile.chat.ChatSingle;
+import com.bsecure.scsm_mobile.common.NetworkInfoAPI;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.controls.ColorGenerator;
 import com.bsecure.scsm_mobile.controls.TextDrawable;
@@ -45,10 +49,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TeacherView extends AppCompatActivity implements HttpHandler, ClassListAdapter.ContactAdapterListener {
+public class TeacherView extends AppCompatActivity implements HttpHandler, ClassListAdapter.ContactAdapterListener, OfflineDataInterface, NetworkInfoAPI.OnNetworkChangeListener {
     private DB_Tables db_tables;
     ArrayList<ClassModel> classModelArrayList;
     private ClassListAdapter adapter;
@@ -59,7 +64,9 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
     private ColorGenerator generator = ColorGenerator.MATERIAL;
     private Dialog m_dialog;
     private IntentFilter filter, re_filter;
-
+    protected List<WeakReference<OfflineDataInterface>> mObservers = new ArrayList<WeakReference<OfflineDataInterface>>();
+    private NetworkInfoAPI networkInfoAPI;
+    private CoordinatorLayout cl;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,10 +85,15 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
         mRecyclerView = findViewById(R.id.content_list);
+        cl=findViewById(R.id.nn_cn);
         mCallback = new ItemTouchHelperCallback();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
-        getTeachers();
+        networkInfoAPI = new NetworkInfoAPI(); //here net fails and connect every time app is crashed..
+        networkInfoAPI.initialize(this);
+        networkInfoAPI.setOnNetworkChangeListener(this);
+        addObserver(this);
+        // getTeachers();
     }
 
     private void getTeachers() {
@@ -332,7 +344,89 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
     };
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public void loadOfflineData() {
+        customToast(getString(R.string.nonet));
+        getListTeachers();
+
     }
+
+    @Override
+    public void loadActualData() {
+        getTeachers();
+    }
+
+    @Override
+    public void hideOfflineOptions() {
+
+    }
+
+    @Override
+    public void showOptions() {
+
+    }
+
+    public void addObserver(OfflineDataInterface observer) {
+        if (hasObserver(observer) == -1) {
+            mObservers.add(new WeakReference<>(
+                    observer));
+        }
+    }
+
+    public int hasObserver(OfflineDataInterface observer) {
+        final int size = mObservers.size();
+
+        for (int n = size - 1; n >= 0; n--) {
+            OfflineDataInterface potentialMatch = mObservers.get(n).get();
+
+            if (potentialMatch == null) {
+                mObservers.remove(n);
+                continue;
+            }
+
+            if (potentialMatch == observer) {
+                return n;
+            }
+        }
+
+        return -1;
+    }
+
+    @Override
+    public void onNetworkChange(String status) {
+        if (status.equalsIgnoreCase("none")) {
+            for (WeakReference<OfflineDataInterface> observer : mObservers) {
+                if (observer.get() != null) {
+                    observer.get().loadOfflineData();
+                    observer.get().hideOfflineOptions();
+                }
+            }
+        } else if (status.equalsIgnoreCase("wifi") || status.equalsIgnoreCase("3g") || status.equalsIgnoreCase("4g")) {
+            for (WeakReference<OfflineDataInterface> observer : mObservers) {
+                if (observer.get() != null) {
+                    observer.get().showOptions();
+                    observer.get().loadActualData();
+                }
+            }
+        }
+
+    }
+
+    private void customToast(String mesg) {
+
+        Snackbar snackbar = Snackbar
+                .make(cl, mesg, Snackbar.LENGTH_LONG)
+                .setAction("RETRY", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    }
+                });
+        snackbar.setActionTextColor(Color.RED);
+        View sbView = snackbar.getView();
+        TextView tv_v = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        tv_v.setTextColor(Color.YELLOW);
+
+        snackbar.show();
+    }
+
+
 }

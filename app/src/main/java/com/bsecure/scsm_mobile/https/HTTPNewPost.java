@@ -79,8 +79,8 @@ public class HTTPNewPost {
              showProgress(progressMsg, context);
 
             if (!isNetworkAvailable()) {
+                disableProgress();
                 // showUserActionResult(-1, context.getString(R.string.nipcyns));
-                return;
             }
 
 
@@ -102,6 +102,7 @@ public class HTTPNewPost {
                     conn = getConn.getHTTPConnection(requestUrl);
 
                     if (conn == null) {
+                        disableProgress();
                         //postUserAction(-1, context.getString(R.string.isr));
                         return;
                     }
