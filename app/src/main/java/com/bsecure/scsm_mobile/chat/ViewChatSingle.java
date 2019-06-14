@@ -155,7 +155,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     StringBuilder builder_copy;
     ImageView sec_Tag;
     private String readonce = "0", autodelete = "0", showtime = "0", validuntil = "0", pin = "0", nor_forwrd = "0", no_ptsc = "0", date, pin_default;
-    String class_id, studentName, tutors_ids, mss_id, message,typ_marks;
+    String class_id, studentName, tutors_ids, mss_id, message,typ_marks, sender_name="";
     Dialog rep_Dialog, member_dialog;
     List<Members> contactObjectList;
     private SweetAlertDialog pDialog;
@@ -425,7 +425,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                 objs.put("pageno", "0");
                 HTTPNewPost pp = new HTTPNewPost(this, this);
                 pp.disableProgress();
-                pp.userRequest("", 501, Paths.base + Paths.sync_parent_message, objs.toString(), 1);
+                pp.userRequest("Processing..." , 501, Paths.sync_parent_message, objs.toString(), 1);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1365,6 +1365,22 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
                         db_tables.updateMessageId(object.optString("message_id"), object.optString("message_date"));
                         getChatMessages();
+                    }
+                    break;
+
+                case 501:
+                    JSONObject ood = new JSONObject(results.toString());
+                    if (ood.optString("statuscode").equalsIgnoreCase("200")) {
+                        // message_id, message, message_date, student_ids, message_status
+                        JSONArray jsonarray2 = ood.getJSONArray("message_details");
+                        if (jsonarray2.length() > 0) {
+                            for (int i = 0; i < jsonarray2.length(); i++) {
+                                JSONObject m_data = jsonarray2.getJSONObject(i);
+                                db_tables.messageData(m_data.optString("message"), m_data.optString("message_id"), m_data.optString("message_date"), null, class_id, SharedValues.getValue(this, "school_id"), m_data.optString("message_status"), m_data.optString("teacher_id"), student_id, sender_name, null, "0", "0", "Yes", "none");
+                            }
+                            getChatMessages();
+                        }
+
                     }
                     break;
 

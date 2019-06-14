@@ -97,10 +97,13 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
 
         if(roll_nos.length() ==0 && student_ids.length()== 0)
         {
-            getStudents();
+            //getStudents();
+            getStudentsList("0");
+
         }else
         {
-            syncStudents();
+            getStudentsList("1");
+            //syncStudents();
         }
 
 
@@ -307,7 +310,7 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                         if (jsonarray2.length() > 0) {
                             for (int i = 0; i < jsonarray2.length(); i++) {
                                 JSONObject jsonobject = jsonarray2.getJSONObject(i);
-                                db_tables.addstudentsAttandence(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"));
+                                    db_tables.addstudentsAttandence(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"));
                             }
                         }
                         syncStudents();
@@ -339,12 +342,12 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                                 String[] roll_nos = obja.optString("roll_nos").split(",");
                                 //for (int k = 0; k< st_ids.length;k++){
                                     db_tables.updateSyncAttendance(obja.optString("attendance_date"), obja.optString("attendance_id"), obja.optString("class_id"),obja.optString("student_ids"), "1", obja.optString("roll_nos"), attendDate);
-                                //}
+                               // }
                             }else {
                                 db_tables.updateSyncAttendance(obja.optString("attendance_date"), obja.optString("attendance_id"), obja.optString("class_id"), obja.optString("student_ids"), "1", obja.optString("roll_nos"), attendDate);
                             }
                         }
-                            getStudentsList();
+                            getStudentsList("1");
 
                     }
                     break;
@@ -361,7 +364,7 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
         return date;
     }
 
-    private void getStudentsList() {
+    private void getStudentsList(String val) {
 
         try {
             String msg_list = db_tables.getstudentsList_Attend(class_id);
@@ -383,11 +386,17 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
 
                 }
 
-
                 adapter = new StudentsEditAdapter(studentModelList, this, this);
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                 mRecyclerView.setLayoutManager(linearLayoutManager);
                 mRecyclerView.setAdapter(adapter);
+                if(val.equalsIgnoreCase("0")) {
+                    syncStudents();
+                }
+            }
+            else
+            {
+                getStudents();
             }
         } catch (JSONException e) {
             e.printStackTrace();

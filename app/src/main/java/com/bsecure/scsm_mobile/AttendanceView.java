@@ -231,7 +231,7 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
                         for (int j = 0; j < att_array.length(); j++) {
                             JSONObject aobj = att_array.getJSONObject(j);
                             String date = String.valueOf(getDateN(Long.parseLong(aobj.optString("attendance_date"))));
-                            String datef = db_tables.getAttandeceDate("", date);
+                            String datef = db_tables.getSyncAttandeceDate(aobj.optString("attendance_id"));
                             if(TextUtils.isEmpty(datef)) {
                                 db_tables.addSyncAttendance(aobj.optString("attendance_id"), class_id, "", aobj.optString("attendance_date"), teacher_id, "", date);
                             }

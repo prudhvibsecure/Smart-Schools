@@ -621,7 +621,8 @@ public class DB_Tables {
                 cv.put("status", status);
                 cv.put("condition", "0");
                 cv.put("class_id", class_id);
-                db.insert("Attendance", null, cv);
+                db.insertWithOnConflict("Attendance", null, cv, SQLiteDatabase.CONFLICT_IGNORE);
+                //db.insert("Attendance", null, cv);
                 db.close();
             }
 
@@ -629,6 +630,37 @@ public class DB_Tables {
             e.printStackTrace();
         }
     }
+
+    public String getAttandeceClass(String class_id) {
+        String Id = "";
+        try {
+            if (database != null) {
+
+                String cursor_q = "select * from Attendance where class_id ='" + class_id + "'";
+
+                SQLiteDatabase db = database.getWritableDatabase();
+                Cursor cursor = db
+                        .rawQuery(cursor_q,
+                                null);
+                try {
+                    if (null != cursor)
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToLast();
+                            Id = cursor.getString(cursor.getColumnIndex("class_id"));
+                        }
+                    cursor.close();
+                    db.close();
+                } finally {
+                    db.close();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Id;
+    }
+
 
     public String getstudentsList_sub(String examinations_id) {
         JSONObject jsonObject = new JSONObject();
@@ -800,8 +832,8 @@ public class DB_Tables {
                 cv.put("teacher_id", teacher_id);
                 cv.put("roll_no_ids", roll_no_ids);
                 cv.put("aDate", adate);
-                db.insert("Attendance", null, cv);
-               // db.insertWithOnConflict("Attendance", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+                //db.insert("Attendance", null, cv);
+                db.insertWithOnConflict("Attendance", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
                 db.close();
             }
 
@@ -847,7 +879,7 @@ public class DB_Tables {
                 cv.put("student_ids", student_ids);
                 cv.put("attendance_date", attendance_date);
                 cv.put("attendance_con", "Yes");
-                cv.put("condition", status);
+                cv.put("status", status);
                 cv.put("aDate", aDate);
                 cv.put("roll_no_ids", roll_nos);
                 db.update("Attendance", cv, iwhereClause, null);
@@ -889,6 +921,37 @@ public class DB_Tables {
         }
         return Id;
     }
+
+    public String getSyncAttandeceDate(String attendance_id) {
+        String Id = "";
+        try {
+            if (database != null) {
+
+                String cursor_q = "select * from Attendance where attendance_id ='" + attendance_id + "'";
+
+                SQLiteDatabase db = database.getWritableDatabase();
+                Cursor cursor = db
+                        .rawQuery(cursor_q,
+                                null);
+                try {
+                    if (null != cursor)
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToLast();
+                            Id = cursor.getString(cursor.getColumnIndex("attendance_date"));
+                        }
+                    cursor.close();
+                    db.close();
+                } finally {
+                    db.close();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Id;
+    }
+
 
     public String getAttandenceList(String class_id, String attendDate) {
         JSONObject jsonObject = new JSONObject();
@@ -1209,7 +1272,7 @@ public class DB_Tables {
             if (database != null) {
                 SQLiteDatabase db = database.getWritableDatabase();
 
-                String sql = "select * from Message where student_id='" + class_id + "'";
+                String sql = "select * from Message where class_id='" + class_id + "'";
                 Cursor cursor = db.rawQuery(sql,
                         null);
                 if (cursor != null) {

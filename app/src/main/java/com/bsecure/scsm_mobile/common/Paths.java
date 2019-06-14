@@ -64,7 +64,7 @@ public class Paths {
 
     //
     public static final String sync_message = base + "sync_message";
-    public static final String sync_parent_message = base + "sync_parent_message";
+    public static final String sync_parent_message = base + "sync_data/sync_parent_message";
     public static final String sync_dates = base + "sync_dates";
     public static final String sync_attendance = base + "sync_attendance";
     public static final String sync_marks = base + "sync_marks";

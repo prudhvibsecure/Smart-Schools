@@ -332,7 +332,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                 objs.put("pageno", "0");
                 HTTPNewPost pp = new HTTPNewPost(this, this);
                 pp.disableProgress();
-                pp.userRequest("", 501, Paths.base + Paths.sync_message, objs.toString(), 1);
+                pp.userRequest("Processing...", 501, Paths.sync_message, objs.toString(), 1);
             }
         } catch (Exception e) {
             e.printStackTrace();
