@@ -199,12 +199,15 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
                 case 1:
                     JSONObject object = new JSONObject(results.toString());
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
-                        SharedValues.saveValue(this, "firstCall", "Yes");
                         JSONArray jsonarray2 = object.getJSONArray("student_details");
                         if (jsonarray2.length() > 0) {
-                            for (int i = 0; i < jsonarray2.length(); i++) {
-                                JSONObject jsonobject = jsonarray2.getJSONObject(i);
-                                db_tables.addstudentsAttandence(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"));
+                            String attendDate = getDateN(System.currentTimeMillis());
+                            String datef = db_tables.getSyncStudents(attendDate,class_id);
+                            if (TextUtils.isEmpty(datef)) {
+                                for (int i = 0; i < jsonarray2.length(); i++) {
+                                    JSONObject jsonobject = jsonarray2.getJSONObject(i);
+                                    db_tables.addstudentsAttandence(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"), null);
+                                }
                             }
                         }
                     }
@@ -232,10 +235,10 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
                             JSONObject aobj = att_array.getJSONObject(j);
                             String date = String.valueOf(getDateN(Long.parseLong(aobj.optString("attendance_date"))));
                             String datef = db_tables.getSyncAttandeceDate(aobj.optString("attendance_id"));
-                            if(TextUtils.isEmpty(datef)) {
+                            if (TextUtils.isEmpty(datef)) {
                                 db_tables.addSyncAttendance(aobj.optString("attendance_id"), class_id, "", aobj.optString("attendance_date"), teacher_id, "", date);
                             }
-                           // db_tables.updateAttendance("", class_id, "", aobj.optString("attendance_date"), teacher_id, "");
+                            // db_tables.updateAttendance("", class_id, "", aobj.optString("attendance_date"), teacher_id, "");
                         }
                         getSyncAttandenceList();
                     } else {
@@ -251,7 +254,9 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
     @Override
     protected void onResume() {
         super.onResume();
-       // getAttandenceList();
+         //getAttandenceList();
+        getSyncAttandenceList();
+        //callSynce();
     }
 
     private void getAttandenceList() {
@@ -282,9 +287,7 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                 mRecyclerView.setLayoutManager(linearLayoutManager);
                 mRecyclerView.setAdapter(adapter);
-            }
-            else
-            {
+            } else {
                 getSyncAttandenceList();
             }
             // }
@@ -323,7 +326,7 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
                 mRecyclerView.setAdapter(adapter);
             } else {
                 //sync data from server
-               callSynce();
+                callSynce();
             }
             // }
         } catch (JSONException e) {
@@ -339,7 +342,7 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
             object.put("teacher_id", teacher_id);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 3, Paths.sync_dates, object.toString(), 1);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

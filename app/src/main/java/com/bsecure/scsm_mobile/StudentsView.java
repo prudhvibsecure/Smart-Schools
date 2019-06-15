@@ -49,7 +49,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
     ArrayList<String> student_list_id = new ArrayList<>();
     ArrayList<String> rollno_list_id = new ArrayList<>();
     private long time_stamp;
-
+    String att_date="";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +75,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
             teacher_id = getData.getStringExtra("teacher_id");
         }
 
-
+        att_date= String.valueOf(System.currentTimeMillis());
         getStudents();
     }
 
@@ -95,7 +95,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                 if (student_list_id.size() > 0) {
                     StringBuilder builder = new StringBuilder();
                     for (String s : student_list_id) {
-                        db_tables.updateVV(s, "0", class_id);
+                        db_tables.updateVV(s, "0", class_id,att_date);
                     }
                 }
                 finish();
@@ -152,6 +152,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                 for (String s : student_list_id) {
                     builder.append("," + s);
                     ss_d = s;
+                    db_tables.updateVV(s, "1", class_id,att_date);
                     //  db_tables.updateVV(s, "1");
                 }
                 String fis = builder.toString();
@@ -227,6 +228,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                             mRecyclerView.setAdapter(adapter);
                         }
                     }
+                    Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     break;
                 case 2:
                     JSONObject object1 = new JSONObject(results.toString());
@@ -309,14 +311,14 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
             student_list_id.add(Student_Id);
             roll_no = matchesList.get(position).getRoll_no();
             rollno_list_id.add(roll_no);
-            db_tables.updateVV(Student_Id, "1", class_id);
+            db_tables.updateVV(Student_Id, "1", class_id,att_date);
             chk_name.setBackground(getResources().getDrawable(R.mipmap.ic_uncheck));
         } else {
             Student_Id = matchesList.get(position).getStudent_id();
             student_list_id.remove(Student_Id);
             roll_no = matchesList.get(position).getRoll_no();
             rollno_list_id.remove(roll_no);
-            db_tables.updateVV(Student_Id, "0", class_id);
+            db_tables.updateVV(Student_Id, "0", class_id,att_date);
             chk_name.setBackground(getResources().getDrawable(R.mipmap.ic_check));
         }
 
@@ -328,7 +330,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
         if (student_list_id.size() > 0) {
             StringBuilder builder = new StringBuilder();
             for (String s : student_list_id) {
-                db_tables.updateVV(s, "0", class_id);
+                db_tables.updateVV(s, "0", class_id,att_date);
             }
         }
         super.onBackPressed();

@@ -608,7 +608,7 @@ public class DB_Tables {
     }
 
 
-    public void addstudentsAttandence(String student_id, String roll_no, String student_name, String status, String class_id) {
+    public void addstudentsAttandence(String student_id, String roll_no, String student_name, String status, String class_id, String date) {
         SQLiteDatabase db = null;
         try {
             long rawId;
@@ -621,8 +621,9 @@ public class DB_Tables {
                 cv.put("status", status);
                 cv.put("condition", "0");
                 cv.put("class_id", class_id);
-                db.insertWithOnConflict("Attendance", null, cv, SQLiteDatabase.CONFLICT_IGNORE);
-                //db.insert("Attendance", null, cv);
+                cv.put("aDate", date);
+                //db.insertWithOnConflict("Attendance", null, cv, SQLiteDatabase.CONFLICT_IGNORE);
+                db.insert("Attendance", null, cv);
                 db.close();
             }
 
@@ -776,12 +777,12 @@ public class DB_Tables {
         return jsonObject.toString();
     }*/
 
-    public void updateVV(String student_id, String chk, String class_id) {
+    public void updateVV(String student_id, String chk, String class_id, String attdate) {
         SQLiteDatabase db = null;
         try {
             if (database != null) {
                 db = database.getWritableDatabase();
-                String iwhereClause = "student_id='" + student_id + "' and class_id='" + class_id + "'";
+                String iwhereClause = "student_id='" + student_id + "' and class_id='" + class_id + "' and aDate='" + attdate + "'";
                 ContentValues cv = new ContentValues();
                 cv.put("condition", chk);
                 db.update("Attendance", cv, iwhereClause, null);
@@ -792,7 +793,6 @@ public class DB_Tables {
             e.printStackTrace();
         }
     }
-
 
 
     public void addAttendance(String attendance_id, String class_id, String student_ids, String s1, String teacher_id, String roll_no_ids) {
@@ -831,8 +831,8 @@ public class DB_Tables {
                 cv.put("attendance_date", s1);
                 cv.put("teacher_id", teacher_id);
                 cv.put("roll_no_ids", roll_no_ids);
-                cv.put("aDate", adate);
-                //db.insert("Attendance", null, cv);
+                //cv.put("aDate", adate);
+                //  db.insert("Attendance", null, cv);
                 db.insertWithOnConflict("Attendance", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
                 db.close();
             }
@@ -846,18 +846,19 @@ public class DB_Tables {
 
     public void updateAttendance(String attendance_date, String attendance_id, String class_id, String student_ids, String status, String roll_nos, String aDate) {
         try {
+            SQLiteDatabase db = null;
             if (database != null) {
                 db = database.getWritableDatabase();
-                String iwhereClause = "student_id='" + student_ids + "' and class_id='" + class_id + "'";
+                String iwhereClause = "student_id='" + student_ids + "' and class_id='" + class_id + "' and  aDate='" + attendance_date + "'";
 
                 ContentValues cv = new ContentValues();
-                cv.put("attendance_id", attendance_id);
-                cv.put("student_ids", student_ids);
-                cv.put("attendance_date", attendance_date);
+                //cv.put("attendance_id", attendance_id);
+               // cv.put("student_ids", student_ids);
+                // cv.put("attendance_date", attendance_date);
                 cv.put("attendance_con", "Yes");
                 cv.put("status", status);
-                cv.put("aDate", aDate);
-                cv.put("roll_no_ids", roll_nos);
+               // cv.put("aDate", aDate);
+               // cv.put("roll_no_ids", roll_nos);
                 db.update("Attendance", cv, iwhereClause, null);
                 db.close();
             }
@@ -870,16 +871,17 @@ public class DB_Tables {
 
     public void updateSyncAttendance(String attendance_date, String attendance_id, String class_id, String student_ids, String status, String roll_nos, String aDate) {
         try {
+            SQLiteDatabase db = null;
             if (database != null) {
                 db = database.getWritableDatabase();
-                String iwhereClause = "aDate='" + aDate + "' and class_id='" + class_id + "' and attendance_id='" + attendance_id + "'";
+                //String iwhereClause = "aDate='" + aDate + "' and class_id='" + class_id + "' and attendance_id='" + attendance_id + "'";
+                String iwhereClause = "class_id='" + class_id + "' and attendance_id='" + attendance_id + "'";
 
                 ContentValues cv = new ContentValues();
-                cv.put("attendance_id", attendance_id);
+                //cv.put("attendance_id", attendance_id);
                 cv.put("student_ids", student_ids);
-                cv.put("attendance_date", attendance_date);
+                // cv.put("attendance_date", attendance_date);
                 cv.put("attendance_con", "Yes");
-                cv.put("status", status);
                 cv.put("aDate", aDate);
                 cv.put("roll_no_ids", roll_nos);
                 db.update("Attendance", cv, iwhereClause, null);
@@ -1027,6 +1029,7 @@ public class DB_Tables {
     public void updateStudents1(String student_id, String status) {
 
         try {
+            SQLiteDatabase db = null;
             if (database != null) {
                 db = database.getWritableDatabase();
                 String iwhereClause = "student_id='" + student_id + "'";
@@ -1205,6 +1208,7 @@ public class DB_Tables {
 
     public void syllabusUpdateV(String syllabus_id, String newText, String desc, String subject, String class_id) {
         try {
+            SQLiteDatabase db = null;
             if (database != null) {
                 db = database.getWritableDatabase();
                 String iwhereClause = "syllabus_id='" + syllabus_id + "' and class_id='" + class_id + "'";
@@ -1501,7 +1505,7 @@ public class DB_Tables {
                 cv.put("created_by", created);
                 cv.put("phone_number", number);
                 db.insertWithOnConflict("Transport", null, cv, SQLiteDatabase.CONFLICT_IGNORE);
-               // db.insert("Transport", null, cv);
+                // db.insert("Transport", null, cv);
                 db.close();
             }
 
@@ -1783,6 +1787,7 @@ public class DB_Tables {
     public void insertMarks(String student_id, String exam_id, String makes_comma, String teacher_id, String class_id, String subject, String student_name, String roll_no) {
 
         try {
+            SQLiteDatabase db = null;
             long rawId;
             if (database != null) {
                 db = database.getWritableDatabase();
@@ -1912,7 +1917,7 @@ public class DB_Tables {
     }
 
     public void updateStudents11(String student_id, String exam_id, String makes_comma, String teacher_id, String class_id, String subject) {
-
+        SQLiteDatabase db = null;
         try {
             if (database != null) {
                 db = database.getWritableDatabase();
@@ -1994,7 +1999,7 @@ public class DB_Tables {
         return myArrayList;
     }
 
-    public String getstudentsList_Attend(String class_id) {
+    public String getstudentsList_Attend(String class_id, String date) {
         JSONObject jsonObject = new JSONObject();
 
         try {
@@ -2002,7 +2007,7 @@ public class DB_Tables {
             if (database != null) {
                 SQLiteDatabase db = database.getWritableDatabase();
 
-                String sql = "select * from Attendance where class_id='" + class_id + "'";
+                String sql = "select * from Attendance where class_id='" + class_id + "' and  aDate='" + date + "' and student_name is not null";
                 Cursor cursor = db.rawQuery(sql,
                         null);
                 if (cursor != null) {
@@ -2029,12 +2034,12 @@ public class DB_Tables {
         return jsonObject.toString();
     }
 
-    public String getcheckCondition_Att(String id, String class_id) {
+    public String getcheckCondition_Att(String id, String class_id, String attdate) {
         String Id = null;
         try {
             if (database != null) {
 
-                String cursor_q = "select * from Attendance where student_id='" + id + "' and class_id='" + class_id + "'";
+                String cursor_q = "select * from Attendance where student_id='" + id + "' and class_id='" + class_id + "' and aDate='" + attdate + "'";
                 SQLiteDatabase db = database.getWritableDatabase();
                 Cursor cursor = db
                         .rawQuery(cursor_q,
@@ -2042,7 +2047,7 @@ public class DB_Tables {
                 try {
                     if (null != cursor)
                         if (cursor.getCount() > 0) {
-                            cursor.moveToLast();
+                            cursor.moveToFirst();
                             Id = cursor.getString(cursor.getColumnIndex("condition"));
                         }
                     cursor.close();
@@ -2058,12 +2063,12 @@ public class DB_Tables {
         return Id;
     }
 
-    public String getcheckCondition_roll(String id, String class_id) {
+    public String getcheckCondition_roll(String id, String class_id, String att_date) {
         String Id = null;
         try {
             if (database != null) {
 
-                String cursor_q = "select * from Attendance where roll_no='" + id + "' and class_id='" + class_id + "'";
+                String cursor_q = "select * from Attendance where roll_no='" + id + "' and class_id='" + class_id + "' and aDate='" + att_date + "'";
                 SQLiteDatabase db = database.getWritableDatabase();
                 Cursor cursor = db
                         .rawQuery(cursor_q,
@@ -2071,7 +2076,7 @@ public class DB_Tables {
                 try {
                     if (null != cursor)
                         if (cursor.getCount() > 0) {
-                            cursor.moveToLast();
+                            cursor.moveToFirst();
                             Id = cursor.getString(cursor.getColumnIndex("condition"));
                         }
                     cursor.close();
@@ -2202,5 +2207,35 @@ public class DB_Tables {
             e.printStackTrace();
         }
         return student_id;
+    }
+
+    public String getSyncStudents(String attendDate, String class_id) {
+        String Id = "";
+        try {
+            if (database != null) {
+
+                String cursor_q = "select * from Attendance where class_id ='" + class_id + "' and aDate='" + attendDate + "'";
+
+                SQLiteDatabase db = database.getWritableDatabase();
+                Cursor cursor = db
+                        .rawQuery(cursor_q,
+                                null);
+                try {
+                    if (null != cursor)
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToLast();
+                            Id = cursor.getString(cursor.getColumnIndex("aDate"));
+                        }
+                    cursor.close();
+                    db.close();
+                } finally {
+                    db.close();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Id;
     }
 }

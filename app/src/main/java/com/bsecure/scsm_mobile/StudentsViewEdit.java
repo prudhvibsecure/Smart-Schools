@@ -95,13 +95,11 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
 //            }
         }
 
-        if(roll_nos.length() ==0 && student_ids.length()== 0)
-        {
-            //getStudents();
-            getStudentsList("0");
+        if (roll_nos.length() == 0 && student_ids.length() == 0) {
+            getStudents();
+            //getStudentsList("0");
 
-        }else
-        {
+        } else {
             getStudentsList("1");
             //syncStudents();
         }
@@ -111,16 +109,14 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
 
     private void syncStudents() {
 
-        try{
+        try {
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("class_id", class_id);
             object.put("teacher_id", teacher_id);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 3, Paths.sync_attendance, object.toString(), 1);
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -178,7 +174,7 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
             String desc;
             if (rollno_list_id.size() > 0) {
                 desc = rollno_list_id.toString();
-                dialog.setContentText("Roll No.'s: " + Html.fromHtml(desc+" Are Being Marked Absent."));
+                dialog.setContentText("Roll No.'s: " + Html.fromHtml(desc + " Are Being Marked Absent."));
             } else {
                 desc = "All Students <br/>Present";
                 dialog.setContentText("Roll No.'s: " + Html.fromHtml(desc));
@@ -196,7 +192,7 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                 @Override
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
                     sweetAlertDialog.dismiss();
-                   // StudentsViewEdit.this.finish();
+                    // StudentsViewEdit.this.finish();
                 }
             });
             dialog.show();
@@ -204,7 +200,6 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
 
     }
@@ -219,15 +214,15 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                 for (String s : student_list_id) {
 
                     // db_tables.updateVV(Student_Id, "1");
-                    String con = db_tables.getcheckCondition_Att(s, class_id);
+                    String con = db_tables.getcheckCondition_Att(s, class_id,att_date);
                     if (con.equalsIgnoreCase("1")) {
-                        db_tables.updateVV(s, "0", class_id);
+                        db_tables.updateVV(s, "0", class_id,att_date);
                         Log.e("present", "0");
                         builder.append("," + s);
                     } else {
                         Log.e("absent", "1");
                         builder.append("," + s);
-                        db_tables.updateVV(s, "1", class_id);
+                        db_tables.updateVV(s, "1", class_id,att_date);
                     }
                 }
                 String fis = builder.toString();
@@ -249,7 +244,7 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
             if (rollno_list_id.size() > 0) {
                 StringBuilder bb = new StringBuilder();
                 for (String s : rollno_list_id) {
-                    String con = db_tables.getcheckCondition_roll(s, class_id);
+                    String con = db_tables.getcheckCondition_roll(s, class_id,att_date);
                     if (con.equalsIgnoreCase("1")) {
                         Log.e("present", "0");
                         bb.append("," + s);
@@ -299,6 +294,13 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
         }
     }
 
+    private String getDateN(long time) {
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(time);
+        String date = DateFormat.format("dd-MM-yyyy", cal).toString();
+        return date;
+    }
+
     @Override
     public void onResponse(Object results, int requestType) {
         try {
@@ -308,13 +310,18 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
                         JSONArray jsonarray2 = object.getJSONArray("student_details");
                         if (jsonarray2.length() > 0) {
-                            for (int i = 0; i < jsonarray2.length(); i++) {
-                                JSONObject jsonobject = jsonarray2.getJSONObject(i);
-                                    db_tables.addstudentsAttandence(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"));
+                            String attendDate = getDateN(Long.parseLong(att_date));
+                            String datef = db_tables.getSyncStudents(attendDate, class_id);
+                            if (TextUtils.isEmpty(datef)) {
+                                for (int i = 0; i < jsonarray2.length(); i++) {
+                                    JSONObject jsonobject = jsonarray2.getJSONObject(i);
+                                    db_tables.addstudentsAttandence(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"), att_date);
+                                }
                             }
+                            syncStudents();
                         }
-                        syncStudents();
-                       // getStudentsList();
+
+                        // getStudentsList();
                     }
                     break;
                 case 2:
@@ -322,7 +329,7 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
                         time_stamp = System.currentTimeMillis();
                         String attendDate = getDate(time_stamp);
-                        db_tables.updateAttendance(String.valueOf(time_stamp), class_id, st_ids, String.valueOf(time_stamp), teacher_id, roll_nos, attendDate);
+                        db_tables.updateAttendance(att_date, class_id, st_ids, String.valueOf(time_stamp), teacher_id, roll_nos, attendDate);
                         finish();
 
                     }
@@ -332,22 +339,27 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                     JSONObject object2 = new JSONObject(results.toString());
                     if (object2.optString("statuscode").equalsIgnoreCase("200")) {
                         JSONArray array = object2.getJSONArray("attendance_details");
-                        for(int i = 0; i< array.length();i++)
-                        {
+                        for (int i = 0; i < array.length(); i++) {
                             JSONObject obja = array.getJSONObject(i);
                             time_stamp = System.currentTimeMillis();
                             String attendDate = getDate(Long.parseLong(obja.optString("attendance_date")));
-                            if (obja.optString("student_ids").contains(",")||obja.optString("roll_nos").contains(",")) {
-                                String[] st_ids = obja.optString("student_ids").split(",");
-                                String[] roll_nos = obja.optString("roll_nos").split(",");
-                                //for (int k = 0; k< st_ids.length;k++){
-                                    db_tables.updateSyncAttendance(obja.optString("attendance_date"), obja.optString("attendance_id"), obja.optString("class_id"),obja.optString("student_ids"), "1", obja.optString("roll_nos"), attendDate);
-                               // }
-                            }else {
-                                db_tables.updateSyncAttendance(obja.optString("attendance_date"), obja.optString("attendance_id"), obja.optString("class_id"), obja.optString("student_ids"), "1", obja.optString("roll_nos"), attendDate);
+                            String att_date1 = getDate(Long.parseLong(att_date));
+                            String datef = db_tables.getSyncStudents(attendDate, class_id);
+                            if (TextUtils.isEmpty(datef) && att_date1.startsWith(attendDate)) {
+                                if (obja.optString("student_ids").contains(",") || obja.optString("roll_nos").contains(",")) {
+                                    String[] st_ids = obja.optString("student_ids").split(",");
+                                    String[] roll_nos = obja.optString("roll_nos").split(",");
+                                    for (int k = 0; k < st_ids.length; k++) {
+                                        db_tables.updateSyncAttendance(obja.optString("attendance_date"), obja.optString("attendance_id"), obja.optString("class_id"), st_ids[k], "1", roll_nos[k], attendDate);
+                                        db_tables.updateVV(st_ids[k], "1", class_id,att_date);
+                                    }
+                                } else {
+                                    db_tables.updateSyncAttendance(obja.optString("attendance_date"), obja.optString("attendance_id"), obja.optString("class_id"), obja.optString("student_ids"), "1", obja.optString("roll_nos"), attendDate);
+                                    db_tables.updateVV(obja.optString("student_ids"), "1", class_id,att_date);
+                                }
                             }
                         }
-                            getStudentsList("1");
+                        getStudentsList("1");
 
                     }
                     break;
@@ -367,7 +379,8 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
     private void getStudentsList(String val) {
 
         try {
-            String msg_list = db_tables.getstudentsList_Attend(class_id);
+            String attendDate = getDateN(System.currentTimeMillis());
+            String msg_list = db_tables.getstudentsList_Attend(class_id, att_date);
             studentModelList = new ArrayList<>();
             JSONObject obj = new JSONObject(msg_list);
             JSONArray jsonarray2 = obj.getJSONArray("student_details");
@@ -390,14 +403,8 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                 mRecyclerView.setLayoutManager(linearLayoutManager);
                 mRecyclerView.setAdapter(adapter);
-                if(val.equalsIgnoreCase("0")) {
-                    syncStudents();
-                }
             }
-            else
-            {
-                getStudents();
-            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

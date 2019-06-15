@@ -10,11 +10,11 @@
     <item
         android:id="@+id/marks"
         android:title="Marks"
-        />
+        android:visible="false"/>
 
     <item
         android:id="@+id/syllabus"
         android:title="Syllabus"
-        />
+        android:visible="false"/>
 
 </menu>
