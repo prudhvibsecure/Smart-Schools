@@ -58,11 +58,13 @@ import com.bsecure.scsm_mobile.ParentsReplys;
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.IndividualStudentsAdapter;
 import com.bsecure.scsm_mobile.adapters.MessageListAdapter;
+import com.bsecure.scsm_mobile.backservice.AttachmentsScheduler;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.callbacks.IDownloadCallback;
 import com.bsecure.scsm_mobile.callbacks.OfflineDataInterface;
 import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Item;
+import com.bsecure.scsm_mobile.common.NetworkInfoAPI;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.common.RunTimePermission;
 import com.bsecure.scsm_mobile.database.DB_Tables;
@@ -103,7 +105,7 @@ import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
  * Created by Admin on 2018-11-20.
  */
 
-public class ChatSingle extends AppCompatActivity implements View.OnClickListener, HttpHandler, MessageListAdapter.ChatAdapterListener, IndividualStudentsAdapter.ContactAdapterListener, IDownloadCallback, OfflineDataInterface {
+public class ChatSingle extends AppCompatActivity implements View.OnClickListener, HttpHandler, MessageListAdapter.ChatAdapterListener, IndividualStudentsAdapter.ContactAdapterListener, IDownloadCallback, OfflineDataInterface, NetworkInfoAPI.OnNetworkChangeListener {
 
     private ImageView mFabButton, mEmoji;
     private RecordButton mAudioButton;
@@ -163,6 +165,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
     List<StudentModel> contactObjectList;
     IndividualStudentsAdapter studentsMarksAdapter;
     private LinearLayout inputLL;
+    private NetworkInfoAPI networkInfoAPI;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -224,9 +227,14 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
 
         mEmoji = (ImageView) findViewById(R.id.emji_icon);
         contentRoot = findViewById(R.id.contentRoot);
-        initViews();
+
 
         mNetworkReceiver = new NetworkChangeReceiver();
+
+        networkInfoAPI=new NetworkInfoAPI();
+        networkInfoAPI.initialize(this);
+        networkInfoAPI.setOnNetworkChangeListener(this);
+        initViews();
         addObserver(this);
 
 
@@ -624,15 +632,20 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                 object.put("teacher_id", techaer_id);
                 object.put("attatach_orgname", displayname);
                 object.put("message_status", "0");
-                db_tables.messageData(message, null, mesg_date_time, fr_ids_l.toString(), class_id, SharedValues.getValue(this, "school_id"), "0", techaer_id, student_id, null, null, "0", "0", "Yes", "none");
+                if (isNetworkAvailable()) {
+                    db_tables.messageData(message, null, mesg_date_time, fr_ids_l.toString(), class_id, SharedValues.getValue(this, "school_id"), "0", techaer_id, student_id, null, null, "0", "0", "Yes", "none");
 
-                HTTPNewPost task = new HTTPNewPost(this, this);
-                task.disableProgress();
-                if (student_id == "" || student_id.isEmpty()) {
-                    task.userRequest("", 1, Paths.send_message2, object.toString(), 1);
+                    HTTPNewPost task = new HTTPNewPost(this, this);
+                    task.disableProgress();
+                    if (student_id == "" || student_id.isEmpty()) {
+                        task.userRequest("", 1, Paths.send_message2, object.toString(), 1);
+                    } else {
+                        task.userRequest("", 1, Paths.send_message, object.toString(), 1);
+
+                    }
                 } else {
-                    task.userRequest("", 1, Paths.send_message, object.toString(), 1);
-
+                    db_tables.messageDataOffline(message, null, mesg_date_time, fr_ids_l.toString(), class_id, SharedValues.getValue(this, "school_id"), "0", techaer_id, student_id, null, null, "0", "0", "Yes", "none", "1", displayname);
+                    getChatMessages();
                 }
 
             }
@@ -1262,7 +1275,10 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
 //                    Item fitem = (Item) fview.getTag();
 //
 //                    removeAttachment(requestId);
-
+                    JSONObject object1 = new JSONObject(obj.toString());
+                    object1.optString("attachname");
+                    db_tables.messageDataOffline(object1.optString("attachname"), null, mesg_date_time, fr_ids_l.toString(), class_id, SharedValues.getValue(this, "school_id"), "0", techaer_id, student_id, null, null, "0", "0", "Yes", "none", "1", displayname);
+                    getChatMessages();
                     Toast.makeText(this, "Failed To Send", Toast.LENGTH_SHORT).show();
 
 //                    fitem = null;
@@ -1720,11 +1736,64 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
 
     @Override
     public void loadOfflineData() {
+        getChatMessages();
 
     }
 
     @Override
     public void loadActualData() {
+
+        try {
+            String message_data = db_tables.getofflineData("1");
+            JSONObject obj = new JSONObject(message_data);
+            JSONArray jsonarray2 = obj.getJSONArray("message_body");
+
+            if (jsonarray2.length() > 0) {
+                for (int i = 0; i < jsonarray2.length(); i++) {
+
+                    JSONObject jsonobject = jsonarray2.getJSONObject(i);
+                    String message = jsonobject.optString("message").trim();
+                    String st_ids = jsonobject.optString("student_id").trim();
+                    if (message.length() == 0) {
+                        return;
+                    } else {
+//                        if (fr_ids_l.size() > 0) {
+//                            StringBuilder builder = new StringBuilder();
+//                            for (String s : fr_ids_l) {
+//                                builder.append("," + s);
+//                            }
+//                            String fis = builder.toString();
+//                            student_id = fis.substring(1);
+//                        }
+
+                        JSONObject object = new JSONObject();
+                        object.put("message", message);
+                        object.put("message_date", jsonobject.optString("message_date"));
+                        object.put("student_ids", st_ids);
+                        object.put("class_id", class_id);
+                        object.put("school_id", SharedValues.getValue(this, "school_id"));
+                        object.put("teacher_id", techaer_id);
+                        object.put("attatach_orgname", jsonobject.optString("displayname"));
+
+                        if (student_id == "" || student_id.isEmpty()) {
+                            object.put("sendurl", Paths.send_message2);
+                        } else {
+                            object.put("sendurl", Paths.send_message);
+                        }
+                        //object.put("message_status", "0");
+                        Intent downloadIntent = new Intent(this, AttachmentsScheduler.class);
+                        downloadIntent.setAction("com.scm.action.addcompose");
+                        downloadIntent.putExtra("messagedata", object.toString());
+                        downloadIntent.putExtra("requestId", 1);
+                        startService(downloadIntent);
+
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -1736,6 +1805,25 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
     @Override
     public void showOptions() {
 
+    }
+
+    @Override
+    public void onNetworkChange(String status) {
+        if (status.equalsIgnoreCase("none")) {
+            for (WeakReference<OfflineDataInterface> observer : mObservers) {
+                if (observer.get() != null) {
+                    observer.get().loadOfflineData();
+                    observer.get().hideOfflineOptions();
+                }
+            }
+        } else if (status.equalsIgnoreCase("wifi") || status.equalsIgnoreCase("3g") || status.equalsIgnoreCase("4g") || status.equalsIgnoreCase("2g")) {
+            for (WeakReference<OfflineDataInterface> observer : mObservers) {
+                if (observer.get() != null) {
+                    observer.get().showOptions();
+                    observer.get().loadActualData();
+                }
+            }
+        }
     }
 
 
@@ -1819,7 +1907,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
 
     public void addObserver(OfflineDataInterface observer) {
         if (hasObserver(observer) == -1) {
-            mObservers.add(new WeakReference<OfflineDataInterface>(
+            mObservers.add(new WeakReference<>(
                     observer));
         }
     }
@@ -1841,5 +1929,17 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
         }
 
         return -1;
+    }
+
+    private boolean isNetworkAvailable() {
+
+        ConnectivityManager manager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (manager == null) {
+            return false;
+        }
+
+        NetworkInfo net = manager.getActiveNetworkInfo();
+        return net != null && net.isConnected();
+
     }
 }

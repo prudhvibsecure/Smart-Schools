@@ -367,6 +367,7 @@
             </intent-filter>
         </service>
         <service android:name=".https.DownloadService" />
+        <service android:name=".backservice.AttachmentsScheduler" />
     </application>
 
 </manifest>
