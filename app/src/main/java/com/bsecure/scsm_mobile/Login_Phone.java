@@ -52,7 +52,7 @@ public class Login_Phone extends AppCompatActivity implements HttpHandler {
                 return;
             }
             if (mob_number.length() < 10) {
-                getError("Enter Valid Mobile Number");
+                getError("Please Enter 10 Digit Number");
                 return;
             }
             try {

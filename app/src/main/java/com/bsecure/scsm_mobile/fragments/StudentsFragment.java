@@ -110,6 +110,7 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
         }
 */
         getStudents(SharedValues.getValue(getActivity(), "school_id"));
+
         return layout;
     }
 

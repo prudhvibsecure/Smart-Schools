@@ -1137,7 +1137,7 @@ public class DB_Tables {
         return students_id;
     }
 
-    public void addSyllabus(long sy_id, String newText, String desc, String subject, String class_id) {
+    public void addSyllabus(String sy_id, String newText, String desc, String subject, String class_id) {
         SQLiteDatabase db = null;
         try {
             long rawId;
@@ -1368,6 +1368,7 @@ public class DB_Tables {
                 cv.put("forward", forwd_id);
                 cv.put("forward_status", forward_status);
                 cv.put("notifyType", nType);
+                cv.put("offlineTag", "0");
                 cv.put("student_id", student_id);
                 db.insert("Message", null, cv);
                 db.close();
@@ -1377,7 +1378,37 @@ public class DB_Tables {
             e.printStackTrace();
         }
     }
+    public void messageDataOffline(String message, String msg_id, String mesg_date_time, String sender_member_id, String class_id, String school_id, String sme, String teacher_id, String student_id, String sendername, String attendance_date, String reply_id, String forwd_id, String forward_status, String nType, String offline, String displayname) {
+        SQLiteDatabase db = null;
+        try {
+            if (database != null) {
+                db = database.getWritableDatabase();
+                ContentValues cv = new ContentValues();
+                cv.put("message_id", msg_id);
+                cv.put("teacher_id", teacher_id);
+                cv.put("message", message);
+                cv.put("message_date", mesg_date_time);
+                cv.put("message_time", mesg_date_time);
+                cv.put("message_status", "0");
+                cv.put("no_reply", reply_id);
+                cv.put("user_me", sme);
+                cv.put("sender_name", sendername);
+                cv.put("attendance_date", attendance_date);
+                cv.put("class_id", class_id);
+                cv.put("forward", forwd_id);
+                cv.put("forward_status", forward_status);
+                cv.put("notifyType", nType);
+                cv.put("student_id", student_id);
+                cv.put("offlineTag", offline);
+                cv.put("displayname", displayname);
+                db.insert("Message", null, cv);
+                db.close();
+            }
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public String getProfileData(String number) {
         String students_id = "";
         try {
@@ -2237,5 +2268,62 @@ public class DB_Tables {
             e.printStackTrace();
         }
         return Id;
+    }
+    public String getofflineData(String flag) {
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            JSONArray array = new JSONArray();
+            if (database != null) {
+                SQLiteDatabase db = database.getWritableDatabase();
+
+                String sql = "select * from Message where offlineTag='" + flag + "'";
+                Cursor cursor = db.rawQuery(sql,
+                        null);
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
+
+                        final JSONObject json = new JSONObject();
+                        //json.put("message_id", cursor.getString(cursor.getColumnIndex("message_id")));
+                        json.put("message", cursor.getString(cursor.getColumnIndex("message")));
+                        json.put("message_date", cursor.getString(cursor.getColumnIndex("message_date")));
+                        json.put("message_status", cursor.getString(cursor.getColumnIndex("message_status")));
+                        json.put("sender_name", cursor.getString(cursor.getColumnIndex("sender_name")));
+                        json.put("no_reply", cursor.getString(cursor.getColumnIndex("no_reply")));
+                        json.put("user_me", cursor.getString(cursor.getColumnIndex("user_me")));
+                        json.put("forward", cursor.getString(cursor.getColumnIndex("forward")));
+                        json.put("forward_status", cursor.getString(cursor.getColumnIndex("forward_status")));
+                        json.put("displayname", cursor.getString(cursor.getColumnIndex("displayname")));
+                        json.put("class_id", cursor.getString(cursor.getColumnIndex("class_id")));
+                        json.put("student_id", cursor.getString(cursor.getColumnIndex("student_id")));
+                        array.put(json);
+                    }
+
+                    jsonObject.put("message_body", array);
+                    cursor.close();
+                }
+                db.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }
+    public void messageDataFlagUpdate(String s) {
+
+        SQLiteDatabase db = null;
+        try {
+            if (database != null) {
+                db = database.getWritableDatabase();
+                String iwhereClause = "message_date='" + s + "'";
+                ContentValues cv = new ContentValues();
+                cv.put("offlineTag", "0");
+                db.update("Message", cv, iwhereClause, null);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

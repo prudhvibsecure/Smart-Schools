@@ -241,6 +241,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                         } else {
                             db_tables.updateAttendance(String.valueOf(time_stamp), class_id, ss_d, String.valueOf(time_stamp), teacher_id, roll_nos, attendDate);
                         }
+                        //why dont we call the localdb instead of intent?
                         finish();
 
                     }

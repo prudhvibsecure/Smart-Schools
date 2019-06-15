@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
@@ -38,20 +39,21 @@ public class ExamsSubjects extends AppCompatActivity implements HttpHandler, Sub
     private SubjectListAdapter adapter;
     private List<Subjects> examsList;
     String exam_id, class_id, teacher_id, value;
-    Button bt_nscholastic;
+    TextView bt_nscholastic;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main_view);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
 
         Intent getdata = getIntent();
+        if (getdata!=null)
         exam_id = getdata.getStringExtra("exams_id");
         class_id = getdata.getStringExtra("class_id");
         teacher_id = getdata.getStringExtra("teacher_id");
         value = getdata.getStringExtra("value");
         String exam_name = getdata.getStringExtra("exams_name");
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
         toolbar.setTitle(exam_name);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);

@@ -43,6 +43,29 @@ public class VerifyOtp extends AppCompatActivity implements HttpHandler {
              id = in.getStringExtra("id");
          }
 
+        SharedValues.saveValue(this, "member_id", member_id);
+        SharedValues.saveValue(this, "school_id", school_id);
+        SharedValues.saveValue(this, "id", id);
+        SharedValues.saveValue(this, "ph_number", phone);
+        String id = member_id;
+        if (id.equalsIgnoreCase("1")) {
+            //Teacher
+            startPages(TeacherView.class);
+        } else if (id.equalsIgnoreCase("2")) {
+            // Parent
+            startPages(ParentActivity.class);
+        } else if (id.equalsIgnoreCase("3")) {
+            // Staff
+            startPages(StaffView.class);
+        } else if (id.equalsIgnoreCase("4")) {
+            // Tutor
+            startPages(TutorsView.class);
+        } else if (id.equalsIgnoreCase("5")) {
+            startPages(TransportView.class);
+            // Transport
+        } else {
+            startPages(RoutesList.class);
+        }
         findViewById(R.id.done_v).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,6 +82,17 @@ public class VerifyOtp extends AppCompatActivity implements HttpHandler {
     }
 
     private void resendOTP() {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("phone_number", phone);
+            object.put("regidand", SharedPrefManager.getInstance(this).getDeviceToken());
+            object.put("domain", ContentValues.DOMAIN);
+            HTTPNewPost task = new HTTPNewPost(this, this);
+            task.userRequest("Processing...", 2, Paths.member_verify, object.toString(), 1);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void verifyOTP() {
@@ -67,11 +101,11 @@ public class VerifyOtp extends AppCompatActivity implements HttpHandler {
 
             String mob_number = ((EditText) findViewById(R.id.mob_number)).getText().toString().trim();
             if (mob_number.length() == 0) {
-                getError("OTP Cannot be Blank");
+                getError("Please Enter OTP");
                 return;
             }
             if (mob_number.length() < 4) {
-                getError("OTP Must be 4 Digits");
+                getError("Please Enter 4 Digit OTP");
                 return;
             }
             try {
@@ -80,6 +114,8 @@ public class VerifyOtp extends AppCompatActivity implements HttpHandler {
                 object.put("member_id", member_id);
                 object.put("domain", ContentValues.DOMAIN);
                 object.put("otp", mob_number);
+                object.put("regidand", SharedPrefManager.getInstance(this).getDeviceToken());
+
                 HTTPNewPost task = new HTTPNewPost(this, this);
                 task.userRequest("Processing...", 1, Paths.verify_otp, object.toString(), 1);
             } catch (Exception e) {
@@ -127,6 +163,12 @@ public class VerifyOtp extends AppCompatActivity implements HttpHandler {
                     }
                     else {
                         getError(object.optString("statusdescription"));
+                    }
+                    break;
+                case 2:
+                    JSONObject object1 = new JSONObject(results.toString());
+                    if (object1.optString("statuscode").equalsIgnoreCase("200")) {
+
                     }
                     break;
             }
