@@ -164,7 +164,7 @@ public class AttachmentsScheduler extends Service implements HttpHandler, IDownl
                     break;
 
                 case 0: // success
-                    startAttachmentUploading(requestId, jsonObject);
+                   // startAttachmentUploading(requestId, jsonObject);
                     sendMailBody(requestId);
 
                     break;
