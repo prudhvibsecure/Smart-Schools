@@ -389,6 +389,10 @@ public class TransportListFragment extends Fragment implements TransportListAdap
                             }
                             teachersList();
                         }
+                        else
+                        {
+                            Toast.makeText(getActivity(), "No Data Found", Toast.LENGTH_SHORT).show();
+                        }
                     }
                     break;
                 case 1:

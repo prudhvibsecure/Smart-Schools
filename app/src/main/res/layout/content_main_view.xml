@@ -118,14 +118,16 @@
             android:layout_height="wrap_content"
             android:visibility="gone" />
 
-        <Button
+        <TextView
             android:id="@+id/bt_nscholastic"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/green"
+            android:layout_centerHorizontal="true"
             android:text="ADD NON SCHOLASTIC MARKS"
-            android:textColor="@color/white"
+            android:padding="10dp"
+            android:textColor="@color/green"
+            android:layout_marginBottom="40dp"
             android:visibility="gone" />
 
         <android.support.design.widget.FloatingActionButton

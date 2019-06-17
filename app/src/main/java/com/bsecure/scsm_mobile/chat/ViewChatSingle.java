@@ -1376,7 +1376,8 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                         if (jsonarray2.length() > 0) {
                             for (int i = 0; i < jsonarray2.length(); i++) {
                                 JSONObject m_data = jsonarray2.getJSONObject(i);
-                                db_tables.messageData(m_data.optString("message"), m_data.optString("message_id"), m_data.optString("message_date"), null, class_id, SharedValues.getValue(this, "school_id"), m_data.optString("message_status"), m_data.optString("teacher_id"), student_id, sender_name, null, "0", "0", "Yes", "none");
+                               // db_tables.messageData(messsages, msg_id, date_time, null, cls_id, SharedValues.getValue(this, "school_id"), "1", null, student_id, student_name, null, "0", "0", "Yes", m_type);
+                                db_tables.messageData(m_data.optString("message"), m_data.optString("message_id"), m_data.optString("message_date"), null, class_id, SharedValues.getValue(this, "school_id"), "1", m_data.optString("teacher_id"), student_id, "Class Teacher", null, "0", "0", "Yes", "none");
                             }
                             getChatMessages();
                         }

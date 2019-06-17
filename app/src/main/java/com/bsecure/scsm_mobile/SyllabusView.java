@@ -56,7 +56,7 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
     private SyllabusListAdapter adapter;
     public ItemTouchHelperExtension mItemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
-    long add_sy_id;
+    String add_sy_id;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,6 +65,7 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
         db_tables = new DB_Tables(this);
         db_tables.openDB();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
+
         Intent getData = getIntent();
         if (getData != null) {
             class_id = getData.getStringExtra("class_id");
@@ -74,13 +75,12 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
             teacher_id = getData.getStringExtra("teacher_id");
 
         }
+
         toolbar.setTitle(subject + " Syllabus");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
-
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-
         mRecyclerView = findViewById(R.id.content_list);
         mCallback = new ItemTouchHelperCallbackSyllabus();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
@@ -193,26 +193,26 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.submit_sb:
                 if (((EditText) mDialog.findViewById(R.id.sub_et)).getText().toString().length() == 0) {
-                    Toast.makeText(this, "Please Enter Lesson", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (((EditText) mDialog.findViewById(R.id.sub_et_les)).getText().toString().length() == 0) {
-                    Toast.makeText(this, "Please Enter Description", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                mDialog.dismiss();
+
                 addSyllabus();
                 break;
             case R.id.submit_up:
                 if (((EditText) mDialog.findViewById(R.id.sub_et)).getText().toString().length() == 0) {
-                    Toast.makeText(this, "Please Enter Lesson", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (((EditText) mDialog.findViewById(R.id.sub_et_les)).getText().toString().length() == 0) {
-                    Toast.makeText(this, "Please Enter Description", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Please Fill Required Fields", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                mDialog.dismiss();
+
                 updateSyllabus();
                 break;
         }
@@ -250,12 +250,13 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
 
     private void addSyllabus() {
         try {
-            add_sy_id = System.currentTimeMillis();
+
+            add_sy_id= String.valueOf(System.currentTimeMillis());
             // syllabus_id,examination_time_table_id, teacher_id , subject, syllabus[syllabus_lessons_id,lesson,description],school_id
 
             JSONArray array = new JSONArray();
             JSONObject ob = new JSONObject();
-            ob.put("syllabus_lessons_id", System.currentTimeMillis());
+            ob.put("syllabus_lessons_id", add_sy_id);
             ob.put("lesson", ((EditText) mDialog.findViewById(R.id.sub_et)).getText().toString().trim());
             ob.put("description", ((EditText) mDialog.findViewById(R.id.sub_et_les)).getText().toString().trim());
             array.put(ob);
@@ -303,6 +304,9 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
                 case 1:
                     JSONObject object = new JSONObject(results.toString());
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
+                        Toast.makeText(this, "Syllabus Added successfully", Toast.LENGTH_SHORT).show();
+                        add_sy_id=null;
+                        mDialog.dismiss();
                         getSyllabusList();
                     }
                     break;
@@ -314,13 +318,18 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
                     if(obj.optString("statuscode").equalsIgnoreCase("200"))
                     {
                         JSONArray array = obj.getJSONArray("syllabus_details");
-                        for(int i = 0; i<array.length();i++)
+                        if(array.length() !=0) {
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject obj1 = array.getJSONObject(i);
+                                db_tables.addSyllabus(obj1.optString("syllabus_lessons_id"), obj1.optString("lesson"), obj1.optString("description"), subject, class_id);
+                            }
+                            getSyllabusList();
+                        }else
                         {
-                            JSONObject obj1 = array.getJSONObject(i);
-                            db_tables.addSyllabus(Long.parseLong(obj1.optString("syllabus_id")),obj1.optString("lesson"),obj1.optString("description"), subject, class_id );
+                            Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
                         }
-                        getSyllabusList();
                     }
+                    Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
                     break;
             }
 
