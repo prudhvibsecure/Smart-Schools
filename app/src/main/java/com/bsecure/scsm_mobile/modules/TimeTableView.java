@@ -190,16 +190,13 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler, Tim
 
     private void getTimeTable(String day) {
         try {
-            try {
+
                 JSONObject object = new JSONObject();
                 object.put("school_id", school_id);
                 object.put("class_id", class_id);
                 object.put("day", day);
                 HTTPNewPost task = new HTTPNewPost(this, this);
                 task.userRequest("Processing...", 101, Paths.view_periods, object.toString(), 1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

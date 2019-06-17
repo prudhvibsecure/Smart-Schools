@@ -23,7 +23,6 @@ import com.bsecure.scsm_mobile.https.HTTPostJson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class AttachmentsScheduler extends Service implements HttpHandler, IDownloadCallback {
@@ -94,8 +93,6 @@ public class AttachmentsScheduler extends Service implements HttpHandler, IDownl
                         startUpload(intent.getIntExtra("requestId", -1), intent.getStringExtra("messagedata"));
                         fialddata = intent.getStringExtra("messagedata");
                     } else {
-                        showToast("Sending mail delivery faild");
-
                         fialddata = intent.getStringExtra("messagedata");
                         jsonObject = new JSONObject(fialddata);
                         table = getDataBaseObject();
@@ -103,9 +100,9 @@ public class AttachmentsScheduler extends Service implements HttpHandler, IDownl
                         //startUpload(intent.getIntExtra("requestId", -1), intent.getStringExtra("messagedata"));
                     }
 
-                } else if (intent.getAction().equals("com.mail.sendsafe.action.removecontent")) {
+                } else if (intent.getAction().equals("com.scm.action.removecontent")) {
                     removeDownloadingContent(intent.getIntExtra("requestId", -1));
-                } else if (intent.getAction().equals("com.mail.sendsafe.action.net.connected")) {
+                } else if (intent.getAction().equals("com.scm.action.net.connected")) {
                     checkDBNStartUploading();
                 }
             }
@@ -161,35 +158,13 @@ public class AttachmentsScheduler extends Service implements HttpHandler, IDownl
             switch (what) {
 
                 case -1: // failed
-
-                    /*View fview = attachmentLayout.findViewById(requestId);
-                    Item fitem = (Item) fview.getTag();
-                    removeAttachment(requestId);*/
-
                     break;
 
                 case 1: // progressBar
                     break;
 
                 case 0: // success
-
-//                    if(attachCounter > 0) {
-//
-//                        attachCounter = attachCounter--;
-//                        startAttachmentUploading(requestId,  attachments.getJSONObject(attachCounter1));
-//                        return;
-//
-//                    }
-                    if (attachCounter > 0) {
-                        attachCounter = --attachCounter;
-                        startAttachmentUploading(requestId, attachments.getJSONObject(attachCounter));
-                        return;
-                    }
-                    if (attachments == null) {
-                        jsonObject = new JSONObject(fialddata);
-//                        table = getDataBaseObject();
-//                        table.insertOutboxData(1, jsonObject.toString());
-                    }
+                    startAttachmentUploading(requestId, jsonObject);
                     sendMailBody(requestId);
 
                     break;
@@ -298,8 +273,8 @@ public class AttachmentsScheduler extends Service implements HttpHandler, IDownl
         String url = Paths.base + "teacher/upload_photo";
 
         FileUploader uploader = new FileUploader(this, this);
-        uploader.setFileName(attahmentObject.optString("displayname"), attahmentObject.optString("attachname"));
-        uploader.userRequest("", requestId, url, attahmentObject.optString("filepath"));
+        uploader.setFileName(attahmentObject.optString("message"), attahmentObject.optString("message"));
+        uploader.userRequest("", requestId, url, attahmentObject.optString("displayname"));
         sendMessageToUI(DWL_START, requestId, 0, null);
     }
 
@@ -348,17 +323,9 @@ public class AttachmentsScheduler extends Service implements HttpHandler, IDownl
             requestData.put(requestId, jsonObject);
 
             if (isOnline(this)) {
-                if (jsonObject.has("attachments")) {
-                    attachments = jsonObject.getJSONArray("attachments");
-                    attachCounter = attachments.length();
 
-                    //if (attachments.length() > 0) {
-                    if (attachCounter > 0) {
-                        attachCounter = --attachCounter;
-                        startAttachmentUploading(requestId, attachments.getJSONObject(attachCounter));
-                        return;
-                    }
-                }
+                startAttachmentUploading(requestId, jsonObject);
+                return;
             } else {
                 jsonObject = new JSONObject(data);
                 table = getDataBaseObject();

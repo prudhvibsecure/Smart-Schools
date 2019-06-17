@@ -1,7 +1,10 @@
 package com.bsecure.scsm_mobile;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -10,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +29,8 @@ import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.adapters.StudentsMarksAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.callbacks.OfflineDataInterface;
+import com.bsecure.scsm_mobile.common.NetworkInfoAPI;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
@@ -35,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,14 +53,14 @@ import java.util.TreeMap;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class StudentsMarks extends AppCompatActivity implements HttpHandler, StudentsMarksAdapter.ContactAdapterListener {
+public class StudentsMarks extends AppCompatActivity implements HttpHandler, StudentsMarksAdapter.ContactAdapterListener, OfflineDataInterface, NetworkInfoAPI.OnNetworkChangeListener {
 
     private String subject, class_id, total_marks, teacher_id, exam_id, comma_marks;
     private DB_Tables db_tables;
     private StudentsMarksAdapter adapter;
     private List<StudentModel> studentModelList;
     private RecyclerView mRecyclerView;
-    String Student_Id = "", roll_no = "", student_ids, roll_nos, makes_comma;
+    String Student_Id = "", roll_no = "", student_ids, roll_nos, makes_comma, student_ids_comma, st_names, rr_ids;
     ArrayList<String> student_list_id = new ArrayList<>();
     ArrayList<String> rollno_list_id = new ArrayList<>();
     private long time_stamp = System.currentTimeMillis();
@@ -66,11 +73,14 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
     private String remov_mark;
     private int sizeList;
     int i = 0;
+    private List<WeakReference<OfflineDataInterface>> mObservers = new ArrayList<WeakReference<OfflineDataInterface>>();
     StringBuilder builder = null, builder11 = null;
-    String [] Student_ids;
-    String [] markss;
-    String [] stu_names;
-    String [] rollnos;
+    String[] Student_ids;
+    String[] markss;
+    String[] stu_names;
+    String[] rollnos;
+    String action_type_data;
+    private NetworkInfoAPI networkInfoAPI;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,6 +115,10 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
         } else {
             getStudentsList2();
         }
+        networkInfoAPI = new NetworkInfoAPI();
+        networkInfoAPI.initialize(this);
+        networkInfoAPI.setOnNetworkChangeListener(this);
+        addObserver(this);
     }
 
     @Override
@@ -144,7 +158,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
             } else {
                 desc = "Please Fill Required  <br/>Details";
             }
-            SweetAlertDialog dialog = new SweetAlertDialog(this,SweetAlertDialog.NORMAL_TYPE);
+            SweetAlertDialog dialog = new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE);
             dialog.setTitle("Alert!");
             dialog.setContentText(String.valueOf(Html.fromHtml(desc)));
             dialog.setCancelable(false);
@@ -180,6 +194,9 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
 
                 if (marks_list_vv.size() > 0) {
                     StringBuilder builder = new StringBuilder();
+                    StringBuilder builder1 = new StringBuilder();
+                    StringBuilder builder2 = new StringBuilder();
+                    StringBuilder builder3 = new StringBuilder();
                     Collections.sort(roll_ids);
                     Map<String, String> treeMap = new TreeMap<String, String>(marks_list_vv);
                     for (Map.Entry<String, String> entry : treeMap.entrySet()) {
@@ -187,16 +204,25 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                         String student_id = entry.getKey();
                         String marksv = entry.getValue();
                         builder.append("," + marksv);
-                       // Collections.sort(student_names);
+                        builder1.append("," + student_id);
+                        // Collections.sort(student_names);
 
                         String roll_no = studentModelList.get(i).getRoll_no();
+                        builder2.append("," + roll_no);
                         String name = studentModelList.get(i).getStudent_name();
+                        builder3.append("," + name);
                         i = i + 1;
                         db_tables.insertMarks(student_id, exam_id, marksv, teacher_id, class_id, subject, name, roll_no);
                         // db_tables.updateStudents1(key, exam_id, marksv, teacher_id, class_id, subject);
                     }
                     String fis = builder.toString();
+                    String fis1 = builder1.toString();
+                    String fis2 = builder2.toString();
+                    String fis3 = builder3.toString();
                     makes_comma = fis.substring(1);
+                    student_ids_comma = fis1.substring(1);
+                    st_names = fis2.substring(1);
+                    rr_ids = fis3.substring(1);
                 }
                 // marks_id, class_id, examination_time_table_id, teacher_id
                 JSONObject object = new JSONObject();
@@ -207,8 +233,15 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                 object.put("teacher_id", teacher_id);
                 object.put("class_id", class_id);
                 object.put("subject", subject);
-                HTTPNewPost task = new HTTPNewPost(this, this);
-                task.userRequest("Processing...", 2, Paths.add_marks, object.toString(), 1);
+                if (isNetworkAvailable()) {
+                    HTTPNewPost task = new HTTPNewPost(this, this);
+                    task.userRequest("Processing...", 2, Paths.add_marks, object.toString(), 1);
+                } else {
+                    Toast.makeText(this, "No Network Found", Toast.LENGTH_SHORT).show();
+                    //sync_data(marks_id*class_id* examination_time_table_id*teacher_id*marks_obtained*school_id)
+                    db_tables.syncMarksData("AM", String.valueOf(time_stamp) + "*" + class_id + "*" + exam_id + "*" + teacher_id + "*" + makes_comma + "*" + student_ids_comma + "*" + subject + "*" + SharedValues.getValue(this, "school_id") + "*" + st_names + "*" + rr_ids);
+                    finish();
+                }
             } else {
                 Toast.makeText(this, "Please Fill Required Details", Toast.LENGTH_SHORT).show();
             }
@@ -259,11 +292,14 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
             if (marks_list_vv.size() > 0) {
                 builder = new StringBuilder();
                 builder11 = new StringBuilder();
-
+                StringBuilder builder1 = new StringBuilder();
+                StringBuilder builder2 = new StringBuilder();
                 Map<String, String> treeMap = new TreeMap<String, String>(marks_list_vv);
                 for (Map.Entry<String, String> entry : treeMap.entrySet()) {
                     String student_id = entry.getKey();
                     String marksv = entry.getValue();
+                    builder1.append("," + marksv);
+                    builder2.append("," + student_id);
 //                    for (StudentModel studentModel : studentModelList) {
 //                        if (studentModel.getStudent_id().equalsIgnoreCase(student_id)) {
 //                            builder.append("," + marksv);
@@ -280,6 +316,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                     builder.append("," + s);
                 }
                 makes_comma = builder.substring(1);
+                student_ids_comma = builder2.substring(1);
                 StringBuilder bb = new StringBuilder();
                 if (roll_ids.size() > 0) {
                     ArrayList<String> fis1 = db_tables.listRollNo(subject, exam_id);
@@ -311,8 +348,15 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                 object.put("class_id", class_id);
                 object.put("subject", subject);
                 object.put("roll_nos", roll_nos);
-                HTTPNewPost task = new HTTPNewPost(this, this);
-                task.userRequest("Processing...", 2, Paths.edit_marks, object.toString(), 1);
+                if (isNetworkAvailable()) {
+                    HTTPNewPost task = new HTTPNewPost(this, this);
+                    task.userRequest("Processing...", 2, Paths.edit_marks, object.toString(), 1);
+                } else {
+                    Toast.makeText(this, "No Network Found", Toast.LENGTH_SHORT).show();
+                    //sync_data(marks_id*class_id* examination_time_table_id*teacher_id*marks_obtained*school_id)
+                    db_tables.syncMarksData("EM", String.valueOf(time_stamp) + "*" + class_id + "*" + exam_id + "*" + teacher_id + "*" + makes_comma + "*" + student_ids_comma + "*" + subject + "*" + roll_nos);
+                    finish();
+                }
             } else {
                 finish();
             }
@@ -394,11 +438,9 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                     break;
                 case 3:
                     JSONObject obj = new JSONObject(results.toString());
-                    if(obj.optString("statuscode").equalsIgnoreCase("200"))
-                    {
+                    if (obj.optString("statuscode").equalsIgnoreCase("200")) {
                         JSONArray array = obj.getJSONArray("marks_details");
-                        for(int i = 0; i<array.length();i++)
-                        {
+                        for (int i = 0; i < array.length(); i++) {
                             JSONObject objin = array.getJSONObject(i);
                             String exam_id = objin.optString("examinations_id");
                             String marks = objin.optString("marks_obtained");
@@ -406,8 +448,8 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                             String class_id = objin.optString("class_id");
                             String subject = objin.optString("subject");
                             markss = marks.split(",");
-                            for(int j = 0;j<markss.length;j++) {
-                                db_tables.insertMarks(Student_ids[j],exam_id,markss[j],teacher_id,class_id,subject,stu_names[j],rollnos[j]);
+                            for (int j = 0; j < markss.length; j++) {
+                                db_tables.insertMarks(Student_ids[j], exam_id, markss[j], teacher_id, class_id, subject, stu_names[j], rollnos[j]);
                             }
 
                         }
@@ -576,7 +618,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
         } else {
             marks_list_vv.remove(matchesList.get(position).getStudent_id());
             student_names.remove(matchesList.get(position).getStudent_name());
-            String my_sub_marks = db_tables.getMarks2(exam_id, class_id, subject,matchesList.get(position).getStudent_id());
+            String my_sub_marks = db_tables.getMarks2(exam_id, class_id, subject, matchesList.get(position).getStudent_id());
             if (my_sub_marks == null || my_sub_marks.length() == 0) {
                 marks_edit.setText("");
             } else {
@@ -593,4 +635,140 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
     public void onBackPressed() {
         super.onBackPressed();
     }
+
+    @Override
+    public void loadOfflineData() {
+        getStudentsList2();
+    }
+
+    @Override
+    public void loadActualData() {
+        try {
+
+            String my_sub_marks = db_tables.getMarks(exam_id, class_id, subject);
+            if (my_sub_marks == null || my_sub_marks.length() == 0) {
+                action_type_data = db_tables.getActionData("AM");
+                if (action_type_data.length() == 0) {
+                    return;
+                }
+                if (action_type_data != null || !TextUtils.isEmpty(action_type_data)) {
+                    String arry_data[] = action_type_data.split("\\*");
+                    markss = arry_data[4].split(",");
+                    for (int k = 0; k < markss.length; k++) {
+                        db_tables.insertMarks(Student_ids[k], arry_data[2], markss[k], arry_data[3], arry_data[1], arry_data[6], stu_names[k], rollnos[k]);
+                    }
+                    JSONObject object = new JSONObject();
+                    object.put("school_id", arry_data[7]);
+                    object.put("marks_id", arry_data[0]);
+                    object.put("examination_time_table_id", arry_data[2]);
+                    object.put("marks_obtained", arry_data[4]);
+                    object.put("teacher_id", arry_data[3]);
+                    object.put("class_id", arry_data[1]);
+                    object.put("subject", arry_data[6]);
+
+                    HTTPNewPost task = new HTTPNewPost(this, this);
+                    task.disableProgress();
+                    task.userRequest("Processing...", 2, Paths.add_marks, object.toString(), 1);
+                    String id = db_tables.getSyncId("AM");
+                    db_tables.deleteSyncItems(id);
+                }
+            } else {
+                action_type_data = db_tables.getActionData("EM");
+                if (action_type_data.length() == 0) {
+                    return;
+                }
+                if (action_type_data != null || !TextUtils.isEmpty(action_type_data)) {
+                    String arry_data[] = action_type_data.split("\\*");
+                    markss = arry_data[4].split(",");
+                    for (int k = 0; k < markss.length; k++) {
+                        db_tables.updateStudents11(Student_ids[k], arry_data[2], markss[k], arry_data[3], arry_data[2], arry_data[6]);
+                    }
+                    JSONObject object = new JSONObject();
+                    object.put("school_id", SharedValues.getValue(this, "school_id"));
+                    object.put("marks_id", arry_data[0]);
+                    object.put("examination_time_table_id", arry_data[2]);
+                    object.put("marks", arry_data[4]);
+                    object.put("teacher_id", arry_data[3]);
+                    object.put("class_id", arry_data[2]);
+                    object.put("subject", arry_data[6]);
+                    object.put("roll_nos", arry_data[7]);
+
+                    HTTPNewPost task = new HTTPNewPost(this, this);
+                    task.userRequest("Processing...", 2, Paths.edit_marks, object.toString(), 1);
+                    String id = db_tables.getSyncId("EM");
+                    db_tables.deleteSyncItems(id);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void hideOfflineOptions() {
+
+    }
+
+    @Override
+    public void showOptions() {
+
+    }
+
+    @Override
+    public void onNetworkChange(String status) {
+        if (status.equalsIgnoreCase("none")) {
+            for (WeakReference<OfflineDataInterface> observer : mObservers) {
+                if (observer.get() != null) {
+                    observer.get().loadOfflineData();
+                    observer.get().hideOfflineOptions();
+                }
+            }
+        } else if (status.equalsIgnoreCase("wifi") || status.equalsIgnoreCase("3g") || status.equalsIgnoreCase("4g") || status.equalsIgnoreCase("2g")) {
+            for (WeakReference<OfflineDataInterface> observer : mObservers) {
+                if (observer.get() != null) {
+                    observer.get().showOptions();
+                    observer.get().loadActualData();
+                }
+            }
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+
+        ConnectivityManager manager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (manager == null) {
+            return false;
+        }
+
+        NetworkInfo net = manager.getActiveNetworkInfo();
+        return net != null && net.isConnected();
+
+    }
+
+    public void addObserver(OfflineDataInterface observer) {
+        if (hasObserver(observer) == -1) {
+            mObservers.add(new WeakReference<>(
+                    observer));
+        }
+    }
+
+    public int hasObserver(OfflineDataInterface observer) {
+        final int size = mObservers.size();
+
+        for (int n = size - 1; n >= 0; n--) {
+            OfflineDataInterface potentialMatch = mObservers.get(n).get();
+
+            if (potentialMatch == null) {
+                mObservers.remove(n);
+                continue;
+            }
+
+            if (potentialMatch == observer) {
+                return n;
+            }
+        }
+
+        return -1;
+    }
+
 }

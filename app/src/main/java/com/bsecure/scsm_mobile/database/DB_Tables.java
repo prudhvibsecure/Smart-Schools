@@ -853,12 +853,12 @@ public class DB_Tables {
 
                 ContentValues cv = new ContentValues();
                 //cv.put("attendance_id", attendance_id);
-               // cv.put("student_ids", student_ids);
+                // cv.put("student_ids", student_ids);
                 // cv.put("attendance_date", attendance_date);
                 cv.put("attendance_con", "Yes");
                 cv.put("status", status);
-               // cv.put("aDate", aDate);
-               // cv.put("roll_no_ids", roll_nos);
+                // cv.put("aDate", aDate);
+                // cv.put("roll_no_ids", roll_nos);
                 db.update("Attendance", cv, iwhereClause, null);
                 db.close();
             }
@@ -1369,6 +1369,38 @@ public class DB_Tables {
                 cv.put("forward_status", forward_status);
                 cv.put("notifyType", nType);
                 cv.put("student_id", student_id);
+                db.insert("Message", null, cv);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void messageDataOffline(String message, String msg_id, String mesg_date_time, String sender_member_id, String class_id, String school_id, String sme, String teacher_id, String student_id, String sendername, String attendance_date, String reply_id, String forwd_id, String forward_status, String nType, String offline, String displayname) {
+        SQLiteDatabase db = null;
+        try {
+            if (database != null) {
+                db = database.getWritableDatabase();
+                ContentValues cv = new ContentValues();
+                cv.put("message_id", msg_id);
+                cv.put("teacher_id", teacher_id);
+                cv.put("message", message);
+                cv.put("message_date", mesg_date_time);
+                cv.put("message_time", mesg_date_time);
+                cv.put("message_status", "0");
+                cv.put("no_reply", reply_id);
+                cv.put("user_me", sme);
+                cv.put("sender_name", sendername);
+                cv.put("attendance_date", attendance_date);
+                cv.put("class_id", class_id);
+                cv.put("forward", forwd_id);
+                cv.put("forward_status", forward_status);
+                cv.put("notifyType", nType);
+                cv.put("student_id", student_id);
+                cv.put("offlineTag", offline);
+                cv.put("displayname", displayname);
                 db.insert("Message", null, cv);
                 db.close();
             }
@@ -2237,5 +2269,156 @@ public class DB_Tables {
             e.printStackTrace();
         }
         return Id;
+    }
+
+    public String getofflineData(String flag) {
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            JSONArray array = new JSONArray();
+            if (database != null) {
+                SQLiteDatabase db = database.getWritableDatabase();
+
+                String sql = "select * from Message where offlineTag='" + flag + "'";
+                Cursor cursor = db.rawQuery(sql,
+                        null);
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
+
+                        final JSONObject json = new JSONObject();
+                        //json.put("message_id", cursor.getString(cursor.getColumnIndex("message_id")));
+                        json.put("message", cursor.getString(cursor.getColumnIndex("message")));
+                        json.put("message_date", cursor.getString(cursor.getColumnIndex("message_date")));
+                        json.put("message_status", cursor.getString(cursor.getColumnIndex("message_status")));
+                        json.put("sender_name", cursor.getString(cursor.getColumnIndex("sender_name")));
+                        json.put("no_reply", cursor.getString(cursor.getColumnIndex("no_reply")));
+                        json.put("user_me", cursor.getString(cursor.getColumnIndex("user_me")));
+                        json.put("forward", cursor.getString(cursor.getColumnIndex("forward")));
+                        json.put("forward_status", cursor.getString(cursor.getColumnIndex("forward_status")));
+                        json.put("displayname", cursor.getString(cursor.getColumnIndex("displayname")));
+                        json.put("class_id", cursor.getString(cursor.getColumnIndex("class_id")));
+                        json.put("student_id", cursor.getString(cursor.getColumnIndex("student_id")));
+                        array.put(json);
+                    }
+
+                    jsonObject.put("message_body", array);
+                    cursor.close();
+                }
+                db.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
+    }
+
+    public void messageDataFlagUpdate(String message_id) {
+
+        SQLiteDatabase db = null;
+        try {
+            if (database != null) {
+                db = database.getWritableDatabase();
+                String iwhereClause = "message_date='" + message_id + "'";
+                ContentValues cv = new ContentValues();
+                cv.put("offlineTag", "0");
+                db.update("Message", cv, iwhereClause, null);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void syncMarksData(String type, String data) {
+        SQLiteDatabase db = null;
+        try {
+            if (database != null) {
+                db = database.getWritableDatabase();
+                ContentValues cv = new ContentValues();
+                cv.put("action_v", type);
+                cv.put("data", data);
+                db.insert("SYNC", null, cv);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getActionData(String action_type) {
+        String data = "";
+        String id = "";
+        try {
+            if (database != null) {
+
+                String cursor_q = "select * from SYNC where action_v ='" + action_type + "'";
+
+                SQLiteDatabase db = database.getWritableDatabase();
+                Cursor cursor = db
+                        .rawQuery(cursor_q,
+                                null);
+                try {
+                    if (null != cursor)
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToFirst();
+                            data = cursor.getString(cursor.getColumnIndex("data"));
+                           // id = cursor.getString(cursor.getColumnIndex("id"));
+                        }
+                    cursor.close();
+                    db.close();
+                } finally {
+                    db.close();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return data;
+    } public String getSyncId(String action_type) {
+        String id = "";
+        try {
+            if (database != null) {
+
+                String cursor_q = "select * from SYNC where action_v ='" + action_type + "'";
+
+                SQLiteDatabase db = database.getWritableDatabase();
+                Cursor cursor = db
+                        .rawQuery(cursor_q,
+                                null);
+                try {
+                    if (null != cursor)
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToFirst();
+                            id = cursor.getString(cursor.getColumnIndex("id"));
+                        }
+                    cursor.close();
+                    db.close();
+                } finally {
+                    db.close();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
+    public void deleteSyncItems(String _id) {
+        SQLiteDatabase db = null;
+        try {
+            long rawId;
+            if (database != null) {
+                String iwhereClause = "id='" + _id + "'";
+                db = database.getWritableDatabase();
+                db.delete("SYNC", iwhereClause, null);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

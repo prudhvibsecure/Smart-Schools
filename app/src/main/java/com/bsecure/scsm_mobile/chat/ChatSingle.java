@@ -201,14 +201,26 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 int position = getCurrentItem();
+
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+
                     if (position > 0) {
                         findViewById(R.id.headerview_ll).setVisibility(View.VISIBLE);
                         ((TextView) findViewById(R.id.date_header)).setText(ContactUtils.getTimeAgolatest(Long.parseLong(messageList.get(position).getMessage_date())));
                     } else {
                         findViewById(R.id.headerview_ll).setVisibility(View.GONE);
                     }
+                }
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+
+                    if (position >0) {
+                        findViewById(R.id.headerview_ll).setVisibility(View.VISIBLE);
+                        ((TextView) findViewById(R.id.date_header)).setText(ContactUtils.getTimeAgolatest(Long.parseLong(messageList.get(position).getMessage_date())));
+                    } else {
+                        findViewById(R.id.headerview_ll).setVisibility(View.GONE);
+                    }
                 } else if (newState == RecyclerView.SCROLL_INDICATOR_BOTTOM) {
+
                     if (position > 0) {
                         findViewById(R.id.headerview_ll).setVisibility(View.VISIBLE);
                         ((TextView) findViewById(R.id.date_header)).setText(ContactUtils.getTimeAgolatest(Long.parseLong(messageList.get(position).getMessage_date())));
@@ -231,7 +243,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
 
         mNetworkReceiver = new NetworkChangeReceiver();
 
-        networkInfoAPI=new NetworkInfoAPI();
+        networkInfoAPI = new NetworkInfoAPI();
         networkInfoAPI.initialize(this);
         networkInfoAPI.setOnNetworkChangeListener(this);
         initViews();
@@ -1246,7 +1258,13 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
             filepath = item.getAttribute("data");
 
             mime_type = Utils.getMimeType(filepath);
-            startUploadingFile(item);
+            if (isNetworkAvailable()) {
+                startUploadingFile(item);
+            }else {
+                mesg_date_time = String.valueOf(System.currentTimeMillis());
+                db_tables.messageDataOffline(displayname, null, mesg_date_time, fr_ids_l.toString(), class_id, SharedValues.getValue(this, "school_id"), "0", techaer_id, student_id, null, null, "0", "0", "Yes", "none", "1", filepath);
+                getChatMessages();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1275,10 +1293,6 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
 //                    Item fitem = (Item) fview.getTag();
 //
 //                    removeAttachment(requestId);
-                    JSONObject object1 = new JSONObject(obj.toString());
-                    object1.optString("attachname");
-                    db_tables.messageDataOffline(object1.optString("attachname"), null, mesg_date_time, fr_ids_l.toString(), class_id, SharedValues.getValue(this, "school_id"), "0", techaer_id, student_id, null, null, "0", "0", "Yes", "none", "1", displayname);
-                    getChatMessages();
                     Toast.makeText(this, "Failed To Send", Toast.LENGTH_SHORT).show();
 
 //                    fitem = null;
@@ -1316,6 +1330,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             // TODO: handle exception
         }
 
@@ -1397,6 +1412,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                     fr_ids_l = new ArrayList<>();
                     JSONObject object = new JSONObject(results.toString());
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
+                        db_tables.updateMessageId(object.optString("message_id"), object.optString("message_date"));
                         getChatMessages();
                     }
                     break;

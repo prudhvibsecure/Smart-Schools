@@ -19,6 +19,8 @@ import android.widget.Toast;
 import com.bsecure.scsm_mobile.adapters.AttandenceListAdapter;
 import com.bsecure.scsm_mobile.adapters.StudentsAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.callbacks.OfflineDataInterface;
+import com.bsecure.scsm_mobile.common.NetworkInfoAPI;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
@@ -30,6 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,14 +40,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class AttendanceView extends AppCompatActivity implements HttpHandler, AttandenceListAdapter.ContactAdapterListener {
+public class AttendanceView extends AppCompatActivity implements HttpHandler, AttandenceListAdapter.ContactAdapterListener, OfflineDataInterface, NetworkInfoAPI.OnNetworkChangeListener {
 
     private String class_name, class_id, section, teacher_id;
     private DB_Tables db_tables;
     private AttandenceListAdapter adapter;
     private List<Attandence> attandenceList;
     private RecyclerView mRecyclerView;
-
+    private List<WeakReference<OfflineDataInterface>> mObservers = new ArrayList<WeakReference<OfflineDataInterface>>();
+    private NetworkInfoAPI networkInfoAPI;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +76,11 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
         // SharedValues.saveValue(this, "firstCall", "No");
         //getAttandenceList();
         //getSyncAttandenceList();
-        callSynce();
+        networkInfoAPI = new NetworkInfoAPI();
+        networkInfoAPI.initialize(this);
+        networkInfoAPI.setOnNetworkChangeListener(this);
+        addObserver(this);
+
     }
 
     @Override
@@ -202,7 +210,7 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
                         JSONArray jsonarray2 = object.getJSONArray("student_details");
                         if (jsonarray2.length() > 0) {
                             String attendDate = getDateN(System.currentTimeMillis());
-                            String datef = db_tables.getSyncStudents(attendDate,class_id);
+                            String datef = db_tables.getSyncStudents(attendDate, class_id);
                             if (TextUtils.isEmpty(datef)) {
                                 for (int i = 0; i < jsonarray2.length(); i++) {
                                     JSONObject jsonobject = jsonarray2.getJSONObject(i);
@@ -254,7 +262,7 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
     @Override
     protected void onResume() {
         super.onResume();
-         //getAttandenceList();
+        //getAttandenceList();
         getSyncAttandenceList();
         //callSynce();
     }
@@ -373,5 +381,70 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
     @Override
     public void swipeToDelete(int position, List<Attandence> classModelList) {
 
+    }
+
+    @Override
+    public void loadOfflineData() {
+        getSyncAttandenceList();
+    }
+
+    @Override
+    public void loadActualData() {
+        callSynce();
+    }
+
+    @Override
+    public void hideOfflineOptions() {
+
+    }
+
+    @Override
+    public void showOptions() {
+
+    }
+
+    @Override
+    public void onNetworkChange(String status) {
+        if (status.equalsIgnoreCase("none")) {
+            for (WeakReference<OfflineDataInterface> observer : mObservers) {
+                if (observer.get() != null) {
+                    observer.get().loadOfflineData();
+                    observer.get().hideOfflineOptions();
+                }
+            }
+        } else if (status.equalsIgnoreCase("wifi") || status.equalsIgnoreCase("3g") || status.equalsIgnoreCase("4g") || status.equalsIgnoreCase("2g")) {
+            for (WeakReference<OfflineDataInterface> observer : mObservers) {
+                if (observer.get() != null) {
+                    observer.get().showOptions();
+                    observer.get().loadActualData();
+                }
+            }
+        }
+    }
+
+    public void addObserver(OfflineDataInterface observer) {
+        if (hasObserver(observer) == -1) {
+            mObservers.add(new WeakReference<>(
+                    observer));
+        }
+    }
+
+    public int hasObserver(OfflineDataInterface observer) {
+        final int size = mObservers.size();
+
+        for (int n = size - 1; n >= 0; n--) {
+            OfflineDataInterface potentialMatch = mObservers.get(n).get();
+
+            if (potentialMatch == null) {
+                mObservers.remove(n);
+                continue;
+            }
+
+            if (potentialMatch == observer) {
+                return n;
+            }
+        }
+
+        return -1;
     }
 }

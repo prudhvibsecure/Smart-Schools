@@ -1,6 +1,9 @@
 package com.bsecure.scsm_mobile;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -21,6 +24,8 @@ import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.adapters.StudentsAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.callbacks.OfflineDataInterface;
+import com.bsecure.scsm_mobile.common.NetworkInfoAPI;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
@@ -31,6 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -38,7 +44,7 @@ import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class StudentsView extends AppCompatActivity implements HttpHandler, StudentsAdapter.ContactAdapterListener {
+public class StudentsView extends AppCompatActivity implements HttpHandler, StudentsAdapter.ContactAdapterListener, OfflineDataInterface, NetworkInfoAPI.OnNetworkChangeListener {
 
     private String class_name, class_id, section, teacher_id, ss_d = "";
     private DB_Tables db_tables;
@@ -49,7 +55,10 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
     ArrayList<String> student_list_id = new ArrayList<>();
     ArrayList<String> rollno_list_id = new ArrayList<>();
     private long time_stamp;
-    String att_date="";
+    String att_date = "";
+    private List<WeakReference<OfflineDataInterface>> mObservers = new ArrayList<WeakReference<OfflineDataInterface>>();
+    String action_type_data;
+    private NetworkInfoAPI networkInfoAPI;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,8 +84,12 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
             teacher_id = getData.getStringExtra("teacher_id");
         }
 
-        att_date= String.valueOf(System.currentTimeMillis());
-        getStudents();
+        att_date = String.valueOf(System.currentTimeMillis());
+        networkInfoAPI = new NetworkInfoAPI();
+        networkInfoAPI.initialize(this);
+        networkInfoAPI.setOnNetworkChangeListener(this);
+        addObserver(this);
+
     }
 
     @Override
@@ -95,7 +108,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                 if (student_list_id.size() > 0) {
                     StringBuilder builder = new StringBuilder();
                     for (String s : student_list_id) {
-                        db_tables.updateVV(s, "0", class_id,att_date);
+                        db_tables.updateVV(s, "0", class_id, att_date);
                     }
                 }
                 finish();
@@ -152,7 +165,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                 for (String s : student_list_id) {
                     builder.append("," + s);
                     ss_d = s;
-                    db_tables.updateVV(s, "1", class_id,att_date);
+                    db_tables.updateVV(s, "1", class_id, att_date);
                     //  db_tables.updateVV(s, "1");
                 }
                 String fis = builder.toString();
@@ -176,8 +189,14 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
             object.put("student_ids", student_ids);
             object.put("teacher_id", teacher_id);
             object.put("roll_nos", roll_nos);
-            HTTPNewPost task = new HTTPNewPost(this, this);
-            task.userRequest("Processing...", 2, Paths.add_attendance, object.toString(), 1);
+            if (isNetworkAvailable()) {
+                HTTPNewPost task = new HTTPNewPost(this, this);
+                task.userRequest("Processing...", 2, Paths.add_attendance, object.toString(), 1);
+            } else {
+                Toast.makeText(this, "No Network Found", Toast.LENGTH_SHORT).show();
+                db_tables.syncMarksData("AA", String.valueOf(time_stamp) + "*" + class_id + "*" + String.valueOf(time_stamp) + "*" + teacher_id + "*" + student_ids + "*" + roll_nos);
+                finish();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -311,14 +330,14 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
             student_list_id.add(Student_Id);
             roll_no = matchesList.get(position).getRoll_no();
             rollno_list_id.add(roll_no);
-            db_tables.updateVV(Student_Id, "1", class_id,att_date);
+            db_tables.updateVV(Student_Id, "1", class_id, att_date);
             chk_name.setBackground(getResources().getDrawable(R.mipmap.ic_uncheck));
         } else {
             Student_Id = matchesList.get(position).getStudent_id();
             student_list_id.remove(Student_Id);
             roll_no = matchesList.get(position).getRoll_no();
             rollno_list_id.remove(roll_no);
-            db_tables.updateVV(Student_Id, "0", class_id,att_date);
+            db_tables.updateVV(Student_Id, "0", class_id, att_date);
             chk_name.setBackground(getResources().getDrawable(R.mipmap.ic_check));
         }
 
@@ -330,9 +349,106 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
         if (student_list_id.size() > 0) {
             StringBuilder builder = new StringBuilder();
             for (String s : student_list_id) {
-                db_tables.updateVV(s, "0", class_id,att_date);
+                db_tables.updateVV(s, "0", class_id, att_date);
             }
         }
         super.onBackPressed();
+    }
+
+    @Override
+    public void loadOfflineData() {
+
+    }
+
+    @Override
+    public void loadActualData() {
+        getStudents();
+        try {
+            action_type_data = db_tables.getActionData("AA");
+            if (action_type_data != null || !TextUtils.isEmpty(action_type_data)) {
+                String arry_data[] = action_type_data.split("\\*");
+                JSONObject object = new JSONObject();
+                object.put("school_id", SharedValues.getValue(this, "school_id"));
+                object.put("attendance_id", arry_data[0]);
+                object.put("class_id", arry_data[1]);
+                object.put("attendance_date", arry_data[2]);
+                object.put("student_ids", arry_data[4]);
+                object.put("teacher_id", arry_data[3]);
+                object.put("roll_nos", arry_data[5]);
+
+                HTTPNewPost task = new HTTPNewPost(this, this);
+                task.disableProgress();
+                task.userRequest("Processing...", 2, Paths.add_attendance, object.toString(), 1);
+               String id= db_tables.getSyncId("AA");
+              db_tables.deleteSyncItems(id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void hideOfflineOptions() {
+
+    }
+
+    @Override
+    public void showOptions() {
+
+    }
+
+    @Override
+    public void onNetworkChange(String status) {
+        if (status.equalsIgnoreCase("none")) {
+            for (WeakReference<OfflineDataInterface> observer : mObservers) {
+                if (observer.get() != null) {
+                    observer.get().loadOfflineData();
+                    observer.get().hideOfflineOptions();
+                }
+            }
+        } else if (status.equalsIgnoreCase("wifi") || status.equalsIgnoreCase("3g") || status.equalsIgnoreCase("4g") || status.equalsIgnoreCase("2g")) {
+            for (WeakReference<OfflineDataInterface> observer : mObservers) {
+                if (observer.get() != null) {
+                    observer.get().showOptions();
+                    observer.get().loadActualData();
+                }
+            }
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+
+        ConnectivityManager manager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (manager == null) {
+            return false;
+        }
+
+        NetworkInfo net = manager.getActiveNetworkInfo();
+        return net != null && net.isConnected();
+
+    }
+    public void addObserver(OfflineDataInterface observer) {
+        if (hasObserver(observer) == -1) {
+            mObservers.add(new WeakReference<>(
+                    observer));
+        }
+    }
+    public int hasObserver(OfflineDataInterface observer) {
+        final int size = mObservers.size();
+
+        for (int n = size - 1; n >= 0; n--) {
+            OfflineDataInterface potentialMatch = mObservers.get(n).get();
+
+            if (potentialMatch == null) {
+                mObservers.remove(n);
+                continue;
+            }
+
+            if (potentialMatch == observer) {
+                return n;
+            }
+        }
+
+        return -1;
     }
 }
