@@ -127,7 +127,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
             dialog.setTitle("Alert!");
             String desc;
             if (rollno_list_id.size() > 0) {
-                desc = "Students";
+                desc = "Students"+rollno_list_id;
                 dialog.setContentText("" + Html.fromHtml(desc + " Are Being Marked Absent."));
             } else {
                 desc = "All Students <br/>Present";
@@ -260,9 +260,8 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                         } else {
                             db_tables.updateAttendance(String.valueOf(time_stamp), class_id, ss_d, String.valueOf(time_stamp), teacher_id, roll_nos, attendDate);
                         }
-                        //why dont we call the localdb instead of intent?
+                        Toast.makeText(this, "Attendance Details Submitted Successfully", Toast.LENGTH_SHORT).show();
                         finish();
-
                     }
                     break;
             }

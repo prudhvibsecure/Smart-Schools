@@ -176,6 +176,11 @@ public class NonScholasticTeacher extends AppCompatActivity implements HttpHandl
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
 
                         JSONArray jsonarray = object.getJSONArray("non_scholastic_subjects");
+                        String flag = object.optString("flag");
+                        if(flag.equalsIgnoreCase("1"))
+                        {
+                            bt_submit.setVisibility(View.GONE);
+                        }
                         if (jsonarray.length() > 0) {
                             data = new HashMap<>();
                             categories = new ArrayList<>();
@@ -192,10 +197,6 @@ public class NonScholasticTeacher extends AppCompatActivity implements HttpHandl
                                     nsubject.setId(obj2.optString("non_scholastic_subject_id"));
                                     nsubject.setName(obj2.optString("subject"));
                                     nsubject.setGrade(obj2.optString("grade"));
-                                    if(obj2.optString("grade").length() != 0)
-                                    {
-                                        bt_submit.setVisibility(View.GONE);
-                                    }
                                     nsubject.setComment(obj2.optString("comments"));
                                     subjects.add(nsubject);
 
@@ -214,7 +215,7 @@ public class NonScholasticTeacher extends AppCompatActivity implements HttpHandl
                                 }
                             }
 
-                            adapter = new NonScholasticAdapter(this, data, categories, this);
+                            adapter = new NonScholasticAdapter(this, data, categories, this,flag);
                             list.setAdapter(adapter);
 
                             for(int k = 0 ; k < categories.size(); k++)

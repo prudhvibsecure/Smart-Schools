@@ -107,21 +107,31 @@ public class ViewSyllabusMarks extends AppCompatActivity implements HttpHandler,
                             mRecyclerView.setLayoutManager(linearLayoutManager);
                             mRecyclerView.setAdapter(adapter);
                         }
+                        else
+                        {
+                            Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
+                        }
                         JSONArray jsonarray3 = object.getJSONArray("syllabus_details");
-                        for (int i = 0; i < jsonarray3.length(); i++) {
-                            JSONObject jsonobject = jsonarray3.getJSONObject(i);
+                        if(jsonarray3.length() > 0) {
+                            for (int i = 0; i < jsonarray3.length(); i++) {
+                                JSONObject jsonobject = jsonarray3.getJSONObject(i);
 
-                           // subjects.setSubject(jsonobject.optString("subject"));
-                            JSONArray mArray = jsonobject.getJSONArray("lesson_details");
-                            for (int k = 0; k < mArray.length(); k++) {
-                                JSONObject js = mArray.getJSONObject(k);
-                                Subjects subjects = new Subjects();
-                                subjects.setLesson(js.optString("lesson"));
-                                subjects.setDescription(js.optString("description"));
-                                subjects.setSubject(jsonobject.optString("subject"));
-                                topicsList.add(subjects);
+                                // subjects.setSubject(jsonobject.optString("subject"));
+                                JSONArray mArray = jsonobject.getJSONArray("lesson_details");
+                                for (int k = 0; k < mArray.length(); k++) {
+                                    JSONObject js = mArray.getJSONObject(k);
+                                    Subjects subjects = new Subjects();
+                                    subjects.setLesson(js.optString("lesson"));
+                                    subjects.setDescription(js.optString("description"));
+                                    subjects.setSubject(jsonobject.optString("subject"));
+                                    topicsList.add(subjects);
+                                }
+                                // topicsList.add(subjects);
                             }
-                           // topicsList.add(subjects);
+                        }
+                        else
+                        {
+                            Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
                         }
                     }
                     break;

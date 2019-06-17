@@ -83,6 +83,7 @@ public class Login_Phone extends AppCompatActivity implements HttpHandler {
                         in.putExtra("school_id", object.optString("school_id"));
                         in.putExtra("id", object.optString("id"));
                         in.putExtra("phone",object.optString("phone_number"));
+                        in.putExtra("class_teacher", object.optString("class_teacher"));
                         startActivity(in);
 
                        /* if (object.optString("member_id").equalsIgnoreCase("1")) {

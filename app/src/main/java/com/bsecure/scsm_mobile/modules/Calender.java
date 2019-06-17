@@ -1,5 +1,6 @@
 package com.bsecure.scsm_mobile.modules;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,11 +32,18 @@ public class Calender extends AppCompatActivity implements HttpHandler {
     RecyclerView calender;
     CalenderAdapter adapter;
     List<CalenderModel>calenderList;
+    String class_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calender);
+
+        Intent in = getIntent();
+        if(in!= null)
+        {
+            class_id = in.getStringExtra("class_id");
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
         toolbar.setTitle("Calender");//Organization Head
@@ -53,6 +61,7 @@ public class Calender extends AppCompatActivity implements HttpHandler {
 
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("class_id", class_id);
 
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Loading...", 1, Paths.base + "view_calendar", object.toString(), 1);

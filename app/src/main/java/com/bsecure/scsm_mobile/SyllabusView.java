@@ -57,6 +57,7 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
     public ItemTouchHelperExtension mItemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
     String add_sy_id;
+    TextView bt_nonscholastic;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,6 +66,8 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
         db_tables = new DB_Tables(this);
         db_tables.openDB();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolset);
+        bt_nonscholastic = findViewById(R.id.bt_nscholastic);
+        bt_nonscholastic.setVisibility(View.GONE);
 
         Intent getData = getIntent();
         if (getData != null) {
@@ -241,7 +244,7 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
 //            object.put("school_id", SharedValues.getValue(getApplicationContext(), "school_id"));
             db_tables.syllabusUpdateV(syllab_id, ((EditText) mDialog.findViewById(R.id.sub_et)).getText().toString(), ((EditText) mDialog.findViewById(R.id.sub_et_les)).getText().toString(), subject,class_id);
             HTTPNewPost task = new HTTPNewPost(this, this);
-            task.userRequest("Processing...", 1, Paths.add_syllabus, object.toString(), 1);
+            task.userRequest("Processing...", 2, Paths.add_syllabus, object.toString(), 1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -310,6 +313,16 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
                         getSyllabusList();
                     }
                     break;
+
+                case 2:
+                    JSONObject object1 = new JSONObject(results.toString());
+                    if (object1.optString("statuscode").equalsIgnoreCase("200")) {
+                        Toast.makeText(this, "Syllabus Updated successfully", Toast.LENGTH_SHORT).show();
+                        add_sy_id=null;
+                        mDialog.dismiss();
+                        getSyllabusList();
+                    }
+                    break;
                 case 13:
                     break;
 
@@ -329,7 +342,11 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
                             Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
                         }
                     }
-                    Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
+                    else
+                    {
+                        Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
+                    }
+
                     break;
             }
 

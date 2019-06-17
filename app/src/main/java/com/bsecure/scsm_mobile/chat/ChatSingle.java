@@ -511,7 +511,14 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                 item.setAttribute("data", filepath);
                 item.setAttribute("displayname", displayname);
                 item.setAttribute("attachname", displayname);
-                startUploadingFile(item);
+               // startUploadingFile(item);
+                if (isNetworkAvailable()) {
+                    startUploadingFile(item);
+                }else {
+                    mesg_date_time = String.valueOf(System.currentTimeMillis());
+                    db_tables.messageDataOffline(displayname, null, mesg_date_time, fr_ids_l.toString(), class_id, SharedValues.getValue(getApplicationContext(), "school_id"), "0", techaer_id, student_id, null, null, "0", "0", "Yes", "none", "1", filepath);
+                    getChatMessages();
+                }
 
 //                String url = ContentValues.upload_file + "uploadfile1";
 //                filepath = nItem.getAttribute("data");
@@ -846,7 +853,13 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                     item.setAttribute("data", filepath);
                     item.setAttribute("displayname", displayname);
                     item.setAttribute("attachname", displayname);
-                    startUploadingFile(item);
+                    if (isNetworkAvailable()) {
+                        startUploadingFile(item);
+                    }else {
+                        mesg_date_time = String.valueOf(System.currentTimeMillis());
+                        db_tables.messageDataOffline(displayname, null, mesg_date_time, fr_ids_l.toString(), class_id, SharedValues.getValue(this, "school_id"), "0", techaer_id, student_id, null, null, "0", "0", "Yes", "none", "1", filepath);
+                        getChatMessages();
+                    }
                 }
                 break;
         }
@@ -1640,7 +1653,6 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
     }
 
     private void repForDiloag(final List<MessageObject> matchesList, final int position) {
-
 
         rep_Dialog = new Dialog(this, R.style.MyAlertDialogStyle);
         rep_Dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

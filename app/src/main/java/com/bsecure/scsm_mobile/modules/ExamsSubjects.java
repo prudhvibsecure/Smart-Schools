@@ -58,7 +58,11 @@ public class ExamsSubjects extends AppCompatActivity implements HttpHandler, Sub
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
         bt_nscholastic = findViewById(R.id.bt_nscholastic);
-        bt_nscholastic.setVisibility(View.VISIBLE);
+        if(value.equalsIgnoreCase("1")) {
+            if (SharedValues.getValue(this, "class_teacher").equalsIgnoreCase("1")) {
+                bt_nscholastic.setVisibility(View.VISIBLE);
+            }
+        }
         bt_nscholastic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,7 +94,7 @@ public class ExamsSubjects extends AppCompatActivity implements HttpHandler, Sub
         return super.onOptionsItemSelected(item);
     }
 
-    private void getExams() {
+    private void  getExams() {
 
         try {
             JSONObject object = new JSONObject();

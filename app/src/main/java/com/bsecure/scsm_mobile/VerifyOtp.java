@@ -28,7 +28,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class VerifyOtp extends AppCompatActivity implements HttpHandler {
 
-    String member_id, school_id, phone, id;
+    String member_id, school_id, phone, id, class_teacher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,12 +41,15 @@ public class VerifyOtp extends AppCompatActivity implements HttpHandler {
              school_id = in.getStringExtra("school_id");
              phone = in.getStringExtra("phone");
              id = in.getStringExtra("id");
+             class_teacher = in.getStringExtra("class_teacher");
          }
 
         SharedValues.saveValue(this, "member_id", member_id);
         SharedValues.saveValue(this, "school_id", school_id);
         SharedValues.saveValue(this, "id", id);
         SharedValues.saveValue(this, "ph_number", phone);
+        SharedValues.saveValue(this, "class_teacher", class_teacher);
+
         String id = member_id;
         if (id.equalsIgnoreCase("1")) {
             //Teacher
@@ -139,6 +142,8 @@ public class VerifyOtp extends AppCompatActivity implements HttpHandler {
                         SharedValues.saveValue(this, "school_id", school_id);
                         SharedValues.saveValue(this, "id", id);
                         SharedValues.saveValue(this, "ph_number", phone);
+                        SharedValues.saveValue(this, "class_teacher", class_teacher);
+
                         //Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                         String id = member_id;
                         if (id.equalsIgnoreCase("1")) {

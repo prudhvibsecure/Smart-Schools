@@ -2,6 +2,7 @@ package com.bsecure.scsm_mobile.adapters;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,14 +31,16 @@ public class NonScholasticAdapter extends BaseExpandableListAdapter {
     ArrayList<String>cat;
     HashMap<String, ArrayList<NonScholasticSubject>> data;
     private ContactAdapterListener listener;
+    String flag;
 
-    public NonScholasticAdapter(Context context, HashMap<String, ArrayList<NonScholasticSubject>> data, ArrayList<String>cat, ContactAdapterListener listener)
+    public NonScholasticAdapter(Context context, HashMap<String, ArrayList<NonScholasticSubject>> data, ArrayList<String>cat, ContactAdapterListener listener, String flag)
     {
         this.context = context;
         this.data = data;
         inflater = LayoutInflater.from(context);
         this.cat = cat;
         this.listener = listener;
+        this.flag = flag;
     }
 
 
@@ -122,7 +125,7 @@ public class NonScholasticAdapter extends BaseExpandableListAdapter {
             }
         });
         Button update = convertView.findViewById(R.id.bt_update);
-        if(grade.length() != 0)
+        if(flag.equalsIgnoreCase("1"))
         {
             update.setVisibility(View.VISIBLE);
         }
@@ -142,9 +145,18 @@ public class NonScholasticAdapter extends BaseExpandableListAdapter {
             }
         });
 
+
         skillName.setText(name);
         Grade.setText(grade);
-        comment.setText(comments);
+        if(comments == null)
+        {
+            comment.setText("");
+        }
+        else
+        {
+            comment.setText(comments);
+        }
+
         return convertView;
     }
 

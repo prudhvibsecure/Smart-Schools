@@ -6,5 +6,8 @@
     <item
         android:id="@+id/replayall"
         android:title="Period" />
+    <item
+        android:id="@+id/calendar"
+        android:title="Calendar" />
 
 </menu>

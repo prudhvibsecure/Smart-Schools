@@ -88,7 +88,7 @@ public class StudentSylViewListAdapter extends RecyclerView.Adapter<StudentSylVi
             contactViewHolder.ex_date.setText("Date :" + getDate(Long.valueOf(classMode_lList.getExam_date()) * 1000));
 
             boolean value = selectedItems.get(position);
-            contactViewHolder.itemView.setActivated(selectedItems.get(position, false));
+            //contactViewHolder.itemView.setActivated(selectedItems.get(position, false));
             applyClickEvents(contactViewHolder, tutorsModelList, position);
         } catch (Exception e) {
             e.printStackTrace();

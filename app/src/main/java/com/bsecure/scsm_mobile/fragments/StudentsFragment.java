@@ -30,6 +30,7 @@ import com.bsecure.scsm_mobile.graphs.GrapsMain;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.Exams;
 import com.bsecure.scsm_mobile.models.StudentModel;
+import com.bsecure.scsm_mobile.modules.Calender;
 import com.bsecure.scsm_mobile.modules.ParentActivity;
 import com.bsecure.scsm_mobile.modules.TimeTableView;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperCallback_Parent;
@@ -320,6 +321,16 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
                         next.putExtra("roll_no", classModelList.get(position).getRoll_no());
                         next.putExtra("class_id", classModelList.get(position).getClass_id());
                         startActivity(next);
+                        return true;
+
+                    case R.id.calendar:
+                        adapter.notifyDataSetChanged();
+                        getStudentsList();
+                        Intent cal = new Intent(getActivity(), Calender.class);
+                        cal.putExtra("student_id", classModelList.get(position).getStudent_id());
+                        cal.putExtra("roll_no", classModelList.get(position).getRoll_no());
+                        cal.putExtra("class_id", classModelList.get(position).getClass_id());
+                        startActivity(cal);
                         return true;
 
                     default:
