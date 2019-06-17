@@ -274,7 +274,7 @@ public class AttachmentsScheduler extends Service implements HttpHandler, IDownl
 
         FileUploader uploader = new FileUploader(this, this);
         uploader.setFileName(attahmentObject.optString("message"), attahmentObject.optString("message"));
-        uploader.userRequest("", requestId, url, attahmentObject.optString("displayname"));
+        uploader.userRequest("", requestId, url, attahmentObject.optString("attatach_orgname"));
         sendMessageToUI(DWL_START, requestId, 0, null);
     }
 
@@ -379,26 +379,10 @@ public class AttachmentsScheduler extends Service implements HttpHandler, IDownl
 
         table = getDataBaseObject();
 
-        //table.updateDownloadStatus(String.valueOf(requestId), "F");
-
-        /*if (errorData.equalsIgnoreCase(getString(R.string.yhctd))) {
-            sendMessageToUI(DWL_CANCEL, requestId, 0, errorData);
-            showToast(getString(R.string.yhctd));
-            table.updateErrMsgOnFail(String.valueOf(requestId), getString(R.string.yhctd));
-            return;
-        }
-
-        table.updateErrMsgOnFail(String.valueOf(requestId),getString(R.string.dfptal));*/
-
         sendMessageToUI(DWL_FAILED, requestId, 0, errorData);
         showToast(errorData);
 
     }
-
-    /* @Override
-     public void onProgressChange(int requestId, Long... values) {
-         sendMessageToUI(DWL_PROGS, requestId, 0, values);
-     }*/
     public boolean isNetworkAvailable() {
 
         ConnectivityManager manager = (ConnectivityManager) getApplicationContext()

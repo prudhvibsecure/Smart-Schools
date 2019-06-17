@@ -1137,7 +1137,7 @@ public class DB_Tables {
         return students_id;
     }
 
-    public void addSyllabus(long sy_id, String newText, String desc, String subject, String class_id) {
+    public void addSyllabus(String sy_id, String newText, String desc, String subject, String class_id) {
         SQLiteDatabase db = null;
         try {
             long rawId;
