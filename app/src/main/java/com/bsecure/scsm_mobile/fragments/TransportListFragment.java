@@ -68,6 +68,7 @@ public class TransportListFragment extends Fragment implements TransportListAdap
     private List<StudentModel> studentModelList;
     private Spinner m_spinner;
     private String tras_id = null, tp_name, phone_number,school_id;
+    StringBuilder builder = new StringBuilder();
 
     @Override
     public void onAttach(Context context) {
@@ -91,7 +92,7 @@ public class TransportListFragment extends Fragment implements TransportListAdap
         });
         mRecyclerView = view_layout.findViewById(R.id.content_list);
         getServiceTtansport();
-        // teachersList();
+         teachersList();
         mCallback = new ItemTouchHelperCallback_Trns();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
@@ -150,6 +151,9 @@ public class TransportListFragment extends Fragment implements TransportListAdap
                     studentModel.setStudent_id(jsonobject.optString("student_id"));
                     studentModelList.add(studentModel);
 
+                    final String s = jsonobject.optString("student_id");
+                    builder.append("," +s);
+
                 }
 
                 ArrayAdapter<StudentModel> dataAdapter = new ArrayAdapter<StudentModel>(getContext(),
@@ -195,9 +199,10 @@ public class TransportListFragment extends Fragment implements TransportListAdap
             object.put("transport_id", tras_id);
             object.put("transport_name", tp_name);
             object.put("phone_number", phone_number);
-            object.put("student_id", student_id);
+            object.put("student_id", SharedValues.getValue(getActivity(),"student_id"));
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
+
             task.userRequest("Please Wait...", 4, Paths.add_transport, object.toString(), 1);
         } catch (Exception e) {
             e.printStackTrace();
@@ -290,15 +295,22 @@ public class TransportListFragment extends Fragment implements TransportListAdap
         try {
             tras_id=matchesList.get(position).getTransport_id();
             school_id=matchesList.get(position).getSchool_id();
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
-                    PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                    PackageManager.PERMISSION_GRANTED ) {
-                passData();
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                            102);
+            String status = matchesList.get(position).getStatus();
+            if(status.equalsIgnoreCase("0")) {
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+                        PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                        PackageManager.PERMISSION_GRANTED) {
+                    passData();
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                                102);
+                    }
                 }
+            }
+            else
+            {
+                Toast.makeText(schoolMain, "Transport is Inactive", Toast.LENGTH_SHORT).show();
             }
 
             // getEventShowTrasport(matchesList.get(position).getTransport_id(), matchesList.get(position).getStudent_id(), matchesList.get(position).getSchool_id());
@@ -389,13 +401,8 @@ public class TransportListFragment extends Fragment implements TransportListAdap
                             }
                             teachersList();
                         }
-                        else
-                        {
-                            Toast.makeText(getActivity(), "No Data Found", Toast.LENGTH_SHORT).show();
-                        }
                     }
-                    else
-                    {
+                    else {
                         Toast.makeText(getActivity(), "No Data Found", Toast.LENGTH_SHORT).show();
                     }
                     break;
@@ -421,6 +428,8 @@ public class TransportListFragment extends Fragment implements TransportListAdap
                     if (object1.optString("statuscode").equalsIgnoreCase("200")) {
                         adapter.notifyDataSetChanged();
                         db_tables.update_transport_status(teach_Id, t_status);
+                        Toast.makeText(schoolMain, "Status Updated Successfully", Toast.LENGTH_SHORT).show();
+
                         teachersList();
                     } else {
 
@@ -453,7 +462,8 @@ public class TransportListFragment extends Fragment implements TransportListAdap
                     JSONObject object111 = new JSONObject(results.toString());
                     if (object111.optString("statuscode").equalsIgnoreCase("200")) {
                         member_dialog.dismiss();
-                        db_tables.updateTransportList(tras_id, tp_name, phone_number, SharedValues.getValue(getActivity(), "school_id"));
+                        //db_tables.updateTransportList(tras_id, tp_name, phone_number, SharedValues.getValue(getActivity(), "school_id"));
+                        db_tables.updateTransportList(object111.optString("transport_id"), object111.optString("transport_name"), object111.optString("phone_number"), SharedValues.getValue(getActivity(), "school_id"));
                         Toast.makeText(getActivity(), "Transport Updated Successfully", Toast.LENGTH_SHORT).show();
                         teachersList();
                     } else {
@@ -476,73 +486,77 @@ public class TransportListFragment extends Fragment implements TransportListAdap
 
     @Override
     public void swipeToUpdate(final int position, final List<TransportModel> matchesList) {
-        tras_id = matchesList.get(position).getTransport_id();
-        member_dialog = new Dialog(getActivity(), R.style.MyAlertDialogStyle);
-        member_dialog.setContentView(R.layout.add_transport);
-        member_dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        member_dialog.setCancelable(true);
-        member_dialog.setCanceledOnTouchOutside(true);
-        member_dialog.getWindow().setGravity(Gravity.BOTTOM);
-        ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).setHint("Transport Name");
-        ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).setText(matchesList.get(position).getTransport_name());
-        ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).setText(matchesList.get(position).getPhone_number());
-        ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).setEnabled(false);
-        final String student_ids = matchesList.get(position).getStudent_id();
-        m_spinner = (Spinner) member_dialog.findViewById(R.id.st_spinner);
-        m_spinner.setEnabled(false);
-        m_spinner.setVisibility(View.GONE);
-        try {
-            String msg_list = db_tables.getstudentsList();
-            studentModelList = new ArrayList<>();
-            JSONObject obj = new JSONObject(msg_list);
-            JSONArray jsonarray2 = obj.getJSONArray("student_details");
-            if (jsonarray2.length() > 0) {
-                for (int i = 0; i < jsonarray2.length(); i++) {
-                    StudentModel studentModel = new StudentModel();
+        if (matchesList.get(position).getCreated_by().equalsIgnoreCase("1")) {
 
-                    JSONObject jsonobject = jsonarray2.getJSONObject(i);
-                    studentModel.setStudent_name(jsonobject.optString("student_name"));
-                    studentModel.setRoll_no(jsonobject.optString("roll_no"));
-                    studentModel.setStatus(jsonobject.optString("status"));
-                    studentModel.setClass_id(jsonobject.optString("class_id"));
-                    studentModel.setStudent_id(jsonobject.optString("student_id"));
-                    studentModelList.add(studentModel);
+        } else {
+            tras_id = matchesList.get(position).getTransport_id();
+            member_dialog = new Dialog(getActivity(), R.style.MyAlertDialogStyle);
+            member_dialog.setContentView(R.layout.add_transport);
+            member_dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            member_dialog.setCancelable(true);
+            member_dialog.setCanceledOnTouchOutside(true);
+            member_dialog.getWindow().setGravity(Gravity.BOTTOM);
+            ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).setHint("Transport Name");
+            ((EditText) member_dialog.findViewById(R.id.ad_t_ts)).setText(matchesList.get(position).getTransport_name());
+            ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).setText(matchesList.get(position).getPhone_number());
+            ((EditText) member_dialog.findViewById(R.id.ad_t_ts_n)).setEnabled(false);
+            final String student_ids = matchesList.get(position).getStudent_id();
+            m_spinner = (Spinner) member_dialog.findViewById(R.id.st_spinner);
+            m_spinner.setEnabled(false);
+            m_spinner.setVisibility(View.GONE);
+            try {
+                String msg_list = db_tables.getstudentsList();
+                studentModelList = new ArrayList<>();
+                JSONObject obj = new JSONObject(msg_list);
+                JSONArray jsonarray2 = obj.getJSONArray("student_details");
+                if (jsonarray2.length() > 0) {
+                    for (int i = 0; i < jsonarray2.length(); i++) {
+                        StudentModel studentModel = new StudentModel();
+
+                        JSONObject jsonobject = jsonarray2.getJSONObject(i);
+                        studentModel.setStudent_name(jsonobject.optString("student_name"));
+                        studentModel.setRoll_no(jsonobject.optString("roll_no"));
+                        studentModel.setStatus(jsonobject.optString("status"));
+                        studentModel.setClass_id(jsonobject.optString("class_id"));
+                        studentModel.setStudent_id(jsonobject.optString("student_id"));
+                        studentModelList.add(studentModel);
+                    }
+                    ArrayAdapter<StudentModel> dataAdapter = new ArrayAdapter<StudentModel>(getContext(),
+                            android.R.layout.simple_spinner_item, studentModelList);
+                    dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    this.m_spinner.setAdapter(dataAdapter);
                 }
-                ArrayAdapter<StudentModel> dataAdapter = new ArrayAdapter<StudentModel>(getContext(),
-                        android.R.layout.simple_spinner_item, studentModelList);
-                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                this.m_spinner.setAdapter(dataAdapter);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+            getStudentsList(m_spinner);
+            m_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int mpos, long l) {
+                    StudentModel studentModel = null;
+                    studentModel = (StudentModel) m_spinner.getSelectedItem();
+                    student_id = studentModel.getStudent_id();
+                    if (student_ids.equalsIgnoreCase(student_id)) {
+                        m_spinner.setSelection(mpos);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+            member_dialog.findViewById(R.id.update_ex).setVisibility(View.VISIBLE);
+            member_dialog.findViewById(R.id.add_cls).setVisibility(View.GONE);
+            member_dialog.findViewById(R.id.update_ex).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    updateaddTP(matchesList.get(position).getTransport_id());
+                }
+            });
+            member_dialog.getWindow().setGravity(Gravity.BOTTOM);
+            member_dialog.show();
         }
-        getStudentsList(m_spinner);
-        m_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int mpos, long l) {
-                StudentModel studentModel = null;
-                studentModel = (StudentModel) m_spinner.getSelectedItem();
-                student_id = studentModel.getStudent_id();
-                if (student_ids.equalsIgnoreCase(student_id)) {
-                    m_spinner.setSelection(mpos);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-        member_dialog.findViewById(R.id.update_ex).setVisibility(View.VISIBLE);
-        member_dialog.findViewById(R.id.add_cls).setVisibility(View.GONE);
-        member_dialog.findViewById(R.id.update_ex).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updateaddTP(matchesList.get(position).getTransport_id());
-            }
-        });
-        member_dialog.getWindow().setGravity(Gravity.BOTTOM);
-        member_dialog.show();
     }
 
     private void updateaddTP(String tr_id) {
@@ -571,10 +585,10 @@ public class TransportListFragment extends Fragment implements TransportListAdap
 //            }
             //   student_id = builder.substring(1);
             JSONObject object = new JSONObject();
-            object.put("tutor_id", tr_id);
-            object.put("tutor_name", tp_name);
-            // object.put("phone_number", phone_number);
-            // object.put("student_id", student_id);
+            object.put("transport_id", tr_id);
+            object.put("transport_name", tp_name);
+            object.put("phone_number", phone_number);
+            object.put("student_id", builder.substring(1));
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Please Wait...", 7, Paths.edit_transport, object.toString(), 1);

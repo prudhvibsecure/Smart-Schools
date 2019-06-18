@@ -44,7 +44,7 @@ public class VerifyOtp extends AppCompatActivity implements HttpHandler {
              class_teacher = in.getStringExtra("class_teacher");
          }
 
-        SharedValues.saveValue(this, "member_id", member_id);
+       /* SharedValues.saveValue(this, "member_id", member_id);
         SharedValues.saveValue(this, "school_id", school_id);
         SharedValues.saveValue(this, "id", id);
         SharedValues.saveValue(this, "ph_number", phone);
@@ -68,7 +68,7 @@ public class VerifyOtp extends AppCompatActivity implements HttpHandler {
             // Transport
         } else {
             startPages(RoutesList.class);
-        }
+        }*/
         findViewById(R.id.done_v).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

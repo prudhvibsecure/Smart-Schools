@@ -150,7 +150,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Intent refresh = new Intent("com.teacher.add");
                     sendBroadcast(refresh);
 
-                } else if (m_type.equalsIgnoreCase("ATC")) {
+                }
+                else if(m_type.equalsIgnoreCase("DELS"))
+                {
+                    String Student_id = arry_data[1];
+                    Intent list = new Intent();
+                    list.putExtra("student_id", Student_id);
+                    list.setAction("com.parent.refresh");
+                    sendBroadcast(list);
+                }else if (m_type.equalsIgnoreCase("ATC")) {
                     String teacher_classes_id = arry_data[1];
                     String class_id = arry_data[2];
                     String class_name = arry_data[3];
@@ -259,6 +267,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     messsages = "<Html>Dear Parent,<br/>Sorry for the inconvenience caused. <b>" + student_name + "</b> ( class " + class_name + " - " + section + " ) is present on " + lDate + " Please ignore earlier message<br/><br/> Thank you.</Html>";
                     db_tables.messageData(messsages, msg_id, String.valueOf(System.currentTimeMillis()), null, cls_id, SharedValues.getValue(this, "school_id"), "1", null, stu_id, "Class Teacher", date_time, "0", "0", "No", m_type);
                 }
+                if(m_type.equalsIgnoreCase("DELS"))
+                {
+                    String Student_id = arry_data[1];
+                    Intent list = new Intent();
+                    list.putExtra("student_id", Student_id);
+                    list.setAction("com.parent.refresh");
+                    sendBroadcast(list);
+                }
                 if (m_type.equalsIgnoreCase("EAA")) {
 
                     String msg_id = arry_data[1];
@@ -358,13 +374,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     db_tables.messageData(messsages, msg_id, date_time, null, cls_id, SharedValues.getValue(this, "school_id"), "1", null, stu_id, teacher_name, date_time, "0", "0", "No", m_type);
                     db_tables.updatemsgStatus(msg_id);
                 }
-                 if(m_type.equalsIgnoreCase("BM"))
+                if(m_type.equalsIgnoreCase("BM"))
                 {
                     String message = arry_data[1];
                     String student_id = arry_data[2];
                     String class_id = arry_data[3];
                     String sender = "School Admin";
-                    db_tables.messageData(message,null,null, null, class_id, null, "", null, student_id, sender,null, "0","0", "No", m_type );
+                    db_tables.messageData(message,String.valueOf(System.currentTimeMillis()),String.valueOf(System.currentTimeMillis()), null, class_id, null, "1", null, student_id, sender,null, "0","0", "No", m_type );
+                }
+                if(m_type.equalsIgnoreCase("BMC"))
+                {
+                    String attachment_name = arry_data[1];
+                    String student_id = arry_data[2];
+                    String class_id = arry_data[3];
+                    db_tables.messageData(attachment_name,String.valueOf(System.currentTimeMillis()),String.valueOf(System.currentTimeMillis()), null, class_id, null, "1", null, student_id, "School Admin",null, "0","0", "No", m_type );
                 }
 
                 MyNotificationManager mNotificationManager = new MyNotificationManager(getApplicationContext());

@@ -134,6 +134,10 @@ public class ViewSyllabusMarks extends AppCompatActivity implements HttpHandler,
                             Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
                         }
                     }
+                    else
+                    {
+                        Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
+                    }
                     break;
             }
         } catch (Exception e) {

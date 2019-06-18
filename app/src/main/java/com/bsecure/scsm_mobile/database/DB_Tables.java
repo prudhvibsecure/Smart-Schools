@@ -365,6 +365,23 @@ public class DB_Tables {
         }
     }
 
+    public void parentDeleteStudent(final String stu_id) {
+
+        SQLiteDatabase db = null;
+        try {
+            long rawId;
+            if (database != null) {
+                String iwhereClause = "student_id='" + stu_id + "'";
+                db = database.getWritableDatabase();
+                db.delete("Students", iwhereClause, null);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void parentDeleteTutor(final String stu_id, String tut_id) {
 
         SQLiteDatabase db = null;

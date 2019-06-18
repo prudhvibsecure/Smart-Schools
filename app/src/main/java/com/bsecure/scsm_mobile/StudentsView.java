@@ -127,7 +127,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
             dialog.setTitle("Alert!");
             String desc;
             if (rollno_list_id.size() > 0) {
-                desc = "Students"+rollno_list_id;
+                desc = "Students";
                 dialog.setContentText("" + Html.fromHtml(desc + " Are Being Marked Absent."));
             } else {
                 desc = "All Students <br/>Present";

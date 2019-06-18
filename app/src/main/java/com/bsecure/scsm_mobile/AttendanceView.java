@@ -344,6 +344,7 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
 
     private void callSynce() {
         try {
+
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("class_id", class_id);

@@ -101,6 +101,7 @@ public class ExamsSubjects extends AppCompatActivity implements HttpHandler, Sub
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("examinations_id", exam_id);
             object.put("class_id", class_id);
+            object.put("teacher_id", teacher_id);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.get_examination_time_table, object.toString(), 1);
         } catch (Exception e) {

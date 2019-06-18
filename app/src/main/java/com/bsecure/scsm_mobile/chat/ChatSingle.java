@@ -1262,9 +1262,16 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                 } else {
                     displayname = temp[0] + "_" + attachTime + "." + temp[1];
                 }
-            } else {
+            } else if (displayname.contains("-")){
+                String[] temp = displayname.split("\\-");
                 displayname = displayname + "_" + attachTime;
-
+                if (temp.length > 2) {
+                    displayname = temp[0] + temp[1] + "_" + attachTime + "." + temp[temp.length - 1];
+                } else {
+                    displayname = temp[0] + "_" + attachTime + "." + temp[1];
+                }
+            }else{
+                displayname = displayname + "_" + attachTime;
             }
             displayname = displayname.replaceAll("\\s+", "");
             item.setAttribute("attachname", displayname);

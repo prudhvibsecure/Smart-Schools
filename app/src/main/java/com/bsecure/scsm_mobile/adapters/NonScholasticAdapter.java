@@ -148,7 +148,7 @@ public class NonScholasticAdapter extends BaseExpandableListAdapter {
 
         skillName.setText(name);
         Grade.setText(grade);
-        if(comments == null)
+        if(comments == null|| comments.equalsIgnoreCase("null"))
         {
             comment.setText("");
         }

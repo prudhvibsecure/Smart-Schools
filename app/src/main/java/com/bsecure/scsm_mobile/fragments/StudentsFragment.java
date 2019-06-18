@@ -1,8 +1,10 @@
 package com.bsecure.scsm_mobile.fragments;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -32,6 +34,7 @@ import com.bsecure.scsm_mobile.models.Exams;
 import com.bsecure.scsm_mobile.models.StudentModel;
 import com.bsecure.scsm_mobile.modules.Calender;
 import com.bsecure.scsm_mobile.modules.ParentActivity;
+import com.bsecure.scsm_mobile.modules.StudentPerformance;
 import com.bsecure.scsm_mobile.modules.TimeTableView;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperCallback_Parent;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperExtension;
@@ -62,6 +65,7 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
     String[]stu_ids;
     String [] sids;
     ArrayList<String>school_ids;
+    IntentFilter filter;
 
     public StudentsFragment() {
         // Required empty public constructor
@@ -82,7 +86,8 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         layout = inflater.inflate(R.layout.content_main_view, container, false);
-
+        filter = new IntentFilter("com.parent.refresh");
+        getActivity().registerReceiver(mBroadcastReceiver, filter);
         school_ids = new ArrayList<>();
         db_tables = new DB_Tables(getActivity());
         db_tables.openDB();
@@ -114,6 +119,16 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
 
         return layout;
     }
+
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String student_id = intent.getStringExtra("student_id");
+            db_tables.parentDeleteStudent(student_id);
+            getStudentsList();
+        }
+    };
+
 
     private void getStudents(String schoolid) {
 
@@ -311,6 +326,18 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
                         roll_no = classModelList.get(position).getRoll_no();
                         class_id = classModelList.get(position).getClass_id();
                         //chekGraphs();
+
+                        exam_name = "F.A%20-%201";
+                        String school_id = "33";
+                        class_id ="170";
+                        String roll_no = "2";
+                        Intent in = new Intent(getActivity(), StudentPerformance.class);
+                        in.putExtra("class_id", class_id);
+                        in.putExtra("exam_name", exam_name);
+                        in.putExtra("roll_no", roll_no);
+                        in.putExtra("school_id", school_id);
+                        startActivity(in);
+
                         getExams();
                         return true;
                     case R.id.replayall:

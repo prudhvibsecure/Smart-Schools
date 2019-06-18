@@ -39,6 +39,7 @@ import com.bsecure.scsm_mobile.models.StudentModel;
 import com.bsecure.scsm_mobile.models.TransportModel;
 import com.bsecure.scsm_mobile.modules.ParentActivity;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperCallback_Trns;
+import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperCallback_Tut_stu;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperExtension;
 import com.bsecure.scsm_mobile.utils.SharedValues;
 
@@ -103,7 +104,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
         });
         mRecyclerView = view_layout.findViewById(R.id.content_list);
         teachersList();
-        mCallback = new ItemTouchHelperCallback_Trns();
+        mCallback = new ItemTouchHelperCallback_Tut_stu();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
         return view_layout;

@@ -49,8 +49,12 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="icon, label,allowBackup,supportsRtl">
+        <activity android:name=".modules.StudentPerformance"></activity>
 
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCSgCTTAPef2MpDVXjvzmXj37Db97WJmjs" />
@@ -91,7 +95,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".modules.TransportView"
+        <activity
+            android:name=".modules.TransportView"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true">
@@ -148,7 +153,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".mpasv.TrasportMaps"
+        <activity
+            android:name=".mpasv.TrasportMaps"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true">
@@ -336,16 +342,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".modules.Calender">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".VerifyOtp">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

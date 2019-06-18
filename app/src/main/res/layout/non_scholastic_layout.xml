@@ -74,11 +74,8 @@
         android:id="@+id/content_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_list"
         android:layout_below="@+id/header" />
 
-    <include
-        android:id="@+id/bottom_list"
-        layout="@layout/bottom_viewer" />
+
 
 </RelativeLayout>
