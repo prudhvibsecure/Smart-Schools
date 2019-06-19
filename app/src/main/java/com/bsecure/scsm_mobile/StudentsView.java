@@ -1,5 +1,6 @@
 package com.bsecure.scsm_mobile;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -18,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -123,12 +125,16 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
     private void addAttendance() {
         try {
 
-            SweetAlertDialog dialog = new SweetAlertDialog(this);
+            //SweetAlertDialog dialog = new SweetAlertDialog(this);
+
+            Cdialogue dialogu = new Cdialogue(this);
+            final Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.dialog);
             dialog.setTitle("Alert!");
             String desc;
-            if (rollno_list_id.size() > 0) {
-                desc = "Students";
-                dialog.setContentText("" + Html.fromHtml(desc + " Are Being Marked Absent."));
+            /*if (rollno_list_id.size() > 0) {
+                desc = "Roll no's"+rollno_list_id.toString()+"<br/>";
+                dialog.findViewById(R.id.data).setContentDescription("" + Html.fromHtml(desc + " Are Being Marked Absent."));
             } else {
                 desc = "All Students <br/>Present";
                 dialog.setContentText("" + Html.fromHtml(desc));
@@ -146,6 +152,38 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
                     sweetAlertDialog.dismiss();
                     // StudentsView.this.finish();
+                }
+            });*/
+
+            if (rollno_list_id.size() > 0) {
+                desc = rollno_list_id.toString();
+                //dialog.setContentText("Roll No.'s: " + Html.fromHtml(desc + " Are Being Marked Absent."));
+                TextView tv = dialog.findViewById(R.id.data);
+                tv.setText("Roll No's:" + Html.fromHtml(desc + " Are Being Modified"));
+            }
+            else {
+                desc = "All Students <br/>Present";
+                TextView tv = dialog.findViewById(R.id.data);
+                tv.setText("Roll No.'s: " + Html.fromHtml(desc));
+            }
+            TextView tv = dialog.findViewById(R.id.data);
+            tv.setText("Roll No.'s: " + Html.fromHtml(desc)+ "Are Being Modified");
+            dialog.setCancelable(false);
+            Button yes = dialog.findViewById(R.id.yes);
+            yes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addAttAlert();
+                    dialog.dismiss();
+                }
+            });
+
+            Button no = dialog.findViewById(R.id.no);
+            no.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //attUpdateAlert();
+                    dialog.dismiss();
                 }
             });
             dialog.show();

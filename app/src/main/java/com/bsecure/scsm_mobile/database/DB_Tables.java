@@ -1745,6 +1745,21 @@ public class DB_Tables {
         }
     }
 
+    public void deleteMessage(String msg_id ) {
+        try {
+            if (database != null) {
+
+                String iwhereClause = "message_id='" + msg_id + "'";
+                SQLiteDatabase db = database.getWritableDatabase();
+                db.delete("Message", iwhereClause, null);
+                db.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void updateReply(String reply_id) {
         SQLiteDatabase db = null;
         try {

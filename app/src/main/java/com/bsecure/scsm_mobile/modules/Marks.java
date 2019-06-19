@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Marks extends AppCompatActivity implements HttpHandler, ExamsListAdapter.ContactAdapterListener {
-    private String class_name, class_id, section, teacher_id,value;
+    private String class_name, class_id, section, teacher_id,value, class_teacher;
     private RecyclerView mRecyclerView;
     private ExamsListAdapter adapter;
     private List<Exams> examsList;

@@ -161,7 +161,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     private SweetAlertDialog pDialog;
     private MembersAdapter transportListAdapter;
     String match_ids[];
-    String siid;
+    String siid, mid;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -708,16 +708,19 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                 findViewById(R.id.send_btn_l).setVisibility(View.GONE);
                 String mesg_date_time = String.valueOf(System.currentTimeMillis());
                 JSONObject object = new JSONObject();
+                mid = String.valueOf(System.currentTimeMillis());
                 object.put("message", msg);
                 object.put("message_date", mesg_date_time);
                 object.put("message_time", mesg_date_time);
                 object.put("class_id", class_id);
                 object.put("student_id", student_id);
                 object.put("reply_id", reply_Id);
+                object.put("mid", mid);
+
                 // object.put("teacher_id", reply_Id);
                 object.put("school_id", SharedValues.getValue(this, "school_id"));
                 object.put("attendance_date", attandence_date);
-                db_tables.messageData(msg, null, mesg_date_time, null, class_id, SharedValues.getValue(this, "school_id"), "0", null, student_id, studentName, attandence_date, reply_Id, "0", "Yes", "none");
+                db_tables.messageData(msg, mid, mesg_date_time, null, class_id, SharedValues.getValue(this, "school_id"), "0", null, student_id, studentName, attandence_date, reply_Id, "0", "Yes", "none");
                 HTTPNewPost task = new HTTPNewPost(this, this);
                 task.disableProgress();
                 task.userRequest("", 10, Paths.attendance_reply, object.toString(), 1);
@@ -1365,6 +1368,11 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
                         db_tables.updateMessageId(object.optString("message_id"), object.optString("message_date"));
                         getChatMessages();
+                    }
+                    else
+                    {
+                        Toast.makeText(this, "Cannot Reply More Than Once", Toast.LENGTH_SHORT).show();
+                        db_tables.deleteMessage(mid);
                     }
                     break;
 

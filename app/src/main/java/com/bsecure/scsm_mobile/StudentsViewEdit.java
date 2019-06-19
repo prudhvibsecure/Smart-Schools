@@ -1,5 +1,6 @@
 package com.bsecure.scsm_mobile;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +22,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.adapters.StudentsAdapter;
@@ -180,13 +185,18 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
 //            }else{
 //                desc="All students<br/> present";
 //            }
-            SweetAlertDialog dialog = new SweetAlertDialog(this);
+           // SweetAlertDialog dialog = new SweetAlertDialog(this);
+            Cdialogue dialogu = new Cdialogue(this);
+            final Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.dialog);
             dialog.setTitle("Alert!");
             String desc;
             if (rollno_list_id.size() > 0) {
                 desc = rollno_list_id.toString();
-                dialog.setContentText("Roll No.'s: " + Html.fromHtml(desc + " Are Being Marked Absent."));
-            } else {
+                //dialog.setContentText("Roll No.'s: " + Html.fromHtml(desc + " Are Being Marked Absent."));
+                TextView tv = dialog.findViewById(R.id.data);
+                tv.setText("Roll No's:" + Html.fromHtml(desc + " Are Being Modified"));
+            }/* else {
                 desc = "All Students <br/>Present";
                 dialog.setContentText("Roll No.'s: " + Html.fromHtml(desc));
             }
@@ -204,6 +214,32 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                 public void onClick(SweetAlertDialog sweetAlertDialog) {
                     sweetAlertDialog.dismiss();
                     // StudentsViewEdit.this.finish();
+                }
+            });*/
+
+            else {
+                desc = "All Students <br/>Present";
+                TextView tv = dialog.findViewById(R.id.data);
+                tv.setText("Roll No.'s: " + Html.fromHtml(desc));
+            }
+            TextView tv = dialog.findViewById(R.id.data);
+            tv.setText("Roll No.'s: " + Html.fromHtml(desc)+ "Are Being Modified");
+            dialog.setCancelable(false);
+            Button yes = dialog.findViewById(R.id.yes);
+           yes.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   attUpdateAlert();
+                   dialog.dismiss();
+               }
+           });
+
+            Button no = dialog.findViewById(R.id.no);
+            no.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //attUpdateAlert();
+                    dialog.dismiss();
                 }
             });
             dialog.show();
@@ -347,6 +383,7 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                         time_stamp = System.currentTimeMillis();
                         String attendDate = getDate(time_stamp);
                         db_tables.updateAttendance(att_date, class_id, st_ids, String.valueOf(time_stamp), teacher_id, roll_nos, attendDate);
+                        Toast.makeText(this, "Attendance Updated Successfully", Toast.LENGTH_LONG).show();
                         finish();
 
                     }

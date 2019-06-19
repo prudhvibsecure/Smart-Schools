@@ -659,15 +659,15 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
         } else {
             st_ids.remove(id);
             // st_names.remove(id);
-            chk_name.setBackground(getResources().getDrawable(R.mipmap.ic_uncheck));
+            chk_name.setBackground(getResources().getDrawable(R.mipmap.delete));
         }
     }
 
     @Override
     public void onRowDelete(List<StudentModel> matchesList, boolean value, CheckBox chk_name, int position, LinearLayout view_list_main_content) {
         id_st = studentModelList.get(position).getStudent_id();
-        view_list_main_content.setVisibility(View.GONE);
-
+        view_list_main_content.setVisibility(View.VISIBLE);
+        chk_name.setBackground(getResources().getDrawable(R.mipmap.delete));
 
         for (String st_id : st_ids) {
             if (id_st.equalsIgnoreCase(st_id.trim())) {

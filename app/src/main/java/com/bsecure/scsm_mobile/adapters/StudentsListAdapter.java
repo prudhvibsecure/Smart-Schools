@@ -1,6 +1,7 @@
 package com.bsecure.scsm_mobile.adapters;
 
 import android.content.Context;
+import android.icu.util.ValueIterator;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -101,17 +102,18 @@ public class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapte
 
                 contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.ic_check));
                 contactViewHolder.chk_name.setChecked(true);
-                contactViewHolder.chk_name.setVisibility(View.GONE);
-                contactViewHolder.delete_v.setVisibility(View.VISIBLE);
+                contactViewHolder.chk_name.setVisibility(View.VISIBLE);
+                //contactViewHolder.delete_v.setVisibility(View.VISIBLE);
             } else {
                 contactViewHolder.delete_v.setVisibility(View.GONE);
+
                 if (isChecked.containsKey(position)) {
                     contactViewHolder.chk_name.setChecked(isChecked.get(position));
 
                     contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.ic_check));
                 } else {
                     contactViewHolder.chk_name.setChecked(false);
-                    contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.ic_uncheck));
+                    contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.delete));
                 }
 
             }
@@ -205,6 +207,7 @@ public class StudentsListAdapter extends RecyclerView.Adapter<StudentsListAdapte
             tv_title = (TextView) v.findViewById(R.id.cl_name);
             contact_ph = (TextView) v.findViewById(R.id.section_tv);
             delete_v = (ImageView) v.findViewById(R.id.delete_v);
+            delete_v.setVisibility(View.GONE);
             chk_name = (CheckBox) v.findViewById(R.id.chk_name);
             view_list_main_content = v.findViewById(R.id.view_list_main_content);
             chk_name.setBackground(context.getDrawable(R.mipmap.ic_check));

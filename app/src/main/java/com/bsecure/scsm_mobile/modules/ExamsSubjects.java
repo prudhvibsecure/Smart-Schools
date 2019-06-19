@@ -38,7 +38,7 @@ public class ExamsSubjects extends AppCompatActivity implements HttpHandler, Sub
     private RecyclerView mRecyclerView;
     private SubjectListAdapter adapter;
     private List<Subjects> examsList;
-    String exam_id, class_id, teacher_id, value;
+    String exam_id, class_id, teacher_id, value, class_teacher;
     TextView bt_nscholastic;
 
     @Override
@@ -54,12 +54,14 @@ public class ExamsSubjects extends AppCompatActivity implements HttpHandler, Sub
         teacher_id = getdata.getStringExtra("teacher_id");
         value = getdata.getStringExtra("value");
         String exam_name = getdata.getStringExtra("exams_name");
+
+
         toolbar.setTitle(exam_name);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
         bt_nscholastic = findViewById(R.id.bt_nscholastic);
         if(value.equalsIgnoreCase("1")) {
-            if (SharedValues.getValue(this, "class_teacher").equalsIgnoreCase("1")) {
+            if (class_id.equalsIgnoreCase(SharedValues.getValue(this,"class_id"))) {
                 bt_nscholastic.setVisibility(View.VISIBLE);
             }
         }

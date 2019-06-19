@@ -185,7 +185,16 @@ public class ViewSyllabusMarks extends AppCompatActivity implements HttpHandler,
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRec.setLayoutManager(linearLayoutManager);
         mRec.setAdapter(syllabusAdapter);
-        mDialog.show();
+        if(mDes.size() > 0) {
+            mDialog.show();
+        }
+        else
+        {
+            mRec.setVisibility(View.GONE);
+            TextView tv = mDialog.findViewById(R.id.notif);
+            tv.setText("No Syllabus Lessons Found");
+            //Toast.makeText(this, "No Syllabus Lessons Found", Toast.LENGTH_SHORT).show();
+        }
 
     }
 }

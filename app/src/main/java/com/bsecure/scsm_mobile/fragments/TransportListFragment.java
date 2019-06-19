@@ -51,6 +51,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 
 public class TransportListFragment extends Fragment implements TransportListAdapter.ContactAdapterListener, HttpHandler {
 
@@ -201,6 +202,8 @@ public class TransportListFragment extends Fragment implements TransportListAdap
             object.put("phone_number", phone_number);
             object.put("student_id", SharedValues.getValue(getActivity(),"student_id"));
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            //object.put("created_by", "0");
+
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
 
             task.userRequest("Please Wait...", 4, Paths.add_transport, object.toString(), 1);
@@ -345,7 +348,9 @@ public class TransportListFragment extends Fragment implements TransportListAdap
     @Override
     public void swipeToDelete(int position, List<TransportModel> classModelList) {
         if (classModelList.get(position).getCreated_by().equalsIgnoreCase("1")) {
-
+            Toast toast = Toast.makeText(getActivity(),"Cannot Delete School Transport", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
         } else {
             String s_id = SharedValues.getValue(getActivity(), "school_id");
             String stu_id = classModelList.get(position).getStudent_id();
@@ -367,21 +372,27 @@ public class TransportListFragment extends Fragment implements TransportListAdap
 
     @Override
     public void swipeToStatus(int position, List<TransportModel> classModelList, String status) {
-        // if (classModelList.get(position).getCreated_by().equalsIgnoreCase("1")) {
-        String s_id = SharedValues.getValue(getActivity(), "school_id");
-        teach_Id = classModelList.get(position).getTransport_id();
-        t_status = status;
-        try {
-            JSONObject object = new JSONObject();
-            object.put("status", status);
-            object.put("transport_id", teach_Id);
-            object.put("school_id", s_id);
-            HTTPNewPost task = new HTTPNewPost(getActivity(), this);
-            task.userRequest("Please Wait...", 2, Paths.set_transport_status, object.toString(), 1);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (classModelList.get(position).getCreated_by().equalsIgnoreCase("1")) {
+            Toast toast = Toast.makeText(getActivity(),"Cannot Inactivate Transport", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
         }
-        // }
+        else
+        {
+            String s_id = SharedValues.getValue(getActivity(), "school_id");
+            teach_Id = classModelList.get(position).getTransport_id();
+            t_status = status;
+            try {
+                JSONObject object = new JSONObject();
+                object.put("status", status);
+                object.put("transport_id", teach_Id);
+                object.put("school_id", s_id);
+                HTTPNewPost task = new HTTPNewPost(getActivity(), this);
+                task.userRequest("Please Wait...", 2, Paths.set_transport_status, object.toString(), 1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -432,7 +443,7 @@ public class TransportListFragment extends Fragment implements TransportListAdap
 
                         teachersList();
                     } else {
-
+                        Toast.makeText(schoolMain, object1.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case 4:
@@ -487,7 +498,9 @@ public class TransportListFragment extends Fragment implements TransportListAdap
     @Override
     public void swipeToUpdate(final int position, final List<TransportModel> matchesList) {
         if (matchesList.get(position).getCreated_by().equalsIgnoreCase("1")) {
-
+            Toast toast =  Toast.makeText(getActivity(),"Cannot Edit School Transport", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
         } else {
             tras_id = matchesList.get(position).getTransport_id();
             member_dialog = new Dialog(getActivity(), R.style.MyAlertDialogStyle);

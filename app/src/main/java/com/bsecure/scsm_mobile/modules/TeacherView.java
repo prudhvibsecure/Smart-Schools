@@ -120,6 +120,7 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
                         if (jsonarray2.length() > 0) {
                             for (int i = 0; i < jsonarray2.length(); i++) {
                                 JSONObject jsonobject = jsonarray2.getJSONObject(i);
+                                SharedValues.saveValue(this,"class_id", jsonobject.optString("class_id"));
                                 db_tables.addClassList(jsonobject.optString("teacher_id"), jsonobject.optString("teacher_name"), jsonobject.optString("phone_number"), jsonobject.optString("class_teacher"), jsonobject.optString("class_id"), jsonobject.optString("status"));
                             }
                         }

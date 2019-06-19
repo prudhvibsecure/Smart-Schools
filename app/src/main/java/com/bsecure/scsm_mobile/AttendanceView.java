@@ -36,6 +36,8 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -328,6 +330,14 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
 
                 }
 
+                Collections.sort(attandenceList, new Comparator<Attandence>() {
+                    @Override
+                    public int compare(Attandence lhs, Attandence rhs) {
+                        return String.valueOf(lhs.getAttendance_date()).compareTo(String.valueOf(rhs.getAttendance_date()));
+                    }
+                });
+
+                Collections.reverse(attandenceList);
                 adapter = new AttandenceListAdapter(attandenceList, this, this);
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                 mRecyclerView.setLayoutManager(linearLayoutManager);

@@ -5,7 +5,7 @@
         android:title="Performance" />
     <item
         android:id="@+id/replayall"
-        android:title="Period" />
+        android:title="Time Table" />
     <item
         android:id="@+id/calendar"
         android:title="Calendar" />

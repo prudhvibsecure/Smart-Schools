@@ -368,7 +368,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                         try {
                         JSONObject oo = new JSONObject(results.toString());
                         if (oo.optString("statuscode").equalsIgnoreCase("200")) {
-                            ((TextView)findViewById(R.id.get_loc)).setText("Journy Started");
+                            ((TextView)findViewById(R.id.get_loc)).setText("Transport Started");
                             latitude = Double.valueOf(oo.optString("lat"));//change lat from response
                             longitude = Double.valueOf(oo.optString("lang"));//change lat from response
                             googleMap.clear();
@@ -409,7 +409,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                             }
                             break;
                         }else{
-                            ((TextView)findViewById(R.id.get_loc)).setText("Journy Not Started");
+                            ((TextView)findViewById(R.id.get_loc)).setText("Transport Not Started");
                            // Toast.makeText(this, oo.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                         }
                 } catch (Exception e) {

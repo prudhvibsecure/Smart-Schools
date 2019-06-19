@@ -74,6 +74,12 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler, Tim
                 thursday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
                 friday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
                 saturday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+
+                tuesday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                wednesday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                thursday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                friday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                saturday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
             }
         });
 
@@ -90,6 +96,12 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler, Tim
                 thursday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
                 friday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
                 saturday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+
+                monday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                wednesday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                thursday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                friday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                saturday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
             }
         });
 
@@ -106,6 +118,12 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler, Tim
                 thursday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
                 friday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
                 saturday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+
+                tuesday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                monday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                thursday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                friday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                saturday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
             }
         });
 
@@ -122,6 +140,12 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler, Tim
                 wednesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
                 friday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
                 saturday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+
+                tuesday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                wednesday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                monday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                friday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                saturday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
             }
         });
 
@@ -138,6 +162,12 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler, Tim
                 wednesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
                 thursday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
                 saturday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+
+                tuesday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                wednesday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                thursday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                monday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                saturday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
             }
         });
 
@@ -154,6 +184,12 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler, Tim
                 wednesday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
                 thursday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
                 friday.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+
+                tuesday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                wednesday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                thursday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                friday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                monday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
             }
         });
 
