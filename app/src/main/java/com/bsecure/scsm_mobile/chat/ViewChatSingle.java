@@ -1407,7 +1407,15 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onRowLongClicked(List<MessageObject> matchesList, int position) {
-        repForDiloag(matchesList, position);
+        String rid = matchesList.get(position).getMessage_id();
+        String testid= db_tables.getRepMessages(rid).toString();
+        if(testid.length() != 0)
+        {
+            Toast.makeText(this, "Reply Already Sent", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            repForDiloag(matchesList, position);
+        }
     }
 
     @Override
@@ -1528,7 +1536,6 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     };
 
     private void repForDiloag(final List<MessageObject> matchesList, final int position) {
-
 
         rep_Dialog = new Dialog(this, R.style.MyAlertDialogStyle);
         rep_Dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

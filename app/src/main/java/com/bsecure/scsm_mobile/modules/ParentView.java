@@ -191,4 +191,6 @@ public class ParentView extends AppCompatActivity implements HttpHandler, Parent
     public void swipeToMore(int position, List<StudentModel> classModelList, View view_list_repo_action_more) {
 
     }
+
+
 }

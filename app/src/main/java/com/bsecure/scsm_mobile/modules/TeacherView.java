@@ -243,6 +243,14 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
                         startActivity(next);
                         return true;
 
+                    case R.id.cal:
+                        adapter.notifyDataSetChanged();
+                        getListTeachers();
+                        Intent cal = new Intent(TeacherView.this, Calender.class);
+                        cal.putExtra("class_id", SharedValues.getValue(TeacherView.this, "class_id"));
+                        startActivity(cal);
+                        return true;
+
                     default:
                         return false;
                 }

@@ -132,10 +132,15 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
                             mRecyclerView.setLayoutManager(linearLayoutManager);
                             mRecyclerView.setAdapter(adapter);
                         }
+                        else
+                        {
+                            Toast.makeText(TutorsView.this, "No Data Found", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
+                        Toast.makeText(TutorsView.this, "No Data Found", Toast.LENGTH_SHORT).show();
                         findViewById(R.id.no_data).setVisibility(View.VISIBLE);
-                        adapter.notifyDataSetChanged();
-                        Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                        //adapter.notifyDataSetChanged();
+
                     }
                     break;
                 case 2:
@@ -258,4 +263,6 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
         unregisterReceiver(mBroadcastReceiver);
         super.onDestroy();
     }
+
+
 }

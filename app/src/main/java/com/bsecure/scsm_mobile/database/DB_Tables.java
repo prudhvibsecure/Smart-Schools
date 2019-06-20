@@ -85,6 +85,43 @@ public class DB_Tables {
         return mArrayList;
     }
 
+    public ArrayList<UserRepo> getRepMessages(String reply_id) {
+        ArrayList<UserRepo> mArrayList = new ArrayList<UserRepo>();
+        String message = null;
+        String sender_name = null;
+        String type = null;
+        try {
+            if (database != null) {
+
+                String cursor_q = "select message,sender_name from Message where no_reply='" + reply_id + "'";
+                SQLiteDatabase db = database.getWritableDatabase();
+                Cursor cursor = db
+                        .rawQuery(cursor_q,
+                                null);
+                try {
+                    if (null != cursor && !reply_id.equalsIgnoreCase("0") || !reply_id.isEmpty())
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToFirst();
+                            UserRepo repo = new UserRepo();
+                            message = cursor.getString(cursor.getColumnIndex("message"));
+                            sender_name = cursor.getString(cursor.getColumnIndex("sender_name"));
+                            repo.setMessage(message);
+                            repo.setName(sender_name);
+                            mArrayList.add(repo);
+                        }
+                    cursor.close();
+                    db.close();
+                } finally {
+                    db.close();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return mArrayList;
+    }
+
     public void addClassList(String teacher_id, String teacher_name, String phone_number, String class_teacher, String class_id, String status) {
         SQLiteDatabase db = null;
         try {
@@ -1573,7 +1610,7 @@ public class DB_Tables {
                 ContentValues cv = new ContentValues();
                 cv.put("transport_name", ad_xname);
                 cv.put("school_id", school_id);
-                cv.put("status", "0");
+                //cv.put("status", "0");
                 cv.put("phone_number", number);
                 db.update("Transport", cv, iwhereClause, null);
                 db.close();

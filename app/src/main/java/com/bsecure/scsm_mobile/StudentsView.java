@@ -159,7 +159,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                 desc = rollno_list_id.toString();
                 //dialog.setContentText("Roll No.'s: " + Html.fromHtml(desc + " Are Being Marked Absent."));
                 TextView tv = dialog.findViewById(R.id.data);
-                tv.setText("Roll No's:" + Html.fromHtml(desc + " Are Being Modified"));
+                tv.setText("Roll No's:" + Html.fromHtml(desc + " Are Being Marked Absent. Are You Sure You Want To Submit?"));
             }
             else {
                 desc = "All Students <br/>Present";
@@ -167,7 +167,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                 tv.setText("Roll No.'s: " + Html.fromHtml(desc));
             }
             TextView tv = dialog.findViewById(R.id.data);
-            tv.setText("Roll No.'s: " + Html.fromHtml(desc)+ "Are Being Modified");
+            tv.setText("Roll No.'s: " + Html.fromHtml(desc)+ "Are Being Marked Absent. Are You Sure You Want To Submit?");
             dialog.setCancelable(false);
             Button yes = dialog.findViewById(R.id.yes);
             yes.setOnClickListener(new View.OnClickListener() {
@@ -285,7 +285,9 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                             mRecyclerView.setAdapter(adapter);
                         }
                     }
-                    Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                    else {
+                        Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case 2:
                     JSONObject object1 = new JSONObject(results.toString());
@@ -299,7 +301,9 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                             db_tables.updateAttendance(String.valueOf(time_stamp), class_id, ss_d, String.valueOf(time_stamp), teacher_id, roll_nos, attendDate);
                         }
                         Toast.makeText(this, "Attendance Details Submitted Successfully", Toast.LENGTH_SHORT).show();
-                        finish();
+                       Intent ber=new Intent("com.set.refrsh");
+                       sendBroadcast(ber);
+                       finish();
                     }
                     break;
             }

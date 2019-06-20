@@ -195,7 +195,7 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                 desc = rollno_list_id.toString();
                 //dialog.setContentText("Roll No.'s: " + Html.fromHtml(desc + " Are Being Marked Absent."));
                 TextView tv = dialog.findViewById(R.id.data);
-                tv.setText("Roll No's:" + Html.fromHtml(desc + " Are Being Modified"));
+                tv.setText("Roll No's:" + Html.fromHtml(desc + " Are Being Modified. Are You Sure You Want To Submit?"));
             }/* else {
                 desc = "All Students <br/>Present";
                 dialog.setContentText("Roll No.'s: " + Html.fromHtml(desc));
@@ -223,7 +223,7 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                 tv.setText("Roll No.'s: " + Html.fromHtml(desc));
             }
             TextView tv = dialog.findViewById(R.id.data);
-            tv.setText("Roll No.'s: " + Html.fromHtml(desc)+ "Are Being Modified");
+            tv.setText("Roll No.'s: " + Html.fromHtml(desc)+ "Are Being Modified. Are You Sure You Want To Submit?");
             dialog.setCancelable(false);
             Button yes = dialog.findViewById(R.id.yes);
            yes.setOnClickListener(new View.OnClickListener() {

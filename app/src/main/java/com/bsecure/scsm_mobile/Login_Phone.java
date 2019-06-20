@@ -85,6 +85,7 @@ public class Login_Phone extends AppCompatActivity implements HttpHandler {
                         in.putExtra("phone",object.optString("phone_number"));
                         in.putExtra("class_teacher", object.optString("class_teacher"));
                         startActivity(in);
+                        finish();
 
                        /* if (object.optString("member_id").equalsIgnoreCase("1")) {
                             //Teacher
@@ -105,7 +106,6 @@ public class Login_Phone extends AppCompatActivity implements HttpHandler {
                         } else {
                             startPages(RoutesList.class);
                         }*/
-                        return;
                     }
                     getError(object.optString("statusdescription"));
                     break;

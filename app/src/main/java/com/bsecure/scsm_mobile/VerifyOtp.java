@@ -140,7 +140,7 @@ public class VerifyOtp extends AppCompatActivity implements HttpHandler {
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
                         SharedValues.saveValue(this, "member_id", member_id);
                         SharedValues.saveValue(this, "school_id", school_id);
-                        SharedValues.saveValue(this, "id", id);
+                        SharedValues.saveValue(this, "student_id", id);
                         SharedValues.saveValue(this, "ph_number", phone);
                         SharedValues.saveValue(this, "class_teacher", class_teacher);
 
@@ -218,4 +218,5 @@ public class VerifyOtp extends AppCompatActivity implements HttpHandler {
         startActivity(st);
         finish();
     }
+
 }

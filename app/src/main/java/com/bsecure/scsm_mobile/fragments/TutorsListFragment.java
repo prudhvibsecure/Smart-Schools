@@ -26,6 +26,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
@@ -78,6 +79,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
     private IntentFilter filter;
     String match_ids[];
     List<String> stids;
+    TextView tv_nodata;
 
     @Override
     public void onAttach(Context context) {
@@ -94,6 +96,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
         getActivity().registerReceiver(mBroadcastReceiver, filter);
         db_tables = new DB_Tables(getActivity());
         db_tables.openDB();
+        tv_nodata = view_layout.findViewById(R.id.no_data);
         view_layout.findViewById(R.id.toolset).setVisibility(View.GONE);
         view_layout.findViewById(R.id.fab).setVisibility(View.VISIBLE);
         view_layout.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
@@ -227,6 +230,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 this.m_spinner.setAdapter(dataAdapter);
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -355,7 +359,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
 
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
-            object.put("student_id", SharedValues.getValue(getActivity(), "id"));
+            object.put("student_id", SharedValues.getValue(getActivity(), "student_id"));
 
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Loading...", 12, Paths.base + "view_tutors_v1", object.toString(), 1);
@@ -569,10 +573,11 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                         if (TextUtils.isEmpty(tut_Id)) {
                             Toast.makeText(schoolMain, "Tutor Added Successfully", Toast.LENGTH_SHORT).show();
                             db_tables.addTutorsList(tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, "[" + student_id + "]", object11.optString("tutor_id"), "0");
+                            tv_nodata.setVisibility(View.GONE);
                         } else {
                             Toast.makeText(schoolMain, "Tutor Updated Successfully", Toast.LENGTH_SHORT).show();
                             db_tables.updateTutorsList(object11.optString("tutor_id"), tp_name, SharedValues.getValue(getActivity(), "school_id"), phone_number, "[" + student_id + "]");
-
+                            tv_nodata.setVisibility(View.GONE);
                         }
 
 //                        if(id == 1)
@@ -586,6 +591,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
 
                         teachersList();
                     } else {
+
                         member_dialog.dismiss();
                         Toast.makeText(getActivity(), object11.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
@@ -598,9 +604,20 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                             for (int p = 0; p < array.length(); p++) {
                                 JSONObject ob = array.getJSONObject(p);
                                 db_tables.addTutorsList(ob.optString("tutor_name"), SharedValues.getValue(getActivity(), "school_id"), ob.optString("phone_number"), "[" + ob.optString("student_id") + "]", ob.optString("tutor_id"), ob.optString("status"));
+                                tv_nodata.setVisibility(View.GONE);
                             }
                             teachersList();
                         }
+                        else
+                        {
+                            Toast.makeText(schoolMain, "No Data Found", Toast.LENGTH_SHORT).show();
+                            tv_nodata.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    else
+                    {
+                        Toast.makeText(schoolMain, "No Data Found", Toast.LENGTH_SHORT).show();
+                        tv_nodata.setVisibility(View.VISIBLE);
                     }
                     break;
                 case 5:

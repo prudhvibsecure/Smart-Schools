@@ -2,13 +2,16 @@ package com.bsecure.scsm_mobile.modules;
 
 import android.annotation.TargetApi;
 import android.app.PictureInPictureParams;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -102,7 +105,13 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
                             mRecyclerView.setAdapter(adapter);
                         }
 
+                        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
+                        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                            Toast.makeText(this, "GPS is Enabled in your devide", Toast.LENGTH_SHORT).show();
+                        }else{
+                            showGPSDisabledAlertToUser();
+                        }
                     }
                     break;
                 case 2:
@@ -283,5 +292,25 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
             toolbar.setVisibility(View.VISIBLE);
         }
     }
-
+    private void showGPSDisabledAlertToUser(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Ok",
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int id){
+                                Intent callGPSSettingIntent = new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(callGPSSettingIntent);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton("No Thanks",
+                new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int id){
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
 }

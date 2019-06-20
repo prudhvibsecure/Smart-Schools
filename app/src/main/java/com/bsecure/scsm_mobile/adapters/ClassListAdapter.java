@@ -90,6 +90,7 @@ public class ClassListAdapter extends RecyclerView.Adapter<ClassListAdapter.Cont
             ClassModel classMode_lList = classModelList.get(position);
             String subj=classMode_lList.getSubjects();
             String newNames = subj.replace(",", ", ");
+            newNames = newNames.replace("*", ", ");
             contactViewHolder.tv_title.setText(classMode_lList.getClsName());
             contactViewHolder.section_tv.setText(newNames);
             contactViewHolder.section_n.setText(classMode_lList.getSectionName());

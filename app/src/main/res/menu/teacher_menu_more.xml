@@ -4,9 +4,9 @@
         android:id="@+id/timerr"
         android:title="Time Table" />
     <item
-        android:id="@+id/next"
-        android:title="Period"
-        android:visible="false"/>
+        android:id="@+id/cal"
+        android:title="Calender"
+        android:visible="true"/>
     <item
         android:id="@+id/marks"
         android:title="Marks"

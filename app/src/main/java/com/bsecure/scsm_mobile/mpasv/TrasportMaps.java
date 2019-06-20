@@ -34,6 +34,7 @@ import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
+import com.bsecure.scsm_mobile.utils.SharedValues;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -136,7 +137,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
         try {
             JSONObject object = new JSONObject();
             object.put("transport_id", transport_id);
-           // object.put("student_id", student_id);
+            object.put("student_ids", SharedValues.getValue(this,"student_id"));
             object.put("school_id", school_id);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();

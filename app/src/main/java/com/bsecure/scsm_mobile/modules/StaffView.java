@@ -140,4 +140,9 @@ public class StaffView extends AppCompatActivity implements HttpHandler ,OrgList
     public void swipeToStatus(int position, List<OrganizationModel> classModelList, String s) {
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

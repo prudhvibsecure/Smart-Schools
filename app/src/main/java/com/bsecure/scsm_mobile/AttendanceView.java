@@ -1,6 +1,9 @@
 package com.bsecure.scsm_mobile;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -51,6 +54,7 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
     private RecyclerView mRecyclerView;
     private List<WeakReference<OfflineDataInterface>> mObservers = new ArrayList<WeakReference<OfflineDataInterface>>();
     private NetworkInfoAPI networkInfoAPI;
+    private IntentFilter filter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +70,8 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        filter=new IntentFilter("com.set.refrsh");
+        registerReceiver(myRefresh,filter);
         mRecyclerView = findViewById(R.id.content_list);
         Intent getData = getIntent();
         if (getData != null) {
@@ -90,6 +96,24 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.add_students, menu);
         return true;
+    }
+    private BroadcastReceiver myRefresh=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(adapter!= null) {
+                callSynce();
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        try{
+            unregisterReceiver(myRefresh);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        super.onDestroy();
     }
 
     @Override

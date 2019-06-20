@@ -192,7 +192,8 @@ public class ViewSyllabusMarks extends AppCompatActivity implements HttpHandler,
         {
             mRec.setVisibility(View.GONE);
             TextView tv = mDialog.findViewById(R.id.notif);
-            tv.setText("No Syllabus Lessons Found");
+            tv.setText("No Data Found");
+            mDialog.show();
             //Toast.makeText(this, "No Syllabus Lessons Found", Toast.LENGTH_SHORT).show();
         }
 
