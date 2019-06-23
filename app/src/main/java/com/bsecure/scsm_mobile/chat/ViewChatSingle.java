@@ -1582,6 +1582,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
             String r_id = matchesList.get(position).getReply_id();
             if (!TextUtils.isEmpty(r_id)) {
                 Toast.makeText(this, "Reply Already Sent", Toast.LENGTH_SHORT).show();
+                rep_Dialog.dismiss();
                 return;
             }
             rep_Dialog.dismiss();
