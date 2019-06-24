@@ -39,6 +39,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -162,6 +163,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     private MembersAdapter transportListAdapter;
     String match_ids[];
     String siid, mid;
+    int pgno = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -422,7 +424,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                 //objs.put("teacher_id",teacher_id);
                 objs.put("school_id", SharedValues.getValue(this, "school_id"));
                 objs.put("student_id", student_id);
-                objs.put("pageno", "0");
+                objs.put("pageno", String.valueOf(pgno));
                 HTTPNewPost pp = new HTTPNewPost(this, this);
                 pp.disableProgress();
                 pp.userRequest("Processing..." , 501, Paths.sync_parent_message, objs.toString(), 1);
@@ -1387,6 +1389,19 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                                // db_tables.messageData(messsages, msg_id, date_time, null, cls_id, SharedValues.getValue(this, "school_id"), "1", null, student_id, student_name, null, "0", "0", "Yes", m_type);
                                 db_tables.messageData(m_data.optString("message"), m_data.optString("message_id"), m_data.optString("message_date"), null, class_id, SharedValues.getValue(this, "school_id"), "1", m_data.optString("teacher_id"), student_id, "Class Teacher", null, "0", "0", "Yes", "none");
                             }
+                            int total_messages = ood.optInt("total_messages");
+                            if(total_messages%20 != 0 && total_messages != 0) {
+                                pgno = pgno + 1;
+                                JSONObject objs = new JSONObject();
+                                objs.put("class_id", class_id);
+                                //objs.put("teacher_id",teacher_id);
+                                objs.put("school_id", SharedValues.getValue(this, "school_id"));
+                                objs.put("student_id", student_id);
+                                objs.put("pageno", String.valueOf(pgno));
+                                HTTPNewPost pp = new HTTPNewPost(this, this);
+                                pp.disableProgress();
+                                pp.userRequest("Processing...", 501, Paths.sync_parent_message, objs.toString(), 1);
+                            }
                             getChatMessages();
                         }
 
@@ -1407,15 +1422,15 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onRowLongClicked(List<MessageObject> matchesList, int position) {
-        String rid = matchesList.get(position).getMessage_id();
+       /* String rid = matchesList.get(position).getMessage_id();
         String testid= db_tables.getRepMessages(rid).toString();
         if(testid.length() != 0)
         {
             Toast.makeText(this, "Reply Already Sent", Toast.LENGTH_SHORT).show();
         }
-        else {
+        else {*/
             repForDiloag(matchesList, position);
-        }
+       // }
     }
 
     @Override
@@ -1582,6 +1597,16 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     private void replyMsg(int reqId, List<MessageObject> matchesList, int position) {
 
         try {
+            String r_id = matchesList.get(position).getReply_id();
+           // String msid = matchesList.get(position).getMessage_id();
+            db_tables.getRepMessages(mss_id);
+            if (!TextUtils.isEmpty(r_id)) {
+                Toast.makeText(this, "Reply Already Sent", Toast.LENGTH_SHORT).show();
+                rep_Dialog.dismiss();
+                reply_Id = "";
+                r_id = "" ;
+                return;
+            }
             rep_Dialog.dismiss();
             findViewById(R.id.mesg_fr).setVisibility(View.VISIBLE);
             findViewById(R.id.inputLL).setVisibility(View.VISIBLE);

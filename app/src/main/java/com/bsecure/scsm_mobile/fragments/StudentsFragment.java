@@ -327,18 +327,19 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
                         class_id = classModelList.get(position).getClass_id();
                         //chekGraphs();
 
-                        exam_name = "F.A%20-%201";
+                        getExams();
+                       /* exam_name = "F.A%20-%201";
                         String school_id = "33";
                         class_id ="170";
-                        String roll_no = "2";
-                        Intent in = new Intent(getActivity(), StudentPerformance.class);
+                        String roll_no = "2";*/
+                        /*Intent in = new Intent(getActivity(), StudentPerformance.class);
                         in.putExtra("class_id", class_id);
                         in.putExtra("exam_name", exam_name);
                         in.putExtra("roll_no", roll_no);
                         in.putExtra("school_id", school_id);
                         startActivity(in);
-
-                        getExams();
+*/
+                        //getExams();
                         return true;
                     case R.id.replayall:
                         adapter.notifyDataSetChanged();
@@ -385,6 +386,7 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
         try {
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("class_id", class_id);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Processing...", 101, Paths.get_examinations, object.toString(), 1);
         } catch (Exception e) {
@@ -411,5 +413,13 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
         mDialog.dismiss();
         exam_name = matchesList.get(position).getExam_name();
         chekGraphs(matchesList.get(position).getExam_name());
+        String school_id = SharedValues.getValue(getActivity(), "school_id");
+        Intent in = new Intent(getActivity(), StudentPerformance.class);
+        in.putExtra("class_id", class_id);
+        in.putExtra("exam_name", exam_name);
+        in.putExtra("roll_no", roll_no);
+        in.putExtra("school_id", school_id);
+        startActivity(in);
+
     }
 }

@@ -13,8 +13,12 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class PeriodsTeacherView extends AppCompatActivity {
 
@@ -34,11 +38,17 @@ public class PeriodsTeacherView extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        Date today = new Date(); // Fri Jun 17 14:54:28 PDT 2016
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(today); // don't forget this if date is arbitrary e.g. 01-01-2014
+        int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK)-1; // 6
+        day = String.valueOf(dayOfWeek);
+
         Intent data = getIntent();
         if (data != null) {
             school_id = data.getStringExtra("school_id");
             class_id = data.getStringExtra("class_id");
-            day = "1";
+            //day = "1";
         }
         wv_content = (WebView) findViewById(R.id.webview);
         wv_content.loadUrl("https://gogosmartschool.com/scs/teacher/periodtimetable?school_id=" + school_id + "&day=1&class_id=" + class_id);

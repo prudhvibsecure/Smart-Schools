@@ -42,6 +42,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONObject;
@@ -137,7 +138,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
         try {
             JSONObject object = new JSONObject();
             object.put("transport_id", transport_id);
-            object.put("student_ids", SharedValues.getValue(this,"student_id"));
+            object.put("student_ids", SharedValues.getValue(this,"id"));
             object.put("school_id", school_id);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();
@@ -403,9 +404,10 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
 
                                 }
                                 latLng = new LatLng(latitude, longitude);
-                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,25));
+                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
                                 markerOptions = new MarkerOptions();
-                                googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_schoolbus)));
+                                Marker marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_schoolbus)));
+                                MarkerAnimation.animateMarkerToGB(marker, latLng, new LatLngInterpolator.Spherical());
                                 ((TextView) findViewById(R.id.loc_txt)).setText(addressText);
                             }
                             break;

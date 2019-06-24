@@ -166,6 +166,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
     IndividualStudentsAdapter studentsMarksAdapter;
     private LinearLayout inputLL;
     private NetworkInfoAPI networkInfoAPI;
+    int pgno = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -1477,6 +1478,19 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                             for (int i = 0; i < jsonarray2.length(); i++) {
                                 JSONObject m_data = jsonarray2.getJSONObject(i);
                                 db_tables.messageData(m_data.optString("message"), m_data.optString("message_id"), m_data.optString("message_date"), null, class_id, SharedValues.getValue(this, "school_id"), m_data.optString("message_status"), techaer_id, student_id, sender_name, null, "0", "0", "Yes", "none");
+                            }
+                            int total_messages = ood.optInt("total_messages");
+                            if(total_messages%20 != 0 && total_messages != 0) {
+                                pgno = pgno + 1;
+                                JSONObject objs = new JSONObject();
+                                objs.put("class_id", class_id);
+                                //objs.put("teacher_id",teacher_id);
+                                objs.put("school_id", SharedValues.getValue(this, "school_id"));
+                                objs.put("student_id", student_id);
+                                objs.put("pageno", String.valueOf(pgno));
+                                HTTPNewPost pp = new HTTPNewPost(this, this);
+                                pp.disableProgress();
+                                pp.userRequest("Processing...", 501, Paths.sync_parent_message, objs.toString(), 1);
                             }
                             getChatMessages();
                         }
