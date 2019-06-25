@@ -197,7 +197,8 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                         latLng = new LatLng(latitude, longitude);
                         googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                         markerOptions = new MarkerOptions();
-                        googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_schoolbus)));
+                        Marker marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_schoolbus)));
+                        MarkerAnimation.animateMarkerToGB(marker, latLng, new LatLngInterpolator.Spherical());
                         // Setting the position for the marker
 //                        markerOptions.position(latLng);
 //                        markerOptions.title(addressText);

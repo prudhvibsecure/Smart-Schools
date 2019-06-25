@@ -93,6 +93,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -336,7 +337,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
 
                 }
 
-
+                Collections.reverse(messageList);
                 adapter = new MessageListAdapter(messageList, this, this, mediaUriList);
                 linearLayoutManager = new LinearLayoutManager(this);
                 //linearLayoutManager.setStackFromEnd(true);

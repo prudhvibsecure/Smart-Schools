@@ -85,7 +85,7 @@ public class DB_Tables {
         return mArrayList;
     }
 
-    public ArrayList<UserRepo> getRepMessages(String reply_id) {
+    public ArrayList<UserRepo> getRepMessages(String msg_id) {
         ArrayList<UserRepo> mArrayList = new ArrayList<UserRepo>();
         String message = null;
         String sender_name = null;
@@ -93,20 +93,20 @@ public class DB_Tables {
         try {
             if (database != null) {
 
-                String cursor_q = "select message,sender_name from Message where no_reply='" + reply_id + "'";
+                String cursor_q = "select no_reply from Message where message_id='" + msg_id + "'";
                 SQLiteDatabase db = database.getWritableDatabase();
                 Cursor cursor = db
                         .rawQuery(cursor_q,
                                 null);
                 try {
-                    if (null != cursor && !reply_id.equalsIgnoreCase("0") || !reply_id.isEmpty())
+                    if (null != cursor && !msg_id.equalsIgnoreCase("0") || !msg_id.isEmpty())
                         if (cursor.getCount() > 0) {
                             cursor.moveToFirst();
                             UserRepo repo = new UserRepo();
-                            message = cursor.getString(cursor.getColumnIndex("message"));
-                            sender_name = cursor.getString(cursor.getColumnIndex("sender_name"));
+                            message = cursor.getString(cursor.getColumnIndex("no_reply"));
+                            //sender_name = cursor.getString(cursor.getColumnIndex("sender_name"));
                             repo.setMessage(message);
-                            repo.setName(sender_name);
+                            //repo.setName(sender_name);
                             mArrayList.add(repo);
                         }
                     cursor.close();
@@ -1846,6 +1846,24 @@ public class DB_Tables {
                 String iwhereClause = "message_date='" + msg_date + "'";
                 ContentValues cv = new ContentValues();
                 cv.put("message_id", msgId);
+
+                db.update("Message", cv, iwhereClause, null);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateReplyId(String msgId, String repid) {
+        SQLiteDatabase db = null;
+        try {
+            if (database != null) {
+                db = database.getWritableDatabase();
+                String iwhereClause = "message_id='" + msgId + "'";
+                ContentValues cv = new ContentValues();
+                cv.put("no_reply", repid);
 
                 db.update("Message", cv, iwhereClause, null);
                 db.close();

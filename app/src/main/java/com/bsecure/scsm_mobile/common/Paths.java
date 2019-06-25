@@ -4,7 +4,9 @@ public class Paths {
 
     //public static final String base = "https://bsecuresoftechsolutions.com/scs/";
     public static final String base = "https://gogosmartschool.com/scs/";
+    //public static final String base = "https://bsecuresoftechsolutions.com/scs_v1/";
    // public static final String base = "https://bsecuresoftechsolutions.com/scs/prod/";
+
     public static final String member_verify = base + "login/member_login";
     public static final String verify_otp = base + "login/verify_otp";
     public static final String member_register = base + "member_register";

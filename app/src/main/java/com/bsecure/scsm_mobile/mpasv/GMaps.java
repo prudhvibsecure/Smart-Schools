@@ -138,7 +138,7 @@ public class GMaps extends FragmentActivity implements OnMapReadyCallback ,HttpH
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED)
-                Toast.makeText(this, "Permission denied by uses", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Permission denied by user", Toast.LENGTH_SHORT).show();
             else if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 startCurrentLocationUpdates();
         }

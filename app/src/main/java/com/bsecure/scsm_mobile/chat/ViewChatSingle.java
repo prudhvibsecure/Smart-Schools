@@ -94,6 +94,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -407,7 +408,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
 
                 }
 
-
+                Collections.reverse(messageList);
                 adapter = new MsgReadListAdapter(messageList, this, this, mediaUriList);
                 linearLayoutManager = new LinearLayoutManager(this);
                 //linearLayoutManager.setStackFromEnd(true);
@@ -1366,11 +1367,12 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                     JSONObject object = new JSONObject(results.toString());
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
                         db_tables.updateMessageId(object.optString("message_id"), object.optString("message_date"));
+                        db_tables.updateReplyId(siid,object.optString("message_id"));
                         getChatMessages();
-                    } else {
+                    } /*else {
                         Toast.makeText(this, "Cannot Reply More Than Once", Toast.LENGTH_SHORT).show();
                         db_tables.deleteMessage(mid);
-                    }
+                    }*/
                     break;
 
                 case 501:
@@ -1404,14 +1406,17 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onRowLongClicked(List<MessageObject> matchesList, int position) {
-        String rid = matchesList.get(position).getMessage_id();
+        //String rid = matchesList.get(position).getMessage_id();
+        siid = matchesList.get(position).getMessage_id();
+        //String rid = db_tables.getRepMessages(siid).toString();
+
 //        String testid= db_tables.getRepMessages(rid).toString();
 //        if(testid.length() != 0) {
 //            Toast.makeText(this, "Reply Already Sent", Toast.LENGTH_SHORT).show();
 //        }
-//        else {
+
         repForDiloag(matchesList, position);
-        //       }
+
     }
 
     @Override
@@ -1580,12 +1585,13 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
         try {
 
             String r_id = matchesList.get(position).getReply_id();
-            if (!TextUtils.isEmpty(r_id)) {
+            if (!r_id.equalsIgnoreCase("0")) {
                 Toast.makeText(this, "Reply Already Sent", Toast.LENGTH_SHORT).show();
                 rep_Dialog.dismiss();
                 return;
             }
             rep_Dialog.dismiss();
+            r_id = null;
             findViewById(R.id.mesg_fr).setVisibility(View.VISIBLE);
             findViewById(R.id.inputLL).setVisibility(View.VISIBLE);
             findViewById(R.id.record_view).setVisibility(View.VISIBLE);
