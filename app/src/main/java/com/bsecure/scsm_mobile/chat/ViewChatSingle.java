@@ -156,14 +156,13 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     StringBuilder builder_copy;
     ImageView sec_Tag;
     private String readonce = "0", autodelete = "0", showtime = "0", validuntil = "0", pin = "0", nor_forwrd = "0", no_ptsc = "0", date, pin_default;
-    String class_id, studentName, tutors_ids, mss_id, message,typ_marks, sender_name="";
+    String class_id, studentName, tutors_ids, mss_id, message, typ_marks, sender_name = "";
     Dialog rep_Dialog, member_dialog;
     List<Members> contactObjectList;
     private SweetAlertDialog pDialog;
     private MembersAdapter transportListAdapter;
     String match_ids[];
     String siid, mid;
-    int pgno = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -384,7 +383,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     private void getChatMessages() {
 
         try {
-            String msg_list = db_tables.getchatList_view(class_id,student_id);
+            String msg_list = db_tables.getchatList_view(class_id, student_id);
             messageList = new ArrayList<>();
             JSONObject obj = new JSONObject(msg_list);
             JSONArray jsonarray2 = obj.getJSONArray("message_body");
@@ -416,18 +415,16 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                 // mRecyclerView.setHasStableIds(true);
                 linearLayoutManager.scrollToPosition(messageList.size() - 1);
                 mRecyclerView.setAdapter(adapter);
-            }
-            else
-            {
+            } else {
                 JSONObject objs = new JSONObject();
                 objs.put("class_id", class_id);
                 //objs.put("teacher_id",teacher_id);
                 objs.put("school_id", SharedValues.getValue(this, "school_id"));
                 objs.put("student_id", student_id);
-                objs.put("pageno", String.valueOf(pgno));
+                objs.put("pageno", "0");
                 HTTPNewPost pp = new HTTPNewPost(this, this);
                 pp.disableProgress();
-                pp.userRequest("Processing..." , 501, Paths.sync_parent_message, objs.toString(), 1);
+                pp.userRequest("Processing...", 501, Paths.sync_parent_message, objs.toString(), 1);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -794,9 +791,9 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
 
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();
-            if (typ_marks.startsWith("AM")||typ_marks.startsWith("EM")){
+            if (typ_marks.startsWith("AM") || typ_marks.startsWith("EM")) {
                 task.userRequest("", 10, Paths.forward_marks, object.toString(), 1);
-            }else {
+            } else {
                 task.userRequest("", 10, Paths.forward, object.toString(), 1);
             }
         } catch (Exception e) {
@@ -1370,9 +1367,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
                         db_tables.updateMessageId(object.optString("message_id"), object.optString("message_date"));
                         getChatMessages();
-                    }
-                    else
-                    {
+                    } else {
                         Toast.makeText(this, "Cannot Reply More Than Once", Toast.LENGTH_SHORT).show();
                         db_tables.deleteMessage(mid);
                     }
@@ -1386,21 +1381,8 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                         if (jsonarray2.length() > 0) {
                             for (int i = 0; i < jsonarray2.length(); i++) {
                                 JSONObject m_data = jsonarray2.getJSONObject(i);
-                               // db_tables.messageData(messsages, msg_id, date_time, null, cls_id, SharedValues.getValue(this, "school_id"), "1", null, student_id, student_name, null, "0", "0", "Yes", m_type);
+                                // db_tables.messageData(messsages, msg_id, date_time, null, cls_id, SharedValues.getValue(this, "school_id"), "1", null, student_id, student_name, null, "0", "0", "Yes", m_type);
                                 db_tables.messageData(m_data.optString("message"), m_data.optString("message_id"), m_data.optString("message_date"), null, class_id, SharedValues.getValue(this, "school_id"), "1", m_data.optString("teacher_id"), student_id, "Class Teacher", null, "0", "0", "Yes", "none");
-                            }
-                            int total_messages = ood.optInt("total_messages");
-                            if(total_messages%20 != 0 && total_messages != 0) {
-                                pgno = pgno + 1;
-                                JSONObject objs = new JSONObject();
-                                objs.put("class_id", class_id);
-                                //objs.put("teacher_id",teacher_id);
-                                objs.put("school_id", SharedValues.getValue(this, "school_id"));
-                                objs.put("student_id", student_id);
-                                objs.put("pageno", String.valueOf(pgno));
-                                HTTPNewPost pp = new HTTPNewPost(this, this);
-                                pp.disableProgress();
-                                pp.userRequest("Processing...", 501, Paths.sync_parent_message, objs.toString(), 1);
                             }
                             getChatMessages();
                         }
@@ -1422,15 +1404,14 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onRowLongClicked(List<MessageObject> matchesList, int position) {
-       /* String rid = matchesList.get(position).getMessage_id();
-        String testid= db_tables.getRepMessages(rid).toString();
-        if(testid.length() != 0)
-        {
-            Toast.makeText(this, "Reply Already Sent", Toast.LENGTH_SHORT).show();
-        }
-        else {*/
-            repForDiloag(matchesList, position);
-       // }
+        String rid = matchesList.get(position).getMessage_id();
+//        String testid= db_tables.getRepMessages(rid).toString();
+//        if(testid.length() != 0) {
+//            Toast.makeText(this, "Reply Already Sent", Toast.LENGTH_SHORT).show();
+//        }
+//        else {
+        repForDiloag(matchesList, position);
+        //       }
     }
 
     @Override
@@ -1586,7 +1567,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onClick(View v) {
 
-                        getForward(matchesList.get(position).getMessage(), matchesList.get(position).getMessage_id(), matchesList.get(position).getMessage_date(), matchesList.get(position).getClass_id(),matchesList.get(position).getnType());
+                        getForward(matchesList.get(position).getMessage(), matchesList.get(position).getMessage_id(), matchesList.get(position).getMessage_date(), matchesList.get(position).getClass_id(), matchesList.get(position).getnType());
                         fr_ids.clear();
                         rep_Dialog.dismiss();
                     }
@@ -1597,14 +1578,11 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     private void replyMsg(int reqId, List<MessageObject> matchesList, int position) {
 
         try {
+
             String r_id = matchesList.get(position).getReply_id();
-           // String msid = matchesList.get(position).getMessage_id();
-            db_tables.getRepMessages(mss_id);
             if (!TextUtils.isEmpty(r_id)) {
                 Toast.makeText(this, "Reply Already Sent", Toast.LENGTH_SHORT).show();
                 rep_Dialog.dismiss();
-                reply_Id = "";
-                r_id = "" ;
                 return;
             }
             rep_Dialog.dismiss();
@@ -1655,7 +1633,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
 
             if (fr_ids.size() > 0) {
                 member_dialog.findViewById(R.id.list_fwd).setVisibility(View.VISIBLE);
-                ((TextView) member_dialog.findViewById(R.id.text_contcats)).setText(fr_ids.toString().substring(1, fr_ids.toString().length()-1));
+                ((TextView) member_dialog.findViewById(R.id.text_contcats)).setText(fr_ids.toString().substring(1, fr_ids.toString().length() - 1));
 
             } else {
                 member_dialog.findViewById(R.id.list_fwd).setVisibility(View.GONE);
@@ -1670,7 +1648,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
             chk_name.setVisibility(View.VISIBLE);
             if (fr_ids.size() > 0) {
                 member_dialog.findViewById(R.id.list_fwd).setVisibility(View.VISIBLE);
-                ((TextView) member_dialog.findViewById(R.id.text_contcats)).setText(fr_ids.toString().substring(1, fr_ids.toString().length()-1));
+                ((TextView) member_dialog.findViewById(R.id.text_contcats)).setText(fr_ids.toString().substring(1, fr_ids.toString().length() - 1));
             } else {
                 member_dialog.findViewById(R.id.list_fwd).setVisibility(View.GONE);
             }
