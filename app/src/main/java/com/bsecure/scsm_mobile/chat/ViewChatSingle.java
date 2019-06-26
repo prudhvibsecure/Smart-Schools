@@ -408,7 +408,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
 
                 }
 
-                Collections.reverse(messageList);
+                //Collections.reverse(messageList);
                 adapter = new MsgReadListAdapter(messageList, this, this, mediaUriList);
                 linearLayoutManager = new LinearLayoutManager(this);
                 //linearLayoutManager.setStackFromEnd(true);
