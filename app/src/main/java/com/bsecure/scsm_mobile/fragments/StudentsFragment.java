@@ -26,6 +26,7 @@ import com.bsecure.scsm_mobile.adapters.ExamsListAdapter;
 import com.bsecure.scsm_mobile.adapters.ParentStudentsListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.chat.ViewChatSingle;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.graphs.GrapsMain;
@@ -136,6 +137,7 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
             JSONObject object = new JSONObject();
             object.put("phone_number", SharedValues.getValue(getActivity(), "ph_number"));
             object.put("school_id", schoolid);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Processing...", 1, Paths.get_parent_students, object.toString(), 1);
         } catch (Exception e) {
@@ -375,6 +377,7 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
             object.put("class_id", class_id);
             object.put("examination_name", ex_name);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Processing...", 102, Paths.check_prformance, object.toString(), 1);
         } catch (Exception e) {
@@ -387,6 +390,7 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
             object.put("class_id", class_id);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Processing...", 101, Paths.get_examinations, object.toString(), 1);
         } catch (Exception e) {

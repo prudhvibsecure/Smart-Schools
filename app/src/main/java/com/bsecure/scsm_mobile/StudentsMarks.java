@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.bsecure.scsm_mobile.adapters.StudentsMarksAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.callbacks.OfflineDataInterface;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.NetworkInfoAPI;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
@@ -233,6 +234,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                 object.put("teacher_id", teacher_id);
                 object.put("class_id", class_id);
                 object.put("subject", subject);
+                object.put("domain", ContentValues.DOMAIN);
                 if (isNetworkAvailable()) {
                     HTTPNewPost task = new HTTPNewPost(this, this);
                     task.userRequest("Processing...", 2, Paths.add_marks, object.toString(), 1);
@@ -348,6 +350,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                 object.put("class_id", class_id);
                 object.put("subject", subject);
                 object.put("roll_nos", roll_nos);
+                object.put("domain", ContentValues.DOMAIN);
                 if (isNetworkAvailable()) {
                     HTTPNewPost task = new HTTPNewPost(this, this);
                     task.userRequest("Processing...", 2, Paths.edit_marks, object.toString(), 1);
@@ -376,6 +379,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("class_id", class_id);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.get_students, object.toString(), 1);
         } catch (Exception e) {
@@ -471,6 +475,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
             object.put("teacher_id", teacher_id);
             object.put("examinations_id", exam_id);
             object.put("subject", subject);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 3, Paths.sync_marks, object.toString(), 1);
         } catch (Exception e) {
@@ -665,7 +670,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                     object.put("teacher_id", arry_data[3]);
                     object.put("class_id", arry_data[1]);
                     object.put("subject", arry_data[6]);
-
+                    object.put("domain", ContentValues.DOMAIN);
                     HTTPNewPost task = new HTTPNewPost(this, this);
                     task.disableProgress();
                     task.userRequest("Processing...", 2, Paths.add_marks, object.toString(), 1);
@@ -692,7 +697,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                     object.put("class_id", arry_data[2]);
                     object.put("subject", arry_data[6]);
                     object.put("roll_nos", arry_data[7]);
-
+                    object.put("domain", ContentValues.DOMAIN);
                     HTTPNewPost task = new HTTPNewPost(this, this);
                     task.userRequest("Processing...", 2, Paths.edit_marks, object.toString(), 1);
                     String id = db_tables.getSyncId("EM");

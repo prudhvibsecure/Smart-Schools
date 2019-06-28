@@ -33,6 +33,7 @@ import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.StudentsListAdapter;
 import com.bsecure.scsm_mobile.adapters.TransportListAdapter_New;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
@@ -269,6 +270,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
             object.put("phone_number", phone_number);
             object.put("student_id", student_id.trim());
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Please Wait...", 4, Paths.add_tutor, object.toString(), 1);
         } catch (Exception e) {
@@ -360,7 +362,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
             object.put("student_id", SharedValues.getValue(getActivity(), "student_id"));
-
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Loading...", 12, Paths.base + "view_tutors_v1", object.toString(), 1);
 
@@ -503,6 +505,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
             object.put("school_id", s_id);
             String stu_ids = sids.substring(1, sids.length() - 1);
             object.put("student_id", stu_ids);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Please Wait...", 1, Paths.delete_tutor, object.toString(), 1);
             adapter.removeItem(position);
@@ -521,6 +524,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
             object.put("status", status);
             object.put("tutor_id", teach_Id);
             object.put("school_id", s_id);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Please Wait...", 2, Paths.set_tutor_status, object.toString(), 1);
         } catch (Exception e) {
@@ -675,6 +679,8 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
             chk_name.setBackground(getResources().getDrawable(R.mipmap.ic_check));
         } else {
             st_ids.remove(id);
+            deleteStudentTutor(id);
+
             // st_names.remove(id);
             chk_name.setBackground(getResources().getDrawable(R.mipmap.delete));
         }
@@ -703,7 +709,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
             object.put("student_id", id);
             object.put("tutor_id", tras_id);
-
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.disableProgress();
             task.userRequest("Loading...", 121, Paths.base + "delete_tutor_student_v1", object.toString(), 1);

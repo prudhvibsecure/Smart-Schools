@@ -28,6 +28,7 @@ import com.bsecure.scsm_mobile.StudentsMarks;
 import com.bsecure.scsm_mobile.adapters.NonScholasticStudentsAdapter;
 import com.bsecure.scsm_mobile.adapters.StudentsMarksAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
@@ -129,6 +130,7 @@ public class StudentsNonscholastic extends AppCompatActivity implements HttpHand
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("class_id", class_id);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.get_students, object.toString(), 1);
         } catch (Exception e) {

@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.SubjectNonscolosticAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.graphs.graphadapters.SubWiseMarksAdapter;
 import com.bsecure.scsm_mobile.graphs.graphadapters.SubWisePercentageAdapter;
@@ -110,6 +111,7 @@ public class SelfFragment extends Fragment implements HttpHandler, View.OnClickL
             object.put("examination_name", examination_name);
             object.put("roll_no", roll_no);
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Loading...", 2, Paths.base + "overall_marks", object.toString(), 1);
 
@@ -270,6 +272,7 @@ public class SelfFragment extends Fragment implements HttpHandler, View.OnClickL
             object.put("examination_name", examination_name);
             object.put("roll_no", roll_no);
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.disableProgress();
             task.userRequest("", 4, Paths.base + "overall_non_scholastic_marks", object.toString(), 1);
@@ -287,6 +290,7 @@ public class SelfFragment extends Fragment implements HttpHandler, View.OnClickL
             object.put("examination_name", examination_name);
             object.put("roll_no", roll_no);
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.disableProgress();
             task.userRequest("", 3, Paths.base + "overall_subject_marks", object.toString(), 1);
@@ -336,6 +340,7 @@ public class SelfFragment extends Fragment implements HttpHandler, View.OnClickL
             object.put("examination_name", examination_name);
             object.put("roll_no", roll_no);
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Loading...", 5, Paths.base + "subject_wise_marks", object.toString(), 1);
 
@@ -353,6 +358,7 @@ public class SelfFragment extends Fragment implements HttpHandler, View.OnClickL
             object.put("examination_name", examination_name);
             object.put("roll_no", roll_no);
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Loading...", 6, Paths.base + "subject_wise_marks", object.toString(), 1);
 

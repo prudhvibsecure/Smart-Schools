@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 import com.bsecure.scsm_mobile.adapters.StudentAttendanceListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.modules.ViewAttandence;
@@ -68,6 +69,7 @@ public class StudentsViewAttendence extends AppCompatActivity implements HttpHan
             object.put("roll_no", roll_no);
             object.put("class_id", class_id);
             object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.view_attendance, object.toString(), 1);
         } catch (Exception e) {

@@ -20,6 +20,7 @@ import com.bsecure.scsm_mobile.adapters.NonScholasticAdapter;
 import com.bsecure.scsm_mobile.adapters.NonScholasticStudentsAdapter;
 import com.bsecure.scsm_mobile.adapters.SubjectListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.NonScholasticSubject;
@@ -98,7 +99,7 @@ public class NonScholasticTeacher extends AppCompatActivity implements HttpHandl
                             sobj.put("exam_id", exam_id);
                             sobj.put("student_id", student_id);
                             sobj.put("school_id", SharedValues.getValue(this, "school_id"));
-
+                            sobj.put("domain", ContentValues.DOMAIN);
                             JSONArray marray = new JSONArray();
                             for(int p = 0; p<categories.size();p++)
                             {
@@ -148,6 +149,7 @@ public class NonScholasticTeacher extends AppCompatActivity implements HttpHandl
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("exam_id", exam_id);
             object.put("student_id", student_id);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.get_non_scholastic_details, object.toString(), 1);
         } catch (Exception e) {
@@ -293,6 +295,7 @@ public class NonScholasticTeacher extends AppCompatActivity implements HttpHandl
                 object.put("grade", grade);
                 object.put("comments", ucomment);
                 object.put("school_id", SharedValues.getValue(this, "school_id"));
+                object.put("domain", ContentValues.DOMAIN);
                 HTTPNewPost task = new HTTPNewPost(this, this);
                 task.userRequest("Processing...", 3, Paths.edit_non_scholastic_marks, object.toString(), 1);
             } catch (Exception e) {

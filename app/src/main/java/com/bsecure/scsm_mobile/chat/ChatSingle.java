@@ -352,6 +352,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                 objs.put("teacher_id", techaer_id);
                 objs.put("school_id", SharedValues.getValue(this, "school_id"));
                 objs.put("pageno", "0");
+                objs.put("domain", ContentValues.DOMAIN);
                 HTTPNewPost pp = new HTTPNewPost(this, this);
                 pp.disableProgress();
                 pp.userRequest("Processing...", 501, Paths.sync_message, objs.toString(), 1);
@@ -653,9 +654,10 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                 object.put("teacher_id", techaer_id);
                 object.put("attatach_orgname", displayname);
                 object.put("message_status", "0");
+                object.put("domain", ContentValues.DOMAIN);
                 if (isNetworkAvailable()) {
                     db_tables.messageData(message, null, mesg_date_time, fr_ids_l.toString(), class_id, SharedValues.getValue(this, "school_id"), "0", techaer_id, student_id, null, null, "0", "0", "Yes", "none");
-
+                    getChatMessages();
                     HTTPNewPost task = new HTTPNewPost(this, this);
                     task.disableProgress();
                     if (student_id == "" || student_id.isEmpty()) {
@@ -745,6 +747,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
             JSONObject object = new JSONObject();
             object.put("class_id", class_id);
             object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();
 
@@ -1730,6 +1733,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
             object.put("receiver_member_number", receiver_member_number);
             object.put("sender_name", sender_name);
             object.put("message_id", msgId);
+            object.put("domain", ContentValues.DOMAIN);
 //            db_tables.messageData(message, null, mesg_date_time, sender_member_id, district_id, sender_member_number, receiver_member_number, sender_name, "0");
 //            db_tables.updateForword(mesg_date_time);
             HTTPNewPost task = new HTTPNewPost(this, this);
@@ -1811,7 +1815,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                         object.put("school_id", SharedValues.getValue(this, "school_id"));
                         object.put("teacher_id", techaer_id);
                         object.put("attatach_orgname", jsonobject.optString("displayname"));
-
+                        object.put("domain", ContentValues.DOMAIN);
                         if (student_id == "" || student_id.isEmpty()) {
                             object.put("sendurl", Paths.send_message2);
                         } else {

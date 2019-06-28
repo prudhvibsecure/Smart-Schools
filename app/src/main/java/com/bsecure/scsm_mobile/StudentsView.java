@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.bsecure.scsm_mobile.adapters.StudentsAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.callbacks.OfflineDataInterface;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.NetworkInfoAPI;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
@@ -227,6 +228,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
             object.put("student_ids", student_ids);
             object.put("teacher_id", teacher_id);
             object.put("roll_nos", roll_nos);
+            object.put("domain", ContentValues.DOMAIN);
             if (isNetworkAvailable()) {
                 HTTPNewPost task = new HTTPNewPost(this, this);
                 task.userRequest("Processing...", 2, Paths.add_attendance, object.toString(), 1);
@@ -246,6 +248,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("class_id", class_id);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.get_students, object.toString(), 1);
         } catch (Exception e) {
@@ -417,7 +420,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                 object.put("student_ids", arry_data[4]);
                 object.put("teacher_id", arry_data[3]);
                 object.put("roll_nos", arry_data[5]);
-
+                object.put("domain", ContentValues.DOMAIN);
                 HTTPNewPost task = new HTTPNewPost(this, this);
                 task.disableProgress();
                 task.userRequest("Processing...", 2, Paths.add_attendance, object.toString(), 1);

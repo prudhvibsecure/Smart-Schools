@@ -15,6 +15,7 @@ import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.CalenderAdapter;
 import com.bsecure.scsm_mobile.adapters.TutorAssignStudentsListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.CalenderModel;
@@ -62,7 +63,7 @@ public class Calender extends AppCompatActivity implements HttpHandler {
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("class_id", class_id);
-
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Loading...", 1, Paths.base + "view_calendar", object.toString(), 1);
 

@@ -34,6 +34,7 @@ import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.StudentsListAdapter;
 import com.bsecure.scsm_mobile.adapters.TransportListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
@@ -202,6 +203,7 @@ public class TransportListFragment extends Fragment implements TransportListAdap
             object.put("phone_number", phone_number);
             object.put("student_id", SharedValues.getValue(getActivity(),"student_id"));
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             //object.put("created_by", "0");
 
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
@@ -258,7 +260,7 @@ public class TransportListFragment extends Fragment implements TransportListAdap
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
             object.put("student_id", SharedValues.getValue(getActivity(), "id"));
-
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Loading...", 12, Paths.base + "view_transports", object.toString(), 1);
 
@@ -360,6 +362,7 @@ public class TransportListFragment extends Fragment implements TransportListAdap
                 object.put("transport_id", teach_Id);
                 object.put("school_id", s_id);
                 object.put("student_id", stu_id);
+                object.put("domain", ContentValues.DOMAIN);
                 HTTPNewPost task = new HTTPNewPost(getActivity(), this);
                 task.userRequest("Please Wait...", 1, Paths.delete_transport, object.toString(), 1);
                 //adapter.removeItem(position);
@@ -387,6 +390,7 @@ public class TransportListFragment extends Fragment implements TransportListAdap
                 object.put("status", status);
                 object.put("transport_id", teach_Id);
                 object.put("school_id", s_id);
+                object.put("domain", ContentValues.DOMAIN);
                 HTTPNewPost task = new HTTPNewPost(getActivity(), this);
                 task.userRequest("Please Wait...", 2, Paths.set_transport_status, object.toString(), 1);
             } catch (Exception e) {
@@ -603,6 +607,7 @@ public class TransportListFragment extends Fragment implements TransportListAdap
             object.put("phone_number", phone_number);
             object.put("student_id", builder.substring(1));
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Please Wait...", 7, Paths.edit_transport, object.toString(), 1);
         } catch (Exception e) {

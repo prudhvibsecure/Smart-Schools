@@ -20,6 +20,7 @@ import com.bsecure.scsm_mobile.adapters.ParentStudentsListAdapter;
 import com.bsecure.scsm_mobile.adapters.TimeTableListAdapter;
 import com.bsecure.scsm_mobile.adapters.TrasnsListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.Periods;
@@ -231,6 +232,7 @@ public class TimeTableView extends AppCompatActivity implements HttpHandler, Tim
                 object.put("school_id", school_id);
                 object.put("class_id", class_id);
                 object.put("day", day);
+            object.put("domain", ContentValues.DOMAIN);
                 HTTPNewPost task = new HTTPNewPost(this, this);
                 task.userRequest("Processing...", 101, Paths.view_periods, object.toString(), 1);
         } catch (Exception e) {

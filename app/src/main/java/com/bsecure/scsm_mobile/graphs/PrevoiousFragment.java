@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.graphs.graphadapters.SubWiseMarksAdapter;
 import com.bsecure.scsm_mobile.graphs.graphadapters.SubWisePercentageAdapter;
@@ -101,6 +102,7 @@ public class PrevoiousFragment extends Fragment implements HttpHandler, View.OnC
             // object.put("examination_name", examination_name);
             object.put("roll_no", roll_no);
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Loading...", 2, Paths.base + "previous_overall_marks", object.toString(), 1);
 
@@ -143,6 +145,7 @@ public class PrevoiousFragment extends Fragment implements HttpHandler, View.OnC
             object.put("examination_name", examination_name);
             object.put("roll_no", roll_no);
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Loading...", 6, Paths.base + "subject_wise_marks", object.toString(), 1);
 
@@ -283,6 +286,7 @@ public class PrevoiousFragment extends Fragment implements HttpHandler, View.OnC
             object.put("subject", subject);
             object.put("roll_no", roll_no);
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Loading...", 3, Paths.base + "previous_subject_wise_marks", object.toString(), 1);
 

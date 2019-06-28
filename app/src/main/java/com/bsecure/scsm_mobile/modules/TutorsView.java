@@ -23,6 +23,7 @@ import com.bsecure.scsm_mobile.adapters.TutorsListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.chat.TutorsChatSingle;
 import com.bsecure.scsm_mobile.chat.ViewChatSingle;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
@@ -98,7 +99,7 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("tutor_id", SharedValues.getValue(this, "id"));
-
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.get_tutor_students, object.toString(), 1);
         } catch (Exception e) {
@@ -251,6 +252,7 @@ public class TutorsView extends AppCompatActivity implements HttpHandler, TutorA
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("tutor_id", SharedValues.getValue(this, "id"));
             object.put("student_id", classModelList.get(position).getStudent_id());
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 2, Paths.delete_tutor_student, object.toString(), 1);
         } catch (Exception e) {

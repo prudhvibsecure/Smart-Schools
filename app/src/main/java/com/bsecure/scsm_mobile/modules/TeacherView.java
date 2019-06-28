@@ -32,6 +32,7 @@ import com.bsecure.scsm_mobile.adapters.OrgListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.callbacks.OfflineDataInterface;
 import com.bsecure.scsm_mobile.chat.ChatSingle;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.NetworkInfoAPI;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.controls.ColorGenerator;
@@ -102,6 +103,7 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("id", SharedValues.getValue(this, "id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.get_teacher, object.toString(), 1);
         } catch (Exception e) {

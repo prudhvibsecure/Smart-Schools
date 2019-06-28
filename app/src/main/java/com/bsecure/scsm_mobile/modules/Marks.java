@@ -15,6 +15,7 @@ import android.widget.Button;
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.ExamsListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.Exams;
@@ -79,7 +80,7 @@ public class Marks extends AppCompatActivity implements HttpHandler, ExamsListAd
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("class_id", class_id);
-
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.get_examinations, object.toString(), 1);
         } catch (Exception e) {

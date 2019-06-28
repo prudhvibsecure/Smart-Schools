@@ -24,6 +24,7 @@ import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.RouteListAdapter;
 import com.bsecure.scsm_mobile.adapters.TrasnsListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
@@ -73,6 +74,7 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
         try {
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.get_transports, object.toString(), 1);
         } catch (Exception e) {
@@ -190,6 +192,7 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
                 object.put("school_id", SharedValues.getValue(this, "school_id"));
                 object.put("lat", gpsTracker.getLatitude());
                 object.put("lang", gpsTracker.getLongitude());
+                object.put("domain", ContentValues.DOMAIN);
                 HTTPNewPost task = new HTTPNewPost(this, this);
                 task.disableProgress();
                 task.userRequest("Processing...", 3, Paths.send_coordinates, object.toString(), 1);
@@ -210,6 +213,7 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
             JSONObject object = new JSONObject();
             object.put("transport_id", tansport_ids);
             object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();
             task.userRequest("Processing...", 2, Paths.start_transport, object.toString(), 1);
@@ -231,6 +235,7 @@ public class RoutesList extends AppCompatActivity implements HttpHandler, RouteL
                         JSONObject object = new JSONObject();
                         object.put("transport_id", trns_id);
                         object.put("school_id", SharedValues.getValue(this, "school_id"));
+                        object.put("domain", ContentValues.DOMAIN);
                         HTTPNewPost task = new HTTPNewPost(this, this);
                         task.userRequest("Processing...", 2, Paths.stop_transport, object.toString(), 1);
                     }

@@ -15,6 +15,7 @@ import com.bsecure.scsm_mobile.StudentsViewAttendence;
 import com.bsecure.scsm_mobile.adapters.ParentStudentsListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.chat.ViewChatSingle;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
@@ -66,6 +67,7 @@ public class ParentView extends AppCompatActivity implements HttpHandler, Parent
             JSONObject object = new JSONObject();
             object.put("phone_number", SharedValues.getValue(this, "ph_number"));
             object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.get_parent_students, object.toString(), 1);
         } catch (Exception e) {

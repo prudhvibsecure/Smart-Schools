@@ -33,18 +33,19 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/lg"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:layout_marginRight="20dp"
+        android:gravity="center">
 
         <EditText
             android:id="@+id/mob_number"
-            android:layout_width="0dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_weight="1"
             android:background="@drawable/t_shape"
             android:focusable="true"
             android:hint="OTP"
-            android:inputType="textPassword"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:inputType="numberPassword"
             android:maxLength="4"
             android:padding="10dp"
             android:singleLine="true" />

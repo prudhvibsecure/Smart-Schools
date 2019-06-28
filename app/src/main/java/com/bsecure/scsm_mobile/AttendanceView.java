@@ -23,6 +23,7 @@ import com.bsecure.scsm_mobile.adapters.AttandenceListAdapter;
 import com.bsecure.scsm_mobile.adapters.StudentsAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.callbacks.OfflineDataInterface;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.NetworkInfoAPI;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
@@ -178,6 +179,7 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("day", getDateN(System.currentTimeMillis()));
             object.put("class_id", class_id);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 4, Paths.check_holiday, object.toString(), 1);
         } catch (Exception e) {
@@ -191,6 +193,7 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("class_id", class_id);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.get_students, object.toString(), 1);
         } catch (Exception e) {
@@ -383,6 +386,7 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("class_id", class_id);
             object.put("teacher_id", teacher_id);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 3, Paths.sync_dates, object.toString(), 1);
         } catch (Exception e) {

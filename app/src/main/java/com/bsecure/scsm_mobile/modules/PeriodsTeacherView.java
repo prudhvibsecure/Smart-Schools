@@ -51,7 +51,7 @@ public class PeriodsTeacherView extends AppCompatActivity {
             //day = "1";
         }
         wv_content = (WebView) findViewById(R.id.webview);
-        wv_content.loadUrl("https://gogosmartschool.com/scs/teacher/periodtimetable?school_id=" + school_id + "&day=1&class_id=" + class_id);
+        wv_content.loadUrl("https://gogosmartschool.com/scs/teacher/periodtimetable?school_id=" + school_id + "&day="+day+"&class_id=" + class_id);
         wv_content.getSettings().setAllowFileAccess(true);
         wv_content.getSettings().setSupportZoom(true);
         wv_content.setVerticalScrollBarEnabled(true);

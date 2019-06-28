@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.bsecure.scsm_mobile.adapters.StudentsMarksAdapter;
 import com.bsecure.scsm_mobile.adapters.SyllabusListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
@@ -132,7 +133,7 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
             object.put("class_id", class_id);
             object.put("teacher_id", teacher_id);
             object.put("subject", subject);
-
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 14, Paths.base + "sync_syllabus", object.toString(), 1);
         }
@@ -238,6 +239,7 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
             object.put("subject", subject);
             object.put("syllabus", array);
             object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
 //            object.put("syllabus_lessons_id", syllab_id);
 //            object.put("lesson", ((EditText) mDialog.findViewById(R.id.sub_et)).getText().toString());
 //            object.put("description", ((EditText) mDialog.findViewById(R.id.sub_et_les)).getText().toString());
@@ -272,6 +274,7 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
             object.put("subject", subject);
             object.put("syllabus", array);
             object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             db_tables.addSyllabus(add_sy_id, ((EditText) mDialog.findViewById(R.id.sub_et)).getText().toString().trim(), ((EditText) mDialog.findViewById(R.id.sub_et_les)).getText().toString(), subject,class_id);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.add_syllabus, object.toString(), 1);

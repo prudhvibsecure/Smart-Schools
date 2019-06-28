@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.utils.SharedValues;
@@ -116,11 +117,11 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void run() {
                 getEventShowTrasport();
-                    habs.postDelayed(myRunnable, 30000);
+                    habs.postDelayed(myRunnable, 60000);
 
             }
         };
-        habs.postDelayed(myRunnable, 3000);
+        habs.postDelayed(myRunnable, 60000);
 
 
     }
@@ -140,6 +141,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
             object.put("transport_id", transport_id);
             object.put("student_ids", SharedValues.getValue(this,"id"));
             object.put("school_id", school_id);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();
             task.userRequest("Please Wait...", 10, Paths.get_transport_location, object.toString(), 1);

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -85,6 +86,7 @@ public class GoogleView extends AppCompatActivity implements OnMapReadyCallback,
             object.put("school_id", school_id);
             object.put("lat", latitude);
             object.put("lang", longtude);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();
             task.userRequest("Please Wait...", 10, Paths.get_coordinates, object.toString(), 1);

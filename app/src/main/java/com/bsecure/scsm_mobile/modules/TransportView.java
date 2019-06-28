@@ -28,6 +28,7 @@ import com.bsecure.scsm_mobile.adapters.TrasnsListAdapter;
 import com.bsecure.scsm_mobile.adapters.TutorsListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.chat.ViewChatSingle;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
@@ -87,6 +88,7 @@ public class TransportView extends AppCompatActivity implements HttpHandler, Tra
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("transport_id", SharedValues.getValue(this, "id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.get_transport, object.toString(), 1);
         } catch (Exception e) {
@@ -153,6 +155,7 @@ public class TransportView extends AppCompatActivity implements HttpHandler, Tra
                 object.put("school_id", SharedValues.getValue(this, "school_id"));
                 object.put("lat", gpsTracker.getLatitude());
                 object.put("lang", gpsTracker.getLongitude());
+                object.put("domain", ContentValues.DOMAIN);
                 HTTPNewPost task = new HTTPNewPost(this, this);
                 task.disableProgress();
                 task.userRequest("Processing...", 4, Paths.send_coordinates, object.toString(), 1);
@@ -197,6 +200,7 @@ public class TransportView extends AppCompatActivity implements HttpHandler, Tra
                 object.put("school_id", school_id);
                 object.put("lat", String.valueOf(gpsTracker.getLatitude()));
                 object.put("lang", String.valueOf(gpsTracker.getLongitude()));
+                object.put("domain", ContentValues.DOMAIN);
                 HTTPNewPost task = new HTTPNewPost(getApplicationContext(), this);
                 task.disableProgress();
                 task.userRequest("Please Wait...", 10, Paths.get_coordinates, object.toString(), 1);
@@ -289,6 +293,7 @@ public class TransportView extends AppCompatActivity implements HttpHandler, Tra
             JSONObject object = new JSONObject();
             object.put("transport_id", SharedValues.getValue(this, "id"));
             object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();
             if (req == 1) {

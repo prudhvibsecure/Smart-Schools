@@ -423,6 +423,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                 objs.put("school_id", SharedValues.getValue(this, "school_id"));
                 objs.put("student_id", student_id);
                 objs.put("pageno", "0");
+                objs.put("domain", ContentValues.DOMAIN);
                 HTTPNewPost pp = new HTTPNewPost(this, this);
                 pp.disableProgress();
                 pp.userRequest("Processing...", 501, Paths.sync_parent_message, objs.toString(), 1);
@@ -716,7 +717,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                 object.put("student_id", student_id);
                 object.put("reply_id", reply_Id);
                 object.put("mid", mid);
-
+                object.put("domain", ContentValues.DOMAIN);
                 // object.put("teacher_id", reply_Id);
                 object.put("school_id", SharedValues.getValue(this, "school_id"));
                 object.put("attendance_date", attandence_date);
@@ -787,6 +788,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
             object.put("message", message);
             // object.put("teacher_id", reply_Id);
             object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             db_tables.messageData(message, null, mesg_date_time, null, class_id, SharedValues.getValue(this, "school_id"), "0", null, student_id, studentName, null, "0", "1", "Yes", "none");
             // db_tables.messageData(message, null, mesg_date_time, null, class_id, SharedValues.getValue(this, "school_id"), "0", null, student_id, studentName, null, "0", "1", "Yes", "none");
 

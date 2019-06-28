@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.adapters.StudentSylViewListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.graphs.graphadapters.SyllabusAdapter;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
@@ -74,6 +75,7 @@ public class ViewSyllabusMarks extends AppCompatActivity implements HttpHandler,
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("exam_name", exams_name);
             object.put("class_id", class_id);
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.view_syllabus, object.toString(), 1);
         } catch (Exception e) {

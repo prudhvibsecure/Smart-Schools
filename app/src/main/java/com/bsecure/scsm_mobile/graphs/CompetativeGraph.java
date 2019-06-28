@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.SubjectNonscolosticAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.Subjects;
@@ -67,6 +68,7 @@ public class CompetativeGraph extends AppCompatActivity implements HttpHandler {
             object.put("examination_name", examination_name);
             object.put("roll_no", roll_no);
             object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();
             task.userRequest("", 2, Paths.base + "overall_marks", object.toString(), 1);
@@ -155,6 +157,7 @@ public class CompetativeGraph extends AppCompatActivity implements HttpHandler {
             object.put("examination_name", examination_name);
             object.put("roll_no", roll_no);
             object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();
             task.userRequest("", 4, Paths.base + "overall_non_scholastic_marks", object.toString(), 1);
@@ -172,6 +175,7 @@ public class CompetativeGraph extends AppCompatActivity implements HttpHandler {
             object.put("examination_name", examination_name);
             object.put("roll_no", roll_no);
             object.put("school_id", SharedValues.getValue(this, "school_id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.disableProgress();
             task.userRequest("", 3, Paths.base + "overall_subject_marks", object.toString(), 1);

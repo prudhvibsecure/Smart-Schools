@@ -11,6 +11,7 @@ import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.OrgListAdapter;
 import com.bsecure.scsm_mobile.adapters.TutorsListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
@@ -57,6 +58,7 @@ public class StaffView extends AppCompatActivity implements HttpHandler ,OrgList
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
             object.put("staff_id", SharedValues.getValue(this, "id"));
+            object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
             task.userRequest("Processing...", 1, Paths.get_staff, object.toString(), 1);
         } catch (Exception e) {
