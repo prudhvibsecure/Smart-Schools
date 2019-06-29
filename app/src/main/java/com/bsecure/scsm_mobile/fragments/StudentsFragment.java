@@ -416,7 +416,7 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
     public void onExamRowClicked(List<Exams> matchesList, int position) {
         mDialog.dismiss();
         exam_name = matchesList.get(position).getExam_name();
-        chekGraphs(matchesList.get(position).getExam_name());
+       // chekGraphs(matchesList.get(position).getExam_name());
         String school_id = SharedValues.getValue(getActivity(), "school_id");
         Intent in = new Intent(getActivity(), StudentPerformance.class);
         in.putExtra("class_id", class_id);
@@ -424,6 +424,5 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
         in.putExtra("roll_no", roll_no);
         in.putExtra("school_id", school_id);
         startActivity(in);
-
     }
 }

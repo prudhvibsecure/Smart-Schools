@@ -1585,26 +1585,27 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
     private void replyMsg(int reqId, List<MessageObject> matchesList, int position) {
 
         try {
-
             String r_id = matchesList.get(position).getReply_id();
             if (!r_id.equalsIgnoreCase("0")) {
                 Toast.makeText(this, "Reply Already Sent", Toast.LENGTH_SHORT).show();
                 rep_Dialog.dismiss();
                 return;
             }
-            rep_Dialog.dismiss();
-            r_id = null;
-            findViewById(R.id.mesg_fr).setVisibility(View.VISIBLE);
-            findViewById(R.id.inputLL).setVisibility(View.VISIBLE);
-            findViewById(R.id.record_view).setVisibility(View.VISIBLE);
-            findViewById(R.id.send_btn_l).setVisibility(View.VISIBLE);
-            findViewById(R.id.ic_member).setVisibility(View.GONE);
+            else {
+                rep_Dialog.dismiss();
+                r_id = null;
+                findViewById(R.id.mesg_fr).setVisibility(View.VISIBLE);
+                findViewById(R.id.inputLL).setVisibility(View.VISIBLE);
+                findViewById(R.id.record_view).setVisibility(View.VISIBLE);
+                findViewById(R.id.send_btn_l).setVisibility(View.VISIBLE);
+                findViewById(R.id.ic_member).setVisibility(View.GONE);
 
-            findViewById(R.id.remove_ll_msg).setOnClickListener(this);
-            ((TextView) findViewById(R.id.user_nnmae_add)).setText(matchesList.get(position).getSender_name());
-            ((TextView) findViewById(R.id.mesg_reps_v)).setText(Html.fromHtml(matchesList.get(position).getMessage()));
-            reply_Id = matchesList.get(position).getMessage_id();
-            attandence_date = matchesList.get(position).getMessage_date();
+                findViewById(R.id.remove_ll_msg).setOnClickListener(this);
+                ((TextView) findViewById(R.id.user_nnmae_add)).setText(matchesList.get(position).getSender_name());
+                ((TextView) findViewById(R.id.mesg_reps_v)).setText(Html.fromHtml(matchesList.get(position).getMessage()));
+                reply_Id = matchesList.get(position).getMessage_id();
+                attandence_date = matchesList.get(position).getMessage_date();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
