@@ -10,4 +10,8 @@
         android:id="@+id/calendar"
         android:title="Calendar" />
 
+    <item
+        android:id="@+id/gallery"
+        android:title="Gallery" />
+
 </menu>

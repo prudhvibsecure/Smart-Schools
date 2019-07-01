@@ -76,21 +76,25 @@ public class ParentActivity extends AppCompatActivity {
 
         TextView tabOne = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
         tabOne.setText("Students");
+        tabOne.setTextSize(14);
         tabOne.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_students, 0, 0);
         tabLayout.getTabAt(0).setCustomView(tabOne);
 
         TextView tabTwo = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
         tabTwo.setText("Tutors");
+        tabTwo.setTextSize(14);
         tabTwo.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_teachers, 0, 0);
         tabLayout.getTabAt(1).setCustomView(tabTwo);
 
         TextView tabThree = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
         tabThree.setText("Transport");
+        tabThree.setTextSize(14);
         tabThree.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_transport, 0, 0);
         tabLayout.getTabAt(2).setCustomView(tabThree);
 
         TextView tabFour = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
         tabFour.setText("More");
+        tabFour.setTextSize(14);
         tabFour.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.more, 0, 0);
         tabLayout.getTabAt(3).setCustomView(tabFour);
     }

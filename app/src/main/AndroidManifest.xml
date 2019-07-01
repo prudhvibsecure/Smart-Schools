@@ -50,7 +50,9 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="icon, label,allowBackup,supportsRtl">
-        <activity android:name=".modules.StudentPerformance"></activity>
+        <activity android:name=".modules.ViewGallery"></activity>
+        <activity android:name=".modules.Gallery" />
+        <activity android:name=".modules.StudentPerformance" />
 
         <uses-library
             android:name="org.apache.http.legacy"

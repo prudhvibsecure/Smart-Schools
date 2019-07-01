@@ -34,6 +34,7 @@ import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.Exams;
 import com.bsecure.scsm_mobile.models.StudentModel;
 import com.bsecure.scsm_mobile.modules.Calender;
+import com.bsecure.scsm_mobile.modules.Gallery;
 import com.bsecure.scsm_mobile.modules.ParentActivity;
 import com.bsecure.scsm_mobile.modules.StudentPerformance;
 import com.bsecure.scsm_mobile.modules.TimeTableView;
@@ -361,6 +362,14 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
                         cal.putExtra("roll_no", classModelList.get(position).getRoll_no());
                         cal.putExtra("class_id", classModelList.get(position).getClass_id());
                         startActivity(cal);
+                        return true;
+
+                    case R.id.gallery:
+                        Intent in = new Intent(getActivity(), Gallery.class);
+                        in.putExtra("student_id", classModelList.get(position).getStudent_id());
+                        in.putExtra("roll_no", classModelList.get(position).getRoll_no());
+                        in.putExtra("class_id", classModelList.get(position).getClass_id());
+                        startActivity(in);
                         return true;
 
                     default:
