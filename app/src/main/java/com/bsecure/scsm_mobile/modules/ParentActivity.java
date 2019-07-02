@@ -1,5 +1,6 @@
 package com.bsecure.scsm_mobile.modules;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +17,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.Login_Phone;
 import com.bsecure.scsm_mobile.R;
@@ -37,11 +40,16 @@ public class ParentActivity extends AppCompatActivity {
     private IntentFilter filter,l_mfilter;
     private DB_Tables db_tables;
     String[] stu_ids;
+    IntentFilter mfilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.parent_vv);
+
+        mfilter = new IntentFilter("com.notification.show");
+        registerReceiver(mmBroadcastReceiver, mfilter);
+
         filter = new IntentFilter("com.scs.app.SESSION");
         l_mfilter = new IntentFilter("com.parenttutor.refresh");
         registerReceiver(mBroadcastReceiver, filter);
@@ -51,7 +59,7 @@ public class ParentActivity extends AppCompatActivity {
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         createViewPager(viewPager);
-       /* viewPager.setOnTouchListener(new View.OnTouchListener()
+        viewPager.setOnTouchListener(new View.OnTouchListener()
         {
             @Override
             public boolean onTouch(View v, MotionEvent event)
@@ -59,7 +67,6 @@ public class ParentActivity extends AppCompatActivity {
                 return true;
             }
         });
-*/
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         createTabIcons();
@@ -178,5 +185,44 @@ public class ParentActivity extends AppCompatActivity {
 //        }
 //    };
 
+    private BroadcastReceiver mmBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Intent in = getIntent();
+            String message = in.getStringExtra("message");
+            final Dialog dialog = new Dialog(ParentActivity.this);
+            dialog.setContentView(R.layout.dialogue_message);
+            dialog.setTitle("Alert!");
+            Button yes = dialog.findViewById(R.id.yes);
+            Button no = dialog.findViewById(R.id.no);
+            Button later = findViewById(R.id.later);
+
+            TextView tv = dialog.findViewById(R.id.data);
+            tv.setText(message);
+            yes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            no.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            later.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            dialog.show();
+        }
+    };
 
 }

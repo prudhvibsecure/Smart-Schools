@@ -33,6 +33,7 @@ import com.bsecure.scsm_mobile.graphs.GrapsMain;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.Exams;
 import com.bsecure.scsm_mobile.models.StudentModel;
+import com.bsecure.scsm_mobile.modules.ApprovalMessages;
 import com.bsecure.scsm_mobile.modules.Calender;
 import com.bsecure.scsm_mobile.modules.Gallery;
 import com.bsecure.scsm_mobile.modules.ParentActivity;
@@ -371,6 +372,10 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
                         in.putExtra("class_id", classModelList.get(position).getClass_id());
                         startActivity(in);
                         return true;
+
+                    case R.id.message:
+                        Intent am = new Intent(getActivity(), ApprovalMessages.class);
+                        startActivity(am);
 
                     default:
                         return false;

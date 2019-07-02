@@ -34,7 +34,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         this.arraylist = new ArrayList<GalleryModel>();
         this.listener = listener;
         inflator = LayoutInflater.from(context);
-
+        arraylist.addAll(galleryList);
     }
 
 
@@ -47,7 +47,8 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull GalleryListAdapter.ViewHolder viewHolder, final int position) {
-        viewHolder.ename.setText(galleryList.get(position).getEname());
+        GalleryModel model = galleryList.get(position);
+        viewHolder.ename.setText(model.getEname());
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

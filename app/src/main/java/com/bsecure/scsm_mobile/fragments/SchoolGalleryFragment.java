@@ -80,7 +80,24 @@ public class SchoolGalleryFragment extends Fragment implements HttpHandler {
 
         nodata = view_layout.findViewById(R.id.nodata);
         mRecyclerView = view_layout.findViewById(R.id.list);
-        getList();
+
+        galleryList = new ArrayList<>();
+        GalleryModel model = new GalleryModel();
+        model.setEname("test1");
+        galleryList.add(model);
+
+        adapter = new GalleryListAdapter(getActivity(), galleryList, new ClickListener() {
+            @Override
+            public void OnRowClicked(int position, View view) {
+                Intent in = new Intent(getActivity(), ViewGallery.class);
+                startActivity(in);
+            }
+        });
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setAdapter(adapter);
+
+        //getList();
         return view_layout;
     }
 

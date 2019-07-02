@@ -29,6 +29,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
+import com.bsecure.scsm_mobile.UserGuide;
 import com.bsecure.scsm_mobile.adapters.StudentsListAdapter;
 import com.bsecure.scsm_mobile.adapters.TransportListAdapter;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
@@ -86,7 +87,7 @@ public class MoreFragment extends Fragment {
 
         listdata = new ArrayList<>();
         //listdata.add("Attendance");
-        listdata.add("Calender");
+        listdata.add("User Guide");
 
         adapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, R.id.name, listdata);
         list.setAdapter(adapter);
@@ -95,7 +96,7 @@ public class MoreFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(position == 0)
                 {
-                    startActivity(new Intent(getActivity(), Calender.class));
+                    startActivity(new Intent(getActivity(), UserGuide.class));
                 }
             }
         });
