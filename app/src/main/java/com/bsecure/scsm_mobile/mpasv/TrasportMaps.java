@@ -197,7 +197,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
 
                         }
                         latLng = new LatLng(latitude, longitude);
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,20));
                         markerOptions = new MarkerOptions();
                         Marker marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_schoolbus)));
                         MarkerAnimation.animateMarkerToGB(marker, latLng, new LatLngInterpolator.Spherical());
@@ -407,7 +407,8 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
 
                                 }
                                 latLng = new LatLng(latitude, longitude);
-                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
+                                //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
+                                //googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                                 markerOptions = new MarkerOptions();
                                 Marker marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_schoolbus)));
                                 MarkerAnimation.animateMarkerToGB(marker, latLng, new LatLngInterpolator.Spherical());

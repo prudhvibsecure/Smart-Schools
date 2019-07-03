@@ -44,6 +44,7 @@ import com.bsecure.scsm_mobile.models.StudentModel;
 import com.bsecure.scsm_mobile.models.TransportModel;
 import com.bsecure.scsm_mobile.modules.Gallery;
 import com.bsecure.scsm_mobile.modules.ParentActivity;
+import com.bsecure.scsm_mobile.modules.ViewGallery;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperCallback_Tut_stu;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperExtension;
 import com.bsecure.scsm_mobile.utils.SharedValues;
@@ -63,7 +64,7 @@ public class ClassGalleryFragment extends Fragment implements HttpHandler {
     private CoordinatorLayout coordinatorLayout;
     ArrayList<GalleryModel> galleryList;
     private GalleryListAdapter adapter;
-    private String teach_Id, t_status, student_id;
+    private String teach_Id, t_status, student_id, school_id, class_id;
     private Dialog member_dialog;
     TextView nodata;
     @Override
@@ -79,6 +80,8 @@ public class ClassGalleryFragment extends Fragment implements HttpHandler {
 
         nodata = view_layout.findViewById(R.id.nodata);
         mRecyclerView = view_layout.findViewById(R.id.list);
+        student_id = getActivity().getIntent().getStringExtra("student_id");
+        class_id = getActivity().getIntent().getStringExtra("class_id");
         getList();
         return view_layout;
     }
@@ -93,10 +96,11 @@ public class ClassGalleryFragment extends Fragment implements HttpHandler {
 
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
-            object.put("student_id", SharedValues.getValue(getActivity(), "student_id"));
+            object.put("student_id", "");
+            object.put("class_id", class_id);
             object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
-            task.userRequest("Loading...", 12, Paths.base + "view_tutors_v1", object.toString(), 1);
+            task.userRequest("Loading...", 12, Paths.view_photo_gallery_title, object.toString(), 1);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -133,31 +137,36 @@ public class ClassGalleryFragment extends Fragment implements HttpHandler {
     public void onResponse(Object results, int requestType) {
         try {
             switch (requestType) {
-                case 1:
+                case 12:
 
                     try {
                         galleryList = new ArrayList<>();
                         JSONObject object = new JSONObject(results.toString());
-                        JSONArray array = object.getJSONArray("tutor_body");
+                        JSONArray array = object.getJSONArray("photo_gallery_title_details");
                         if (array.length() > 0) {
                             for (int i = 0; i < array.length(); i++) {
                                 GalleryModel galleryModel = new GalleryModel();
                                 JSONObject jsonobject = array.getJSONObject(i);
-                                galleryModel.setEname(jsonobject.optString("ename"));
+                                galleryModel.setGid(jsonobject.optString("photo_gallery_title_id"));
+                                galleryModel.setEname(jsonobject.optString("title"));
                                 galleryList.add(galleryModel);
                             }
 
                             adapter = new GalleryListAdapter(getActivity(), galleryList, new ClickListener() {
                                 @Override
                                 public void OnRowClicked(int position, View view) {
-
+                                    Intent in = new Intent(getActivity(), ViewGallery.class);
+                                    in.putExtra("student_id", student_id);
+                                    in.putExtra("class_id", class_id);
+                                    in.putExtra("gid", galleryList.get(position).getGid());
+                                    startActivity(in);
                                 }
                             });
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
                             mRecyclerView.setLayoutManager(linearLayoutManager);
                             mRecyclerView.setAdapter(adapter);
                         } else {
-
+                            Toast.makeText(getActivity(), object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                         }
 
                     } catch (JSONException e) {

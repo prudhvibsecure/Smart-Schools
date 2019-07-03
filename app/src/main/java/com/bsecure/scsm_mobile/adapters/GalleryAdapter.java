@@ -2,6 +2,7 @@ package com.bsecure.scsm_mobile.adapters;
 
 import android.content.Context;
 import android.media.Image;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -11,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bsecure.scsm_mobile.R;
+import com.bsecure.scsm_mobile.common.Paths;
+import com.bsecure.scsm_mobile.models.GalleryModel;
+import com.bsecure.scsm_mobile.modules.Gallery;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
@@ -18,7 +22,7 @@ import java.util.List;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHolder> {
 
-    private List<Image> images;
+    private List<GalleryModel> images;
     private Context mContext;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -31,7 +35,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
     }
 
 
-    public GalleryAdapter(Context context, List<Image> images) {
+    public GalleryAdapter(Context context, List<GalleryModel> images) {
         mContext = context;
         this.images = images;
     }
@@ -46,9 +50,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Image image = images.get(position);
+        GalleryModel image = images.get(position);
 
-        Glide.with(mContext).load(image)
+        Glide.with(mContext).load(Uri.parse(Paths.up_load+image.getEname()))
                 .thumbnail(0.5f)
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

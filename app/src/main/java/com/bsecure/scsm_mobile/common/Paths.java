@@ -71,6 +71,9 @@ public class Paths {
     public static final String sync_attendance = base + "sync_attendance";
     public static final String sync_marks = base + "sync_marks";
     public static final String sync_syllabus = base + "sync_syllabus";
+    public static final String view_photo_gallery_title = base + "photo_gallery/view_photo_gallery_title";
+    public static final String view_photo_gallery_mobile = base + "photo_gallery/view_photo_gallery_mobile";
+
 
 
 }

@@ -1,5 +1,6 @@
 package com.bsecure.scsm_mobile.modules;
 
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -32,11 +33,27 @@ public class Gallery extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private IntentFilter filter,l_mfilter;
+    String school_id, class_id, student_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+
+
+        Intent data = getIntent();
+        if(data!= null)
+        {
+            class_id = data.getStringExtra("class_id");
+            student_id = data.getStringExtra("student_id");
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putString("student_id", student_id);
+        bundle.putString("class_id", class_id);
+        SchoolGalleryFragment myObj = new SchoolGalleryFragment();
+        myObj.setArguments(bundle);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);

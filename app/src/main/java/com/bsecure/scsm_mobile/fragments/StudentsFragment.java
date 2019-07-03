@@ -368,7 +368,6 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
                     case R.id.gallery:
                         Intent in = new Intent(getActivity(), Gallery.class);
                         in.putExtra("student_id", classModelList.get(position).getStudent_id());
-                        in.putExtra("roll_no", classModelList.get(position).getRoll_no());
                         in.putExtra("class_id", classModelList.get(position).getClass_id());
                         startActivity(in);
                         return true;
