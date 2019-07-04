@@ -19,6 +19,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -42,6 +43,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -92,6 +94,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                 transport_id=intentData.getStringExtra("transport_id");
                 // student_id=intentData.getStringExtra("student_id");
                 school_id=intentData.getStringExtra("school_id");
+                getEventShowTrasport();
                 getRoutes();
 
             }
@@ -201,6 +204,14 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                         markerOptions = new MarkerOptions();
                         Marker marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_schoolbus)));
                         MarkerAnimation.animateMarkerToGB(marker, latLng, new LatLngInterpolator.Spherical());
+
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
+                                .target(googleMap.getCameraPosition().target)
+                                .zoom(17)
+                                .bearing(30)
+                                .tilt(45)
+                                .build()));
                         // Setting the position for the marker
 //                        markerOptions.position(latLng);
 //                        markerOptions.title(addressText);
@@ -411,7 +422,19 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                                 //googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                                 markerOptions = new MarkerOptions();
                                 Marker marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_schoolbus)));
-                                MarkerAnimation.animateMarkerToGB(marker, latLng, new LatLngInterpolator.Spherical());
+                                /*MarkerAnimation.animateMarkerToGB(marker, latLng, new LatLngInterpolator.Spherical());
+                                CameraPosition cameraPosition = new CameraPosition.Builder()
+                                        .target(latLng)
+                                        .zoom(20)
+                                        .build();
+                                googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));*/
+                                googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                                googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
+                                        .target(googleMap.getCameraPosition().target)
+                                        .zoom(17)
+                                        .bearing(30)
+                                        .tilt(45)
+                                        .build()));
                                 ((TextView) findViewById(R.id.loc_txt)).setText(addressText);
                             }
                             break;

@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.Login_Phone;
 import com.bsecure.scsm_mobile.R;
+import com.bsecure.scsm_mobile.common.CustomViewPager;
 import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.fragments.MoreFragment;
 import com.bsecure.scsm_mobile.fragments.StudentsFragment;
@@ -36,7 +37,7 @@ import java.util.List;
 
 public class ParentActivity extends AppCompatActivity {
     private TabLayout tabLayout;
-    private ViewPager viewPager;
+    private CustomViewPager viewPager;
     private IntentFilter filter,l_mfilter;
     private DB_Tables db_tables;
     String[] stu_ids;
@@ -57,16 +58,17 @@ public class ParentActivity extends AppCompatActivity {
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = findViewById(R.id.viewpager);
+        viewPager.setPagingEnabled(false);
         createViewPager(viewPager);
-        viewPager.setOnTouchListener(new View.OnTouchListener()
+       /* viewPager.setOnTouchListener(new View.OnTouchListener()
         {
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
                 return true;
             }
-        });
+        });*/
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         createTabIcons();

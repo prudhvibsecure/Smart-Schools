@@ -1,8 +1,11 @@
 package com.bsecure.scsm_mobile.fragments;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -10,22 +13,34 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
+import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.callbacks.IDownloadCallback;
+import com.bsecure.scsm_mobile.common.Paths;
+import com.bsecure.scsm_mobile.https.DownloadService;
+import com.bsecure.scsm_mobile.models.GalleryModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
-public class SlideshowDialogFragment extends DialogFragment {
+import static android.content.Context.DOWNLOAD_SERVICE;
+
+public class SlideshowDialogFragment extends DialogFragment implements IDownloadCallback {
     private String TAG = SlideshowDialogFragment.class.getSimpleName();
-    private ArrayList<Image> images;
+    private ArrayList<GalleryModel> images;
+    private ArrayList<GalleryModel> simages;
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
     private TextView lblCount, lblTitle, lblDate;
     private int selectedPosition = 0;
+    ImageView download;
+    DownloadManager downloadManager;
 
     public static SlideshowDialogFragment newInstance() {
         SlideshowDialogFragment f = new SlideshowDialogFragment();
@@ -36,12 +51,14 @@ public class SlideshowDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_image_slider, container, false);
-        /*viewPager = (ViewPager) v.findViewById(R.id.viewpager);
-        lblCount = (TextView) v.findViewById(R.id.lbl_count);
+        viewPager = (ViewPager) v.findViewById(R.id.viewpager);
+        download = v.findViewById(R.id.download);
+       /* lblCount = (TextView) v.findViewById(R.id.lbl_count);
         lblTitle = (TextView) v.findViewById(R.id.title);
         lblDate = (TextView) v.findViewById(R.id.date);*/
 
-        images = (ArrayList<Image>) getArguments().getSerializable("images");
+        simages = (ArrayList<GalleryModel>) getArguments().getSerializable("images");
+        images = simages;
         selectedPosition = getArguments().getInt("position");
 
         Log.e(TAG, "position: " + selectedPosition);
@@ -52,6 +69,13 @@ public class SlideshowDialogFragment extends DialogFragment {
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
         setCurrentItem(selectedPosition);
+        download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DownloadData(Uri.parse(Paths.up_load+images.get(selectedPosition).getEname()));
+                //getActivity().startService(DownloadService.getDownloadService(getActivity(), Paths.up_load, Environment.DIRECTORY_DOWNLOADS, images.get(selectedPosition).getEname()));
+            }
+        });
 
         return v;
     }
@@ -81,17 +105,22 @@ public class SlideshowDialogFragment extends DialogFragment {
     };
 
     private void displayMetaInfo(int position) {
-        lblCount.setText((position + 1) + " of " + images.size());
+        //lblCount.setText((position + 1) + " of " + images.size());
 
-        Image image = images.get(position);
-        lblTitle.setText(image.getFormat());
-        lblDate.setText(image.getHeight());
+        GalleryModel image = images.get(position);
+        selectedPosition = position;
+        //lblTitle.setText(image.getEname());
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+    }
+
+    @Override
+    public void onStateChange(int what, int arg1, int arg2, Object obj, int requestId) {
+
     }
 
     //  adapter
@@ -110,9 +139,9 @@ public class SlideshowDialogFragment extends DialogFragment {
 
             ImageView imageViewPreview = (ImageView) view.findViewById(R.id.image_preview);
 
-            Image image = images.get(position);
+            GalleryModel image = images.get(position);
 
-            Glide.with(getActivity()).load(image)
+            Glide.with(getActivity()).load(Uri.parse(Paths.up_load+image.getEname()))
                     .thumbnail(0.5f)
                     .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -138,5 +167,52 @@ public class SlideshowDialogFragment extends DialogFragment {
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
         }
+    }
+
+    private long DownloadData (Uri uri) {
+
+        long downloadReference;
+
+        // Create request for android download manager
+        downloadManager = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+
+        //Setting title of request
+        request.setTitle("Data Download");
+
+        //Setting description of request
+        request.setDescription("Android Data download using DownloadManager.");
+
+        //Set the local destination for the downloaded file to a path
+        //within the application's external files directory
+
+        request.setDestinationInExternalFilesDir(getActivity(),
+                Environment.DIRECTORY_DOWNLOADS, "SCS.jpg");
+        Toast.makeText(getActivity(), "Image Downloaded Successfully", Toast.LENGTH_SHORT).show();
+
+        //Enqueue download and save into referenceId
+        downloadReference = downloadManager.enqueue(request);
+
+
+
+        return downloadReference;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        images.clear();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        images = simages;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        images.clear();
     }
 }

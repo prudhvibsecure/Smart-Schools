@@ -162,6 +162,7 @@ public class SchoolGalleryFragment extends Fragment implements HttpHandler {
                                     in.putExtra("student_id", student_id);
                                     in.putExtra("class_id", class_id);
                                     in.putExtra("gid", galleryList.get(position).getGid());
+                                    in.putExtra("extra", "1");
                                     startActivity(in);
                                 }
                             });

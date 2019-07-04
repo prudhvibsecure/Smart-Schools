@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.Image;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,6 +12,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -39,7 +41,7 @@ public class ViewGallery extends AppCompatActivity implements HttpHandler {
     private ProgressDialog pDialog;
     private GalleryAdapter mAdapter;
     private RecyclerView recyclerView;
-    String school_id, class_id, student_id, gid;
+    String school_id, class_id, student_id, gid, extra;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,9 +54,24 @@ public class ViewGallery extends AppCompatActivity implements HttpHandler {
             student_id = data.getStringExtra("student_id");
             class_id = data.getStringExtra("class_id");
             gid = data.getStringExtra("gid");
+            extra = data.getStringExtra("extra");
+        }
+        if(extra.equalsIgnoreCase("1"))
+        {
+           student_id = "";
+           class_id = "";
+        }
+        else if(extra.equalsIgnoreCase("2"))
+        {
+            student_id = "";
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setVisibility(View.VISIBLE);
+        toolbar.setTitle("Images");//Organization Head
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -82,6 +99,18 @@ public class ViewGallery extends AppCompatActivity implements HttpHandler {
             }
         }));
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void getImages() {
