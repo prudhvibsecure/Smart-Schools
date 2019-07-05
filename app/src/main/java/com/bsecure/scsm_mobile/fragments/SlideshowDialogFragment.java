@@ -201,13 +201,13 @@ public class SlideshowDialogFragment extends DialogFragment implements IDownload
     @Override
     public void onPause() {
         super.onPause();
-        images.clear();
+        //images.clear();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        images = simages;
+        //images = simages;
     }
 
     @Override

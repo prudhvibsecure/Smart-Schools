@@ -56,20 +56,31 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        ApprovalModel model = new ApprovalModel();
+        model.setMessage("picnic 200");
+        model.setStatus("0");
+        messages = new ArrayList<>();
+        mRecyclerView = findViewById(R.id.content_list);
+        messages.add(model);
+        adapter = new ApprovalMessagesAdapter(messages, this, this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setAdapter(adapter);
+
 
         db_tables = new DB_Tables(this);
         db_tables.openDB();
-        mRecyclerView = findViewById(R.id.content_list);
+
         mCallback = new ItemTouchHelperCallback_Tutors();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
-        getMessages();
+        //getMessages();
 
     }
 
     @Override
     protected void onResume() {
-        registerReceiver(mBroadcastReceiver, filter);
+        //registerReceiver(mBroadcastReceiver, filter);
         super.onResume();
     }
 

@@ -79,8 +79,8 @@ public class ApprovalMessagesAdapter extends RecyclerView.Adapter<ApprovalMessag
 
         try {
             ApprovalModel classMode_lList = messages.get(position);
-            contactViewHolder.tv_title.setText(classMode_lList.getMessage());
-            contactViewHolder.section_tv.setText(classMode_lList.getStatus());
+            contactViewHolder.message.setText(classMode_lList.getMessage());
+            contactViewHolder.status.setText(classMode_lList.getStatus());
 
             boolean value = selectedItems.get(position);
             contactViewHolder.itemView.setActivated(selectedItems.get(position, false));
@@ -157,14 +157,9 @@ public class ApprovalMessagesAdapter extends RecyclerView.Adapter<ApprovalMessag
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_main_ncs, parent, false);
+                .inflate(R.layout.approval_item, parent, false);
         builder = TextDrawable.builder().beginConfig().toUpperCase().textColor(Color.WHITE).endConfig().round();
-//        View view = LayoutInflater.from(context).inflate(R.layout.class_row, parent, false);
-//        ContactViewHolder myHoder = new ContactViewHolder(view);
-//        return myHoder;
-//        View view = getLayoutInflater().inflate(R.layout.list_item_main, parent, false);
-//        if (viewType == ITEM_TYPE_ACTION_WIDTH) return new ItemSwipeWithActionWidthViewHolder(view);
-        //if (viewType == ITEM_TYPE_NO_SWIPE) return new ItemNoSwipeViewHolder(view);
+
         if (viewType == ITEM_TYPE_ACTION_WIDTH)
             return new ItemSwipeWithActionWidthViewHolder(itemView);
 
@@ -190,9 +185,7 @@ public class ApprovalMessagesAdapter extends RecyclerView.Adapter<ApprovalMessag
 
     public class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
-        public TextView tv_title;
-        public TextView section_tv;
-        public TextView section_n;
+        public TextView message, status ;
         public ImageView imgProfile;
         public LinearLayout contact_user_ll;
         public RelativeLayout viewBackground, viewForeground;
@@ -202,18 +195,14 @@ public class ApprovalMessagesAdapter extends RecyclerView.Adapter<ApprovalMessag
         public ContactViewHolder(View v) {
             super(v);
 
-            tv_title = (TextView) v.findViewById(R.id.cl_name);
-            section_tv = (TextView) v.findViewById(R.id.section_tv);
-            section_n = (TextView) v.findViewById(R.id.section_n);
-            imgProfile = (ImageView) v.findViewById(R.id.img_cls);
-            //contact_user_ll = (LinearLayout) v.findViewById(R.id.contact_user_ll);
+            message = (TextView) v.findViewById(R.id.message);
+            status = v.findViewById(R.id.status);
+
             mViewContent = itemView.findViewById(R.id.view_list_main_content);
             mActionContainer = itemView.findViewById(R.id.view_list_repo_action_container);
 
             v.setOnLongClickListener(this);
-            // v.setOnLongClickListener(this);
-//            viewBackground = v.findViewById(R.id.view_background);
-//            viewForeground = v.findViewById(R.id.view_foreground);
+
         }
 
         @Override

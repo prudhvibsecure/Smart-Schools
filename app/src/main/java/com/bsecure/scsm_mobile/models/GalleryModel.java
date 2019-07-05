@@ -1,6 +1,8 @@
 package com.bsecure.scsm_mobile.models;
 
-public class GalleryModel {
+import java.io.Serializable;
+
+public class GalleryModel implements Serializable {
 
     String ename, gid;
 

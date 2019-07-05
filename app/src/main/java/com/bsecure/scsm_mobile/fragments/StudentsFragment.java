@@ -372,7 +372,7 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
                         startActivity(in);
                         return true;
 
-                    case R.id.message:
+                    case R.id.messages:
                         Intent am = new Intent(getActivity(), ApprovalMessages.class);
                         startActivity(am);
 

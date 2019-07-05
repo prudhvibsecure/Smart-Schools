@@ -94,7 +94,7 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                 transport_id=intentData.getStringExtra("transport_id");
                 // student_id=intentData.getStringExtra("student_id");
                 school_id=intentData.getStringExtra("school_id");
-                getEventShowTrasport();
+                //getEventShowTrasport();
                 getRoutes();
 
             }
@@ -415,26 +415,26 @@ public class TrasportMaps extends AppCompatActivity implements OnMapReadyCallbac
                                     addressText = address1;
                                     // +","+city+","+state+","+country+","+postalCode+","+knownName;
 
-
                                 }
                                 latLng = new LatLng(latitude, longitude);
                                 //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
                                 //googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                                 markerOptions = new MarkerOptions();
                                 Marker marker = googleMap.addMarker(new MarkerOptions().position(latLng).title(addressText).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_schoolbus)));
+                                MarkerAnimation.animateMarkerToGB(marker, latLng, new LatLngInterpolator.Spherical());
                                 /*MarkerAnimation.animateMarkerToGB(marker, latLng, new LatLngInterpolator.Spherical());
                                 CameraPosition cameraPosition = new CameraPosition.Builder()
                                         .target(latLng)
                                         .zoom(20)
                                         .build();
                                 googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));*/
-                                googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                                googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
+                                //googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                               /* googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
                                         .target(googleMap.getCameraPosition().target)
                                         .zoom(17)
                                         .bearing(30)
                                         .tilt(45)
-                                        .build()));
+                                        .build()));*/
                                 ((TextView) findViewById(R.id.loc_txt)).setText(addressText);
                             }
                             break;
