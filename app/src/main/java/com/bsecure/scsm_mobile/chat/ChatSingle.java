@@ -221,7 +221,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                     } else {
                         findViewById(R.id.headerview_ll).setVisibility(View.GONE);
                     }
-                } else if (newState == RecyclerView.SCROLL_INDICATOR_BOTTOM) {
+                } if (newState == RecyclerView.SCROLL_INDICATOR_BOTTOM) {
 
                     if (position > 0) {
                         findViewById(R.id.headerview_ll).setVisibility(View.VISIBLE);
@@ -1267,6 +1267,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                 } else {
                     displayname = temp[0] + "_" + attachTime + "." + temp[1];
                 }
+                displayname=displayname.replaceAll("\\(", "_").replaceAll("\\)","_");
             } else if (displayname.contains("-")){
                 String[] temp = displayname.split("\\-");
                 displayname = displayname + "_" + attachTime;
@@ -1275,8 +1276,19 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                 } else {
                     displayname = temp[0] + "_" + attachTime + "." + temp[1];
                 }
+                displayname=displayname.replaceAll("\\(", "_").replaceAll("\\)","_");
+            }else if (displayname.contains("(")||displayname.contains(")")){
+                String[] temp = displayname.split("\\-");
+                displayname = displayname + "_" + attachTime;
+                if (temp.length > 2) {
+                    displayname = temp[0] + temp[1] + "_" + attachTime + "." + temp[temp.length - 1];
+                } else {
+                    displayname = temp[0] + "_" + attachTime + "." + temp[1];
+                }
+                displayname=displayname.replaceAll("\\(", "_").replaceAll("\\)","_");
             }else{
                 displayname = displayname + "_" + attachTime;
+
             }
             displayname = displayname.replaceAll("\\s+", "");
             item.setAttribute("attachname", displayname);

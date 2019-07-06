@@ -19,7 +19,6 @@ import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.controls.ColorGenerator;
 import com.bsecure.scsm_mobile.controls.TextDrawable;
 import com.bsecure.scsm_mobile.models.ApprovalModel;
-import com.bsecure.scsm_mobile.models.StudentModel;
 import com.bsecure.scsm_mobile.recyclertouch.Extension;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperExtension;
 
@@ -82,7 +81,6 @@ public class ApprovalMessagesAdapter extends RecyclerView.Adapter<ApprovalMessag
             contactViewHolder.message.setText(classMode_lList.getMessage());
             contactViewHolder.status.setText(classMode_lList.getStatus());
 
-            boolean value = selectedItems.get(position);
             contactViewHolder.itemView.setActivated(selectedItems.get(position, false));
 
             applyClickEvents(contactViewHolder, messages, position);
@@ -240,6 +238,7 @@ public class ApprovalMessagesAdapter extends RecyclerView.Adapter<ApprovalMessag
             ((TextView)mActionViewDelete.findViewById(R.id.view_list_repo_action_delete)).setBackgroundColor(Color.RED);
             mActionViewsper.setVisibility(View.GONE);
             mActionViewstatus.setVisibility(View.GONE);
+
 
         }
 

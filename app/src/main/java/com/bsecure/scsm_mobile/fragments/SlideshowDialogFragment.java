@@ -72,7 +72,7 @@ public class SlideshowDialogFragment extends DialogFragment implements IDownload
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DownloadData(Uri.parse(Paths.up_load+images.get(selectedPosition).getEname()));
+                DownloadData(Uri.parse(Paths.up_load+images.get(selectedPosition).getEname()),images.get(selectedPosition).getEname());
                 //getActivity().startService(DownloadService.getDownloadService(getActivity(), Paths.up_load, Environment.DIRECTORY_DOWNLOADS, images.get(selectedPosition).getEname()));
             }
         });
@@ -106,7 +106,7 @@ public class SlideshowDialogFragment extends DialogFragment implements IDownload
 
     private void displayMetaInfo(int position) {
         //lblCount.setText((position + 1) + " of " + images.size());
-
+//it's happen crah....postion not set index bunds check...
         GalleryModel image = images.get(position);
         selectedPosition = position;
         //lblTitle.setText(image.getEname());
@@ -169,7 +169,7 @@ public class SlideshowDialogFragment extends DialogFragment implements IDownload
         }
     }
 
-    private long DownloadData (Uri uri) {
+    private long DownloadData(Uri uri, String ename) {
 
         long downloadReference;
 
@@ -178,23 +178,20 @@ public class SlideshowDialogFragment extends DialogFragment implements IDownload
         DownloadManager.Request request = new DownloadManager.Request(uri);
 
         //Setting title of request
-        request.setTitle("Data Download");
+        request.setTitle(ename);
 
         //Setting description of request
-        request.setDescription("Android Data download using DownloadManager.");
+        request.setDescription("File downloaded...");
 
         //Set the local destination for the downloaded file to a path
         //within the application's external files directory
 
         request.setDestinationInExternalFilesDir(getActivity(),
-                Environment.DIRECTORY_DOWNLOADS, "SCS.jpg");
+                Environment.DIRECTORY_DOWNLOADS, ename);
         Toast.makeText(getActivity(), "Image Downloaded Successfully", Toast.LENGTH_SHORT).show();
 
         //Enqueue download and save into referenceId
         downloadReference = downloadManager.enqueue(request);
-
-
-
         return downloadReference;
     }
 
@@ -213,6 +210,6 @@ public class SlideshowDialogFragment extends DialogFragment implements IDownload
     @Override
     public void onDetach() {
         super.onDetach();
-        images.clear();
+        //images.clear();
     }
 }

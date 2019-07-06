@@ -23,6 +23,7 @@ import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.ApprovalModel;
 import com.bsecure.scsm_mobile.models.StudentModel;
+import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperCallbackMessage;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperCallback_Tutors;
 import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperExtension;
 import com.bsecure.scsm_mobile.utils.SharedValues;
@@ -57,8 +58,8 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         ApprovalModel model = new ApprovalModel();
-        model.setMessage("picnic 200");
-        model.setStatus("0");
+        model.setMessage("This is testing text for approval message in the schools communication system");
+        model.setStatus("Pending");
         messages = new ArrayList<>();
         mRecyclerView = findViewById(R.id.content_list);
         messages.add(model);
@@ -71,7 +72,7 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
         db_tables = new DB_Tables(this);
         db_tables.openDB();
 
-        mCallback = new ItemTouchHelperCallback_Tutors();
+        mCallback = new ItemTouchHelperCallbackMessage();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
         //getMessages();
