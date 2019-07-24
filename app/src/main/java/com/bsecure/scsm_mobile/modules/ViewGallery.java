@@ -146,7 +146,7 @@ public class ViewGallery extends AppCompatActivity implements HttpHandler {
                                 GalleryModel galleryModel = new GalleryModel();
                                 JSONObject jsonobject = array.getJSONObject(i);
                                 galleryModel.setGid(jsonobject.optString("photo_gallery_id"));
-                                galleryModel.setEname(jsonobject.optString("photo"));
+                                galleryModel.setEname(jsonobject.optString("photos"));
                                 images.add(galleryModel);
                             }
 

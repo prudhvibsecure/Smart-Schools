@@ -34,6 +34,12 @@ public class Login_Phone extends AppCompatActivity implements HttpHandler {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_phone);
 
+        findViewById(R.id.tv_admin).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Login_Phone.this,AdminLogin.class));
+            }
+        });
         findViewById(R.id.done_v).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

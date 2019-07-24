@@ -1,10 +1,12 @@
 package com.bsecure.scsm_mobile;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.bsecure.scsm_mobile.modules.ClassesList;
 import com.bsecure.scsm_mobile.modules.ParentActivity;
 import com.bsecure.scsm_mobile.modules.ParentView;
 import com.bsecure.scsm_mobile.modules.RoutesList;
@@ -21,6 +23,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         final String member_id = SharedValues.getValue(this, "member_id");
+        final String staff_id = SharedValues.getValue(this,"staff_id");
         if (member_id != null) {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -42,14 +45,24 @@ public class SplashActivity extends AppCompatActivity {
                         startPages(TransportView.class);
                     } else if (member_id.equalsIgnoreCase("6")) {
                         startPages(RoutesList.class);
-                    }else{
+                    }/*else if(staff_id != null)
+                    {
+                        startPages(ClassesList.class);
+                    }*/
+                    else{
                         startPages(Login_Phone.class);
                     }
 
                 }
             }, 3000);
         } else {
-            startPages(Login_Phone.class);
+            /*if(staff_id != null)
+            {
+                startPages(ClassesList.class);
+            }
+            else {*/
+                startPages(Login_Phone.class);
+            //}
         }
     }
 

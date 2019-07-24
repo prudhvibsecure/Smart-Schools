@@ -73,6 +73,8 @@ public class Paths {
     public static final String sync_syllabus = base + "sync_syllabus";
     public static final String view_photo_gallery_title = base + "photo_gallery/view_photo_gallery_title";
     public static final String view_photo_gallery_mobile = base + "photo_gallery/view_photo_gallery_mobile";
+    public static final String staff_login = base + "staff_login";
+    public static final String get_teachers = base + "get_teachers";
 
 
 

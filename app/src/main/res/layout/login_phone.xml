@@ -38,7 +38,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-
             android:layout_weight="1"
             android:background="@drawable/t_shape"
             android:focusable="true"
@@ -70,5 +69,18 @@
         android:padding="15dp"
         android:textColor="@color/black"
         android:elevation="4dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_admin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/done_v"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentEnd="true"
+        android:text="Admin Login"
+        android:textStyle="bold"
+        android:textColor="@color/green"
+        android:layout_marginEnd="20dp"
         />
 </RelativeLayout>

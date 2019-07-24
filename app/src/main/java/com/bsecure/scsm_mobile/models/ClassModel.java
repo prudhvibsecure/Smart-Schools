@@ -1,6 +1,8 @@
 package com.bsecure.scsm_mobile.models;
 
-public class ClassModel {
+import java.io.Serializable;
+
+public class ClassModel implements Serializable {
 
     String clsName,sectionName,subjects,teacher_id,teacher_name, phone_number, class_teacher, class_id, status,teacher_classes_id;
 
@@ -85,8 +87,8 @@ public class ClassModel {
         this.class_id = class_id;
     }
 
-    @Override
+    /*@Override
     public String toString() {
         return toString();
-    }
+    }*/
 }

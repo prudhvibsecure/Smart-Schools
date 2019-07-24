@@ -1,53 +1,30 @@
 package com.bsecure.scsm_mobile.fragments;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.GalleryListAdapter;
-import com.bsecure.scsm_mobile.adapters.StudentsListAdapter;
-import com.bsecure.scsm_mobile.adapters.TransportListAdapter_New;
 import com.bsecure.scsm_mobile.callbacks.ClickListener;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
-import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.GalleryModel;
-import com.bsecure.scsm_mobile.models.StudentModel;
-import com.bsecure.scsm_mobile.models.TransportModel;
+import com.bsecure.scsm_mobile.modules.ClassesList;
 import com.bsecure.scsm_mobile.modules.Gallery;
-import com.bsecure.scsm_mobile.modules.ParentActivity;
 import com.bsecure.scsm_mobile.modules.ViewGallery;
-import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperCallback_Tut_stu;
-import com.bsecure.scsm_mobile.recyclertouch.ItemTouchHelperExtension;
 import com.bsecure.scsm_mobile.utils.SharedValues;
 
 import org.json.JSONArray;
@@ -55,9 +32,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class SchoolGalleryFragment extends Fragment implements HttpHandler {
+public class AdminTransportListFragment extends Fragment implements HttpHandler {
 
     private Gallery schoolMain;
     View view_layout;
@@ -65,21 +41,19 @@ public class SchoolGalleryFragment extends Fragment implements HttpHandler {
     private CoordinatorLayout coordinatorLayout;
     ArrayList<GalleryModel> galleryList;
     private GalleryListAdapter adapter;
-    private String teach_Id, t_status, student_id, class_id, school_id;
+    private String teach_Id, t_status, student_id, school_id, class_id;
     private Dialog member_dialog;
     TextView nodata;
-    Gallery gallery = new Gallery();
-
     @Override
     public void onAttach(Context context) {
 
         super.onAttach(context);
-        this.schoolMain = (Gallery) context;
+        //this.schoolMain = (ClassesList) context;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view_layout = inflater.inflate(R.layout.gallery_fragment, null);
+        view_layout = inflater.inflate(R.layout.admin_transport_list_fragment, null);
 
         nodata = view_layout.findViewById(R.id.nodata);
         mRecyclerView = view_layout.findViewById(R.id.list);
@@ -100,7 +74,7 @@ public class SchoolGalleryFragment extends Fragment implements HttpHandler {
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
             object.put("student_id", "");
-            object.put("class_id", "");
+            object.put("class_id", class_id);
             object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Loading...", 12, Paths.view_photo_gallery_title, object.toString(), 1);
@@ -117,14 +91,14 @@ public class SchoolGalleryFragment extends Fragment implements HttpHandler {
         getActivity().invalidateOptionsMenu();
     }
 
-  /*  @Override
+   /* @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
         inflater.inflate(R.menu.add_students, menu);
         super.onCreateOptionsMenu(menu, inflater);
-    }*/
+    }
 
-   /* @Override
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
@@ -134,8 +108,8 @@ public class SchoolGalleryFragment extends Fragment implements HttpHandler {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }*/
-
+    }
+*/
     @Override
     public void onResponse(Object results, int requestType) {
         try {
@@ -162,7 +136,7 @@ public class SchoolGalleryFragment extends Fragment implements HttpHandler {
                                     in.putExtra("student_id", student_id);
                                     in.putExtra("class_id", class_id);
                                     in.putExtra("gid", galleryList.get(position).getGid());
-                                    in.putExtra("extra", "1");
+                                    in.putExtra("extra", "2");
                                     startActivity(in);
                                 }
                             });

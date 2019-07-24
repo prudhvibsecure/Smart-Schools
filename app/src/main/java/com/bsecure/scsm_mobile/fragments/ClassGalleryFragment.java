@@ -114,7 +114,7 @@ public class ClassGalleryFragment extends Fragment implements HttpHandler {
         getActivity().invalidateOptionsMenu();
     }
 
-    @Override
+   /* @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
         inflater.inflate(R.menu.add_students, menu);
@@ -132,7 +132,7 @@ public class ClassGalleryFragment extends Fragment implements HttpHandler {
         }
         return super.onOptionsItemSelected(item);
     }
-
+*/
     @Override
     public void onResponse(Object results, int requestType) {
         try {

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".modules.Gallery"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:context=".modules.ClassesList">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

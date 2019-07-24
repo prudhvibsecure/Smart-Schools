@@ -14,8 +14,8 @@
         android:id="@+id/gallery"
         android:title="Gallery" />
 
-    <item
+   <!-- <item
         android:id="@+id/messages"
-        android:title="Approval Messages" />
+        android:title="Approval Messages" />-->
 
 </menu>
