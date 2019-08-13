@@ -41,7 +41,7 @@ public class ParentActivity extends AppCompatActivity {
     private IntentFilter filter,l_mfilter;
     private DB_Tables db_tables;
     String[] stu_ids;
-    IntentFilter mfilter;
+    IntentFilter mfilter, tfilter, afilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +54,9 @@ public class ParentActivity extends AppCompatActivity {
         filter = new IntentFilter("com.scs.app.SESSION");
         l_mfilter = new IntentFilter("com.parenttutor.refresh");
         registerReceiver(mBroadcastReceiver, filter);
+
+        tfilter = new IntentFilter("com.trans.refresh");
+        registerReceiver(tBroadcastReceiver, tfilter);
 //
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
@@ -173,6 +176,20 @@ public class ParentActivity extends AppCompatActivity {
         }
     };
 
+    private final BroadcastReceiver tBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            try {
+
+                Intent sc = new Intent(getApplicationContext(), ParentActivity.class);
+                startActivity(sc);
+                finish();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
 
 //    private final BroadcastReceiver mBroadcastReceiver_ref = new BroadcastReceiver() {

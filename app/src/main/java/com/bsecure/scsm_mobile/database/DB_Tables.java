@@ -1289,7 +1289,7 @@ public class DB_Tables {
             if (database != null) {
                 SQLiteDatabase db = database.getWritableDatabase();
 
-                String sql = "select * from Message where class_id='" + class_id + "' and student_id='" + stu_id + "'";
+                String sql = "select * from Message where class_id='" + class_id + "' or student_id='" + stu_id + "'";
                 Cursor cursor = db.rawQuery(sql,
                         null);
                 if (cursor != null) {
@@ -1360,6 +1360,22 @@ public class DB_Tables {
             e.printStackTrace();
         }
         return jsonObject.toString();
+    }
+
+    public void deleteClasses() {
+        SQLiteDatabase db = null;
+        try {
+            long rawId;
+            if (database != null) {
+                String iwhereClause = null;
+                db = database.getWritableDatabase();
+                db.delete("Teacher_classes", iwhereClause, null);
+                db.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getchatList_view_tutors(String class_id, String student_id) {

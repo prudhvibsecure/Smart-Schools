@@ -538,6 +538,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                     recordView.setSoundEnabled(false);
                     findViewById(R.id.user_attach).setVisibility(View.VISIBLE);
                     findViewById(R.id.ic_camera).setVisibility(View.VISIBLE);
+                    findViewById(R.id.inputLL).setVisibility(View.VISIBLE);
                     if (mediaRecorder != null) {
                         mediaRecorder.stop();
                         mediaRecorder.reset();
@@ -574,6 +575,11 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
             tv_txt.setTextColor(Color.WHITE);
             view.setBackgroundResource(R.color.black);
             toast.show();
+
+            findViewById(R.id.user_attach).setVisibility(View.VISIBLE);
+            findViewById(R.id.ic_camera).setVisibility(View.VISIBLE);
+            findViewById(R.id.audio_btn).setVisibility(View.VISIBLE);
+            findViewById(R.id.send_btn).setVisibility(View.GONE);
 
         }
     }

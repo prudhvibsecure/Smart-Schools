@@ -18,6 +18,7 @@ import com.bsecure.scsm_mobile.callbacks.ClickListener;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
+import com.bsecure.scsm_mobile.database.DB_Tables;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.ClassModel;
 import com.bsecure.scsm_mobile.models.TeacherModel;
@@ -42,12 +43,14 @@ public class TeachersList extends AppCompatActivity implements HttpHandler {
 
     private TeachersListAdapter adapter;
 
+    private DB_Tables db_tables;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teachers_list);
 
+        db_tables = new DB_Tables(this);
         Intent in  = getIntent();
 
         Bundle bd = in.getExtras();
@@ -152,6 +155,7 @@ public class TeachersList extends AppCompatActivity implements HttpHandler {
                             @Override
                             public void OnRowClicked(int position, View view) {
 
+                                db_tables.deleteClasses();
                                 SharedValues.saveValue(TeachersList.this,"id", teachers.get(position).getTeacher_id());
                                 startActivity(new Intent(TeachersList.this,TeacherView.class));
 

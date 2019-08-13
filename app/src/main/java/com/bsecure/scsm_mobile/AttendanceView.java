@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -56,6 +57,8 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
     private List<WeakReference<OfflineDataInterface>> mObservers = new ArrayList<WeakReference<OfflineDataInterface>>();
     private NetworkInfoAPI networkInfoAPI;
     private IntentFilter filter;
+    MenuItem item;
+    int check  = 0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,10 +88,14 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
         // SharedValues.saveValue(this, "firstCall", "No");
         //getAttandenceList();
         //getSyncAttandenceList();
+
+        getStudents();
         networkInfoAPI = new NetworkInfoAPI();
         networkInfoAPI.initialize(this);
         networkInfoAPI.setOnNetworkChangeListener(this);
         addObserver(this);
+
+
 
     }
 
@@ -96,8 +103,26 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.add_students, menu);
+        item = menu.findItem(R.id.st_add);
         return true;
     }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if(Build.VERSION.SDK_INT > 11) {
+            invalidateOptionsMenu();
+            if(check == 1)
+            {
+                menu.findItem(R.id.st_add).setVisible(false);
+            }
+            else
+            {
+                menu.findItem(R.id.st_add).setVisible(true);
+            }
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
     private BroadcastReceiver myRefresh=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -125,7 +150,8 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
             case android.R.id.home:
                 finish();
                 break;
-            case R.id.st_add:
+
+                case R.id.st_add:
 
                 Date c = Calendar.getInstance().getTime();
                 SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
@@ -243,11 +269,21 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
                             if (TextUtils.isEmpty(datef)) {
                                 for (int i = 0; i < jsonarray2.length(); i++) {
                                     JSONObject jsonobject = jsonarray2.getJSONObject(i);
-                                    db_tables.addstudentsAttandence(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"), null);
+                                    if(jsonobject.optString("status").equalsIgnoreCase("0")) {
+                                        db_tables.addstudentsAttandence(jsonobject.optString("student_id"), jsonobject.optString("roll_no"), jsonobject.optString("student_name"), jsonobject.optString("status"), jsonobject.optString("class_id"), null);
+                                    }
                                 }
                             }
                         }
+                        else
+                        {
+                            check = 1;
+                        }
+                    }else
+                    {
+                        check = 1;
                     }
+
                     break;
                 case 4:
                     JSONObject object11 = new JSONObject(results.toString());

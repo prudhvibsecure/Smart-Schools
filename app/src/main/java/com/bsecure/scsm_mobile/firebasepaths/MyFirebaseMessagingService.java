@@ -82,13 +82,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     String tutor_id = arry_data[2];
                     String school_id = arry_data[3];
                     db_tables.update_tutors_status(tutor_id, "1");
-                } else if (m_type.equalsIgnoreCase("ETS")) {
+                }else if (m_type.equalsIgnoreCase("ATS")) {
+                    String transport_name = arry_data[1];
+                    String transport_id = arry_data[2];
+                    String school_id = arry_data[3];
+                    String phone_number = arry_data[4];
+                    String status = arry_data[5];
+                    String student_id = arry_data[6];
+                    db_tables.addTransportList(transport_name, school_id,phone_number, transport_id, status, "1");
+                    Intent refresh = new Intent("com.trans.refresh");
+                    sendBroadcast(refresh);
+                }
+                else if (m_type.equalsIgnoreCase("ETS")) {
                     //Edit Transport Name Push Notification
                     String transport_name = arry_data[2];
                     String transport_id = arry_data[3];
                     String number = arry_data[4];
                     String school_id = arry_data[5];
                     db_tables.updateTransportList(transport_id, transport_name, number, school_id);
+
                 } else if (m_type.equalsIgnoreCase("FM")) {
                     //Forward Push Notification
                     String message_id = arry_data[2];
@@ -98,6 +110,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 } else if (m_type.equalsIgnoreCase("DTS")) {
                     String transport_id = arry_data[2];
                     String school_id = arry_data[3];
+                    db_tables.deleteTransport(transport_id);
+                    Intent refresh = new Intent("com.trans.refresh");
+                    sendBroadcast(refresh);
+
                 } else if (m_type.equalsIgnoreCase("GC")) {
                     String transport_id = arry_data[2];
                     String student_id = arry_data[3];
@@ -373,6 +389,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //                    messsages = "<Html>Dear Parent,<br/> Sorry for the inconvenience caused. <b>" + student_name + "</b> class"+class_name+"("+section+") is present on -" + Utils.getDate(Long.parseLong(date_time)) + "<br/><br/>  Thank you.</Html>";
                     db_tables.messageData(messsages, msg_id, date_time, null, cls_id, SharedValues.getValue(this, "school_id"), "1", null, stu_id, teacher_name, date_time, "0", "0", "No", m_type);
                     db_tables.updatemsgStatus(msg_id);
+                }
+                if(m_type.equalsIgnoreCase("CEN")) {
+                    String class_id="";
+                    String event_name = arry_data[1];
+                    String description = arry_data[2];
+                    String edate = arry_data[3];
+                    String stu_id = arry_data[4];
+                    String event_date=getDate(Long.parseLong(edate)*1000);
+                    if (arry_data.length>5) {
+                        class_id = arry_data[5];
+                    }
+                    String message="<Html>Event Reminder on <b>" + event_date + ":" + event_name + " </b> <br/> " + description + "</Html>";
+                    db_tables.messageData(message, "", String.valueOf(System.currentTimeMillis()), null, class_id, SharedValues.getValue(this, "school_id"), "1", null, stu_id, "Admin", String.valueOf(System.currentTimeMillis()), "0", "0", "No", m_type);
                 }
                 if(m_type.equalsIgnoreCase("BM"))
                 {
