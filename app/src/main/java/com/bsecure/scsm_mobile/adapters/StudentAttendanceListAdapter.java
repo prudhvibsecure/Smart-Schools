@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bsecure.scsm_mobile.R;
+import com.bsecure.scsm_mobile.callbacks.ClickListener;
 import com.bsecure.scsm_mobile.models.TutorsModel;
 import com.bsecure.scsm_mobile.modules.ViewAttandence;
 
@@ -35,12 +36,14 @@ public class StudentAttendanceListAdapter extends RecyclerView.Adapter<StudentAt
     private SparseBooleanArray selectedItems;
     private SparseBooleanArray animationItemsIndex;
     private static int currentSelectedIndex = -1;
+    private ClickListener listener;
 
-    public StudentAttendanceListAdapter(List<ViewAttandence> list, Context context) {
+    public StudentAttendanceListAdapter(List<ViewAttandence> list, Context context, ClickListener listener) {
         this.context = context;
         this.tutorsModelList = list;
         selectedItems = new SparseBooleanArray();
         animationItemsIndex = new SparseBooleanArray();
+        this.listener = listener;
     }
 
     public void setOnClickListener(View.OnClickListener onClickListener) {
@@ -72,13 +75,18 @@ public class StudentAttendanceListAdapter extends RecyclerView.Adapter<StudentAt
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onBindViewHolder(ContactViewHolder contactViewHolder, int position) {
+    public void onBindViewHolder(ContactViewHolder contactViewHolder, final int position) {
 
         try {
             ViewAttandence classMode_lList = tutorsModelList.get(position);
             contactViewHolder.tv_title.setText(classMode_lList.getMonth() + "-" + classMode_lList.getYear());
             contactViewHolder.section_tv.setText(classMode_lList.getNo_of_absents() + "/" + classMode_lList.getNo_working_days());
-
+            contactViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.OnRowClicked(position, v);
+                }
+            });
             boolean value = selectedItems.get(position);
             contactViewHolder.itemView.setActivated(selectedItems.get(position, false));
 

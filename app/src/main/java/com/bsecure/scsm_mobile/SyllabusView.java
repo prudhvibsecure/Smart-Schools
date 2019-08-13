@@ -246,7 +246,7 @@ public class SyllabusView extends AppCompatActivity implements View.OnClickListe
 //            object.put("school_id", SharedValues.getValue(getApplicationContext(), "school_id"));
             db_tables.syllabusUpdateV(syllab_id, ((EditText) mDialog.findViewById(R.id.sub_et)).getText().toString(), ((EditText) mDialog.findViewById(R.id.sub_et_les)).getText().toString(), subject,class_id);
             HTTPNewPost task = new HTTPNewPost(this, this);
-            task.userRequest("Processing...", 2, Paths.add_syllabus, object.toString(), 1);
+            task.userRequest("Processing...", 2, Paths.edit_syllabus, object.toString(), 1);
         } catch (Exception e) {
             e.printStackTrace();
         }

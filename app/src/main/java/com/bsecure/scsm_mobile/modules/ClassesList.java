@@ -88,14 +88,14 @@ public class ClassesList extends AppCompatActivity {
         //tabOne.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_students, 0, 0);
         tabLayout.getTabAt(0).setCustomView(tabOne);
 
-        TextView tabTwo = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
+        /*TextView tabTwo = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
 
         tabTwo.setText("TRANSPORT");
 
         tabTwo.setTextSize(13);
         //tabTwo.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_teachers, 0, 0);
         tabLayout.getTabAt(1).setCustomView(tabTwo);
-
+*/
     }
 
 
@@ -105,8 +105,7 @@ public class ClassesList extends AppCompatActivity {
 
         adapter.addFrag(new ClassesListFragment(), "CLASSES");
 
-        adapter.addFrag(new AdminTransportListFragment(), "TRANSPORT");
-
+        //adapter.addFrag(new AdminTransportListFragment(), "TRANSPORT");
         viewPager.setAdapter(adapter);
 
     }

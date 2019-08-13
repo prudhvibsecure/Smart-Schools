@@ -1,10 +1,22 @@
 package com.bsecure.scsm_mobile.modules;
 
-public class ViewAttandence {
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class ViewAttandence implements Serializable {
     String month, year, no_working_days, no_of_absents;
+    ArrayList<String> absentdays;
 
     public String getMonth() {
         return month;
+    }
+
+    public ArrayList<String> getAbsentdays() {
+        return absentdays;
+    }
+
+    public void setAbsentdays(ArrayList<String> absentdays) {
+        this.absentdays = absentdays;
     }
 
     public void setMonth(String month) {

@@ -232,6 +232,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                 this.m_spinner.setAdapter(dataAdapter);
             }
 
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -614,14 +615,14 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
                         }
                         else
                         {
-                            Toast.makeText(schoolMain, "No Data Found", Toast.LENGTH_SHORT).show();
                             tv_nodata.setVisibility(View.VISIBLE);
+                            mRecyclerView.setVisibility(View.GONE);
                         }
                     }
                     else
                     {
-                        Toast.makeText(schoolMain, "No Data Found", Toast.LENGTH_SHORT).show();
                         tv_nodata.setVisibility(View.VISIBLE);
+                        mRecyclerView.setVisibility(View.GONE);
                     }
                     break;
                 case 5:

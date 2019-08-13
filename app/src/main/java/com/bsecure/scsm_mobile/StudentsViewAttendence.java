@@ -9,21 +9,25 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.bsecure.scsm_mobile.adapters.StudentAttendanceListAdapter;
+import com.bsecure.scsm_mobile.callbacks.ClickListener;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
+import com.bsecure.scsm_mobile.modules.Absentdate_view;
 import com.bsecure.scsm_mobile.modules.ViewAttandence;
 import com.bsecure.scsm_mobile.utils.SharedValues;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class StudentsViewAttendence extends AppCompatActivity implements HttpHandler {
+public class StudentsViewAttendence extends AppCompatActivity implements HttpHandler, ClickListener {
     private RecyclerView mRecyclerView;
     private StudentAttendanceListAdapter attendanceListAdapter;
     private ArrayList<ViewAttandence> viewAttandenceArrayList;
@@ -93,9 +97,17 @@ public class StudentsViewAttendence extends AppCompatActivity implements HttpHan
                                 viewAttandence.setYear(jsonobject.optString("year"));
                                 viewAttandence.setNo_working_days(jsonobject.optString("no_working_days"));
                                 viewAttandence.setNo_of_absents(jsonobject.optString("no_of_absents"));
+
+                                JSONArray array=jsonobject.getJSONArray("absent_days");
+                                ArrayList<String> arrayList=new ArrayList();
+                                for (int j=0;j<array.length();j++) {
+                                    arrayList.add(array.get(j).toString());
+
+                                }
+                                viewAttandence.setAbsentdays(arrayList);
                                 viewAttandenceArrayList.add(viewAttandence);
                             }
-                            attendanceListAdapter = new StudentAttendanceListAdapter(viewAttandenceArrayList, this);
+                            attendanceListAdapter = new StudentAttendanceListAdapter(viewAttandenceArrayList, this, this);
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                             mRecyclerView.setLayoutManager(linearLayoutManager);
                             mRecyclerView.setAdapter(attendanceListAdapter);
@@ -111,6 +123,28 @@ public class StudentsViewAttendence extends AppCompatActivity implements HttpHan
 
     @Override
     public void onFailure(String errorCode, int requestType) {
+
+    }
+
+    @Override
+    public void OnRowClicked(int position, View view) {
+
+        String year=viewAttandenceArrayList.get(position).getYear();
+        String month=viewAttandenceArrayList.get(position).getMonth();
+        ArrayList array=viewAttandenceArrayList.get(position).getAbsentdays();
+
+        //Toast.makeText(this,String.valueOf(position),Toast.LENGTH_LONG).show();
+        Intent i=new Intent(StudentsViewAttendence.this, Absentdate_view.class);
+        Bundle bundle = new Bundle();
+//Add your data from getFactualResults method to bundle
+        bundle.putString("year", year);
+        bundle.putString("month",month);
+        bundle.putSerializable("dates", (Serializable) array);
+
+//Add the bundle to the intent
+        i.putExtras(bundle);
+
+        startActivity(i);
 
     }
 }
