@@ -11,17 +11,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bsecure.scsm_mobile.AdminLogin;
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.AdminClassListAdapter;
 import com.bsecure.scsm_mobile.callbacks.ClickListener;
+import com.bsecure.scsm_mobile.callbacks.HttpHandler;
+import com.bsecure.scsm_mobile.common.ContentValues;
+import com.bsecure.scsm_mobile.common.Paths;
+import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.ClassModel;
+import com.bsecure.scsm_mobile.modules.ClassesList;
 import com.bsecure.scsm_mobile.modules.TeachersList;
 import com.bsecure.scsm_mobile.utils.SharedValues;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ClassesListFragment extends Fragment {
+public class ClassesListFragment extends Fragment implements HttpHandler {
 
     View view_layout;
 
@@ -51,7 +63,7 @@ public class ClassesListFragment extends Fragment {
 
         mRecyclerView = view_layout.findViewById(R.id.list);
 
-        classlist = (ArrayList<ClassModel>)getActivity().getIntent().getSerializableExtra("classes");
+        //classlist = (ArrayList<ClassModel>)getActivity().getIntent().getSerializableExtra("classes");
 
         getList();
 
@@ -65,19 +77,22 @@ public class ClassesListFragment extends Fragment {
 
     private void getList() {
 
-        adapter = new AdminClassListAdapter(getActivity(),classlist, new ClickListener() {
-            @Override
-            public void OnRowClicked(int position, View view) {
-                Intent in  = new Intent(getActivity(), TeachersList.class);
-                in.putExtra("school_id", SharedValues.getValue(getActivity(),"school_id"));
-                in.putExtra("class_id", classlist.get(position).getClass_id());
-                in.putExtra("class_name", classlist.get(position).getClsName());
-                startActivity(in);
-            }
-        });
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        mRecyclerView.setAdapter(adapter);
+        try {
+
+            JSONObject obj = new JSONObject();
+
+            obj.put("school_id", SharedValues.getValue(getActivity(),"school_id"));
+
+            obj.put("domain", ContentValues.DOMAIN);
+
+            HTTPNewPost task = new HTTPNewPost(getActivity(), this);
+
+            task.userRequest("Processing...", 1, Paths.get_class_list, obj.toString(), 1);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -88,5 +103,64 @@ public class ClassesListFragment extends Fragment {
     }
 
 
+    @Override
+    public void onResponse(Object results, int requestType) {
 
+        JSONObject object = null;
+        try {
+            object = new JSONObject(results.toString());
+
+            if (object.optString("statuscode").equalsIgnoreCase("200")) {
+
+                JSONArray array = object.getJSONArray("class_list");
+
+                classlist = new ArrayList<>();
+
+                for(int i = 0; i<array.length(); i++)
+                {
+                    JSONObject obj = array.getJSONObject(i);
+
+                    ClassModel model = new ClassModel();
+
+                    model.setClass_id(obj.optString("class_id"));
+
+                    model.setClsName(obj.optString("class_name"));
+
+                    model.setSectionName(obj.optString("section"));
+
+                    model.setSubjects(obj.optString("subjects"));
+
+                    classlist.add(model);
+                }
+
+                adapter = new AdminClassListAdapter(getActivity(),classlist, new ClickListener() {
+                    @Override
+                    public void OnRowClicked(int position, View view) {
+                        Intent in  = new Intent(getActivity(), TeachersList.class);
+                        in.putExtra("school_id", SharedValues.getValue(getActivity(),"school_id"));
+                        in.putExtra("class_id", classlist.get(position).getClass_id());
+                        in.putExtra("class_name", classlist.get(position).getClsName());
+                        startActivity(in);
+                    }
+                });
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+                mRecyclerView.setLayoutManager(linearLayoutManager);
+                mRecyclerView.setAdapter(adapter);
+
+            }
+            else
+            {
+                Toast.makeText(getActivity(), "No Data Found", Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onFailure(String errorCode, int requestType) {
+
+    }
 }

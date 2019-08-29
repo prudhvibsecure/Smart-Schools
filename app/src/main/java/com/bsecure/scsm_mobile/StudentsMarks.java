@@ -405,7 +405,7 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                                 StudentModel studentModel = new StudentModel();
                                 studentModel.setStudent_name(jsonobject.optString("student_name"));
                                 studentModel.setRoll_no(jsonobject.optString("roll_no"));
-                                //studentModel.setStatus(jsonobject.optString("status"));
+                                studentModel.setStatus(jsonobject.optString("status"));
                                 studentModel.setClass_id(jsonobject.optString("class_id"));
                                 studentModel.setStudent_id(jsonobject.optString("student_id"));
                                 Student_ids[i] = jsonobject.optString("student_id");
@@ -612,7 +612,16 @@ public class StudentsMarks extends AppCompatActivity implements HttpHandler, Stu
                 public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
                     remov_mark = marks_list.get(pos);
                     marks_edit.setText(remov_mark);
-                    marks_list_vv.put(matchesList.get(position).getStudent_id(), remov_mark);
+                    if(matchesList.get(position).getStatus().equalsIgnoreCase("1"))
+                    {
+                        marks_list_vv.put(matchesList.get(position).getStudent_id(), "NA");
+
+                    }
+                    else
+                    {
+                        marks_list_vv.put(matchesList.get(position).getStudent_id(), remov_mark);
+
+                    }
 
                     marks_list = null;
                     marks_Diloag.dismiss();

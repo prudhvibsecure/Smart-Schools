@@ -362,7 +362,7 @@ public class TutorsListFragment extends Fragment implements TransportListAdapter
 
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(getActivity(), "school_id"));
-            object.put("student_id", SharedValues.getValue(getActivity(), "student_id"));
+            object.put("student_id", SharedValues.getValue(getActivity(), "id"));
             object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(getActivity(), this);
             task.userRequest("Loading...", 12, Paths.base + "view_tutors_v1", object.toString(), 1);

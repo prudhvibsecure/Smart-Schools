@@ -115,7 +115,7 @@ public class MyNotificationManager {
     //the method will show a small notification
     //parameters are title for message title, message for message text and an intent that will open
     //when you will tap on the notification
-    public void showSmallNotification(String title, String message, Intent intent) {
+    public void showSmallNotification(String title, String message, Intent intent,String type_action) {
         SUMMARY_ID++;
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
@@ -125,23 +125,40 @@ public class MyNotificationManager {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
+
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mCtx, mCtx.getString(R.string.notification_channel_id));
         Notification notification;
-        notification = mBuilder.setSmallIcon(R.mipmap.ic_launcher).setTicker(title)
-                .setAutoCancel(true)
-                .setContentIntent(resultPendingIntent)
-                .setContentTitle(title)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setLargeIcon(BitmapFactory.decodeResource(mCtx.getResources(), R.mipmap.ic_launcher))
-                .setContentText(message)
-                .setStyle(new NotificationCompat.InboxStyle()
-                        .addLine(message)
-                        .setSummaryText(String.valueOf(SUMMARY_ID)))
-                .setGroup(GROUP_KEY_WORK_EMAIL)
-                .setGroupSummary(true)
-                .setSound(uri)
-                .build();
+       /* if (type_action.equalsIgnoreCase("SAM")) {
+            PendingIntent my_act=PendingIntent.getBroadcast(mCtx,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            notification = mBuilder.setSmallIcon(R.mipmap.ic_launcher).setTicker(title)
+                    .setAutoCancel(true)
+                    .setContentIntent(resultPendingIntent)
+                    .setContentTitle(title)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setLargeIcon(BitmapFactory.decodeResource(mCtx.getResources(), R.mipmap.ic_launcher))
+                    .setContentText(message)
+                    .addAction(R.drawable.accept,"Accept",my_act)
+                    .addAction(R.mipmap.inactive,"Decline",my_act)
+                    .addAction(R.drawable.pending,"Pending", my_act)
+                    .setSound(uri)
+                    .build();
+        }else{*/
+            notification = mBuilder.setSmallIcon(R.mipmap.ic_launcher).setTicker(title)
+                    .setAutoCancel(true)
+                    .setContentIntent(resultPendingIntent)
+                    .setContentTitle(title)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setLargeIcon(BitmapFactory.decodeResource(mCtx.getResources(), R.mipmap.ic_launcher))
+                    .setContentText(message)
+                    .setStyle(new NotificationCompat.InboxStyle()
+                            .addLine(message)
+                            .setSummaryText(String.valueOf(SUMMARY_ID)))
+                    .setGroup(GROUP_KEY_WORK_EMAIL)
+                    .setGroupSummary(true)
+                    .setSound(uri)
+                    .build();
+       // }
 
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 

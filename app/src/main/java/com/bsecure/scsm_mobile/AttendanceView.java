@@ -95,8 +95,6 @@ public class AttendanceView extends AppCompatActivity implements HttpHandler, At
         networkInfoAPI.setOnNetworkChangeListener(this);
         addObserver(this);
 
-
-
     }
 
     @Override

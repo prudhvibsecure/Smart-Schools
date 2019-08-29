@@ -77,9 +77,9 @@ public class ApprovalMessagesAdapter extends RecyclerView.Adapter<ApprovalMessag
     public void onBindViewHolder(ContactViewHolder contactViewHolder, int position) {
 
         try {
-            ApprovalModel classMode_lList = messages.get(position);
-            contactViewHolder.message.setText(classMode_lList.getMessage());
-            contactViewHolder.status.setText(classMode_lList.getStatus());
+            ApprovalModel message = messages.get(position);
+            contactViewHolder.message.setText(message.getMessage());
+            //contactViewHolder.status.setText(classMode_lList.getStatus());
 
             contactViewHolder.itemView.setActivated(selectedItems.get(position, false));
 
@@ -96,7 +96,7 @@ public class ApprovalMessagesAdapter extends RecyclerView.Adapter<ApprovalMessag
         if (contactViewHolder instanceof ItemSwipeWithActionWidthViewHolder) {
             ItemSwipeWithActionWidthViewHolder viewHolder = (ItemSwipeWithActionWidthViewHolder) contactViewHolder;
 
-            viewHolder.mActionViewDelete.setOnClickListener(
+            viewHolder.decline.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -194,7 +194,7 @@ public class ApprovalMessagesAdapter extends RecyclerView.Adapter<ApprovalMessag
             super(v);
 
             message = (TextView) v.findViewById(R.id.message);
-            status = v.findViewById(R.id.status);
+            //status = v.findViewById(R.id.status);
 
             mViewContent = itemView.findViewById(R.id.view_list_main_content);
             mActionContainer = itemView.findViewById(R.id.view_list_repo_action_container);
@@ -226,6 +226,7 @@ public class ApprovalMessagesAdapter extends RecyclerView.Adapter<ApprovalMessag
         public View mActionViewEdit;
         public View mActionViewstatus;
         public View mActionViewsper;
+        public View decline;
 
 
         public ItemSwipeWithActionWidthViewHolder(View itemView) {
@@ -234,6 +235,7 @@ public class ApprovalMessagesAdapter extends RecyclerView.Adapter<ApprovalMessag
             mActionViewstatus = itemView.findViewById(R.id.view_list_repo_action_status);
             mActionViewEdit = itemView.findViewById(R.id.view_list_repo_action_update);
             mActionViewsper = itemView.findViewById(R.id.view_list_repo_action_per);
+            decline = itemView.findViewById(R.id.view_list_repo_action_more);
             ((TextView)mActionViewDelete.findViewById(R.id.view_list_repo_action_delete)).setText("Delete");
             ((TextView)mActionViewDelete.findViewById(R.id.view_list_repo_action_delete)).setBackgroundColor(Color.RED);
             mActionViewsper.setVisibility(View.GONE);

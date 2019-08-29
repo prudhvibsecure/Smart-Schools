@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.bsecure.scsm_mobile.R;
@@ -95,8 +96,9 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.Contac
             final StudentModel mycontactlist = matchesList.get(position);
             //JSONObject jsonObject = array.getJSONObject(i);
 
-            contactViewHolder.tv_title.setText(mycontactlist.getStudent_name());
-            contactViewHolder.contact_ph.setText(mycontactlist.getRoll_no());
+           // else {
+                contactViewHolder.tv_title.setText(mycontactlist.getStudent_name());
+                contactViewHolder.contact_ph.setText(mycontactlist.getRoll_no());
 
 //            if (mycontactlist.getStatus().equalsIgnoreCase("0")) {
 //                contactViewHolder.chk_name.setChecked(true);
@@ -116,13 +118,23 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.Contac
                     contactViewHolder.chk_name.setChecked(isChecked.get(position));
                     contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.ic_uncheck));
 
-                 }else {
+                } else {
+                    contactViewHolder.chk_name.setChecked(false);
+                    contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.ic_check));
+                }
+
+            if(mycontactlist.getStatus().equals("1"))
+            {
                 contactViewHolder.chk_name.setChecked(false);
-                contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.ic_check));
+                contactViewHolder.chk_name.setBackground(context.getDrawable(R.mipmap.inactive));
+                contactViewHolder.chk_name.setEnabled(false);
+                //matchesList.remove(position);
+                //return;
             }
-            boolean value = selectedItems.get(position);
-            contactViewHolder.itemView.setActivated(selectedItems.get(position, false));
-            applyClickEvents(contactViewHolder, matchesList, position, value, contactViewHolder.chk_name);
+                boolean value = selectedItems.get(position);
+                contactViewHolder.itemView.setActivated(selectedItems.get(position, false));
+                applyClickEvents(contactViewHolder, matchesList, position, value, contactViewHolder.chk_name);
+           // }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -155,8 +167,18 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.Contac
                 listener.onRowClicked(matchesList, value, chk_name, position);
                 //save checked data in hash map on check change
                 if (compoundButton.isChecked()) {
+                    if(matchesList.get(position).getStatus().equals("1"))
+                    {
+                        Toast.makeText(context, "Student is Inactive", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     isChecked.put(position, b);
                 } else {
+                    if(matchesList.get(position).getStatus().equals("1"))
+                    {
+                        Toast.makeText(context, "Student is Inactive", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     isChecked.remove(position);
                 }
 

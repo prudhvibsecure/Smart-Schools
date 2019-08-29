@@ -92,7 +92,6 @@ public class StudentsMarksAdapter extends RecyclerView.Adapter<StudentsMarksAdap
         try {
             StudentModel mycontactlist = matchesList.get(position);
             //JSONObject jsonObject = array.getJSONObject(i);
-
             contactViewHolder.tv_title.setText(mycontactlist.getStudent_name());
             contactViewHolder.roll_no.setText(Html.fromHtml("<b>Roll No<b/>-" + mycontactlist.getRoll_no()));
             if (matchesList.get(position).isSelected()){
@@ -129,6 +128,16 @@ public class StudentsMarksAdapter extends RecyclerView.Adapter<StudentsMarksAdap
                     }
                 }
             }
+
+            if(mycontactlist.getStatus().equals("1"))
+            {
+                contactViewHolder.chk_box.setChecked(false);
+                //contactViewHolder.chk_box.setEnabled(false);
+                contactViewHolder.chk_box.setBackground(context.getDrawable(R.mipmap.inactive));
+                contactViewHolder.chk_name.setText("NA");
+                mycontactlist.setMarkslist("NA");
+            }
+
             boolean value = selectedItems.get(position);
             contactViewHolder.itemView.setActivated(selectedItems.get(position, false));
             applyClickEvents(contactViewHolder, matchesList, position, value, contactViewHolder.chk_name, contactViewHolder.chk_box);

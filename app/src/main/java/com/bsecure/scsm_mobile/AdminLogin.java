@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
+import com.bsecure.scsm_mobile.firebasepaths.SharedPrefManager;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.ClassModel;
 import com.bsecure.scsm_mobile.modules.ClassesList;
@@ -103,6 +104,8 @@ public class AdminLogin extends AppCompatActivity implements HttpHandler {
 
             obj.put("domain", ContentValues.DOMAIN);
 
+            obj.put("regidand", SharedPrefManager.getInstance(this).getDeviceToken());
+
             HTTPNewPost task = new HTTPNewPost(this, this);
 
             task.userRequest("Processing...", 1, Paths.staff_login, obj.toString(), 1);
@@ -136,7 +139,7 @@ public class AdminLogin extends AppCompatActivity implements HttpHandler {
 
                         SharedValues.saveValue(this,"designation", object1.optString("designation"));
 
-                        JSONArray array = object.getJSONArray("class_list");
+                       /* JSONArray array = object.getJSONArray("class_list");
 
                         classes = new ArrayList<>();
 
@@ -156,18 +159,16 @@ public class AdminLogin extends AppCompatActivity implements HttpHandler {
 
                             classes.add(model);
                         }
-
+*/
                         Intent in = new Intent(AdminLogin.this, ClassesList.class);
 
-                        in.putExtra("classes", (Serializable) classes);
+                        //in.putExtra("classes", (Serializable) classes);
 
                         startActivity(in);
                     }
                     else
                     {
-
-
-
+                        Toast.makeText(this, object.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
 
                     break;

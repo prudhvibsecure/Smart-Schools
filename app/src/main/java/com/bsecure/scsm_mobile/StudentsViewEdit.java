@@ -224,8 +224,8 @@ public class StudentsViewEdit extends AppCompatActivity implements HttpHandler, 
                 TextView tv = dialog.findViewById(R.id.data);
                 tv.setText("Roll No.'s: " + Html.fromHtml(desc));
             }
-            TextView tv = dialog.findViewById(R.id.data);
-            tv.setText("Roll No.'s: " + Html.fromHtml(desc)+ "Are Being Modified. Are You Sure You Want To Submit?");
+           /* TextView tv = dialog.findViewById(R.id.data);
+            tv.setText("Roll No.'s: " + Html.fromHtml(desc)+ "Are Being Modified. Are You Sure You Want To Submit?");*/
             dialog.setCancelable(false);
             Button yes = dialog.findViewById(R.id.yes);
            yes.setOnClickListener(new View.OnClickListener() {

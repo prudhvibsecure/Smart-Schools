@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
     public ItemTouchHelperExtension mItemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
     IntentFilter filter;
+    String student_id, class_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +59,11 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        ApprovalModel model = new ApprovalModel();
-        model.setMessage("This is testing text for approval message in the schools communication system");
-        model.setStatus("Pending");
-        messages = new ArrayList<>();
-        mRecyclerView = findViewById(R.id.content_list);
-        messages.add(model);
-        adapter = new ApprovalMessagesAdapter(messages, this, this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        mRecyclerView.setAdapter(adapter);
+        Intent in = getIntent();
+        student_id = in.getStringExtra("student_id");
+        class_id = in.getStringExtra("class_id");
 
+        mRecyclerView = findViewById(R.id.content_list);
 
         db_tables = new DB_Tables(this);
         db_tables.openDB();
@@ -75,8 +71,20 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
         mCallback = new ItemTouchHelperCallbackMessage();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
-        //getMessages();
+        getMessages();
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -106,10 +114,11 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
         try {
             JSONObject object = new JSONObject();
             object.put("school_id", SharedValues.getValue(this, "school_id"));
-            object.put("tutor_id", SharedValues.getValue(this, "id"));
+            object.put("student_id", student_id);
+            object.put("class_id", class_id);
             object.put("domain", ContentValues.DOMAIN);
             HTTPNewPost task = new HTTPNewPost(this, this);
-            task.userRequest("Processing...", 1, Paths.get_tutor_students, object.toString(), 1);
+            task.userRequest("Processing...", 1, Paths.get_approval_messages, object.toString(), 1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,11 +132,34 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
     @Override
     public void swipeToSyllabus(int position, List<ApprovalModel> classModelList) {
 
+        try {
+            JSONObject object = new JSONObject();
+            object.put("student_id", student_id);
+            object.put("message_id", classModelList.get(position).getMessage_id());
+            object.put("status", 1);
+            object.put("domain", ContentValues.DOMAIN);
+            HTTPNewPost task = new HTTPNewPost(this, this);
+            task.userRequest("Processing...", 2, Paths.student_approval_message, object.toString(), 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
     public void swipeToDelete(int position, List<ApprovalModel> classModelList) {
 
+        try {
+            JSONObject object = new JSONObject();
+            object.put("student_id", student_id);
+            object.put("message_id", classModelList.get(position).getMessage_id());
+            object.put("status", 2);
+            object.put("domain", ContentValues.DOMAIN);
+            HTTPNewPost task = new HTTPNewPost(this, this);
+            task.userRequest("Processing...", 2, Paths.student_approval_message, object.toString(), 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -139,15 +171,16 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
                     messages = new ArrayList<>();
                     JSONObject object = new JSONObject(results.toString());
                     if (object.optString("statuscode").equalsIgnoreCase("200")) {
-                        findViewById(R.id.no_data).setVisibility(View.GONE);
-                        JSONArray jsonarray2 = object.getJSONArray("tutor_students_details");
+                        //findViewById(R.id.no_data).setVisibility(View.GONE);
+                        JSONArray jsonarray2 = object.getJSONArray("approval_msgs_details");
                         if (jsonarray2.length() > 0) {
                             for (int i = 0; i < jsonarray2.length(); i++) {
-                                ApprovalModel studentModel = new ApprovalModel();
+                                ApprovalModel message = new ApprovalModel();
                                 JSONObject jsonobject = jsonarray2.getJSONObject(i);
-                                studentModel.setMessage(jsonobject.optString("message"));
-                                studentModel.setStatus(jsonobject.optString("status"));
-                                messages.add(studentModel);
+                                message.setMessage(jsonobject.optString("message"));
+                                message.setMessage_id(jsonobject.optString("message_id"));
+                                message.setMessage_date(jsonobject.optString("message_date"));
+                                messages.add(message);
                             }
                             adapter = new ApprovalMessagesAdapter(messages, this, this);
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -165,6 +198,17 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
 
                     }
                     break;
+
+                case 2:
+                    JSONObject object1 = new JSONObject(results.toString());
+                    if(object1.optString("statuscode").equalsIgnoreCase("200"))
+                    {
+                        Toast.makeText(this, "Status Updated Successfully", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(this, "Failed To Update Status.Try Again", Toast.LENGTH_SHORT).show();
+                    }
             }
         } catch (Exception e) {
             e.printStackTrace();

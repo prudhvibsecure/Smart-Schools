@@ -147,7 +147,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         }
                     });
                     sendBD();
-                } else if (m_type.equalsIgnoreCase("SS")) {
+                }  else if (m_type.equalsIgnoreCase("SFS")) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            getredAlert("Your Access Has Been Deactivated - Please Contact Administrator");
+                        }
+                    });
+                    sendBD();
+                }else if (m_type.equalsIgnoreCase("SS")) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
@@ -174,7 +182,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     list.putExtra("student_id", Student_id);
                     list.setAction("com.parent.refresh");
                     sendBroadcast(list);
-                }else if (m_type.equalsIgnoreCase("ATC")) {
+                }
+                else if(m_type.equalsIgnoreCase("DELM")) {
+
+                    String mid = arry_data[1];
+                    db_tables.deleteMessage(mid);
+                    Intent list = new Intent();
+                    list.setAction("com.chat.app.DELIVER");
+                    sendBroadcast(list);
+
+                }
+                else if (m_type.equalsIgnoreCase("ATC")) {
                     String teacher_classes_id = arry_data[1];
                     String class_id = arry_data[2];
                     String class_name = arry_data[3];
@@ -224,6 +242,27 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 String title_msg = object.optString("msg_det");
                 String arry_data[] = title_msg.split(",");
                 m_type = arry_data[0];
+
+                if (m_type.equalsIgnoreCase("SAM")){
+
+                    String message_id = arry_data[1];
+                    String message_date = arry_data[2];
+                    String student_id = arry_data[3];
+                    String class_id = arry_data[4];
+
+                    //db_tables.messageData(messsages, message_id, message_date, null, class_id, SharedValues.getValue(this, "school_id"), "1", null, student_id, student_name, null, "0", "0", "No", m_type);
+                    //write code and
+
+
+                    intent_pending = new Intent();
+                    intent_pending.putExtra("message_id", message_id);
+                    intent_pending.putExtra("student_id", student_id);
+                    intent_pending.putExtra("message", messsages);
+                    intent_pending.setAction("com.scs.app.dashboard");
+                    sendBroadcast(intent_pending);
+                    //sendBD2();
+
+                }
                 if (m_type.equalsIgnoreCase("MAR")) {
                     //MAR*message_id*message_timestamp*student_id*student_name*attendance_date*class_id
                     String message_id = arry_data[1];
@@ -439,7 +478,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
                 //if there is no image
                 if (imageUrl.equals("null") || imageUrl.isEmpty()) {
-                    mNotificationManager.showSmallNotification(student_name, String.valueOf(Html.fromHtml(messsages)), intent_pending);
+                    mNotificationManager.showSmallNotification(student_name, String.valueOf(Html.fromHtml(messsages)), intent_pending,m_type);
                     myBroadcaster(message_data);
                 } else {
                     mNotificationManager.showBigNotification(student_name, String.valueOf(Html.fromHtml(messsages)), imageUrl, intent_pending);
@@ -476,6 +515,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void sendBD() {
         Intent intent = new Intent();
         intent.setAction("com.scs.app.SESSION");
+        sendBroadcast(intent);
+    } private void sendBD2() {
+        Intent intent = new Intent();
+        intent.setAction("com.scs.app.dashboard");
         sendBroadcast(intent);
     }
 

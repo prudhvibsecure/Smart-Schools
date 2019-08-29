@@ -163,12 +163,12 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                 tv.setText("Roll No's:" + Html.fromHtml(desc + " Are Being Marked Absent. Are You Sure You Want To Submit?"));
             }
             else {
-                desc = "All Students <br/>Present";
+                desc = "All Students <br/>Present. Are You Sure You Want To Submit?";
                 TextView tv = dialog.findViewById(R.id.data);
-                tv.setText("Roll No.'s: " + Html.fromHtml(desc));
+                tv.setText(Html.fromHtml(desc));
             }
-            TextView tv = dialog.findViewById(R.id.data);
-            tv.setText("Roll No.'s: " + Html.fromHtml(desc)+ "Are Being Marked Absent. Are You Sure You Want To Submit?");
+            //TextView tv = dialog.findViewById(R.id.data);
+            //tv.setText("Roll No.'s: " + Html.fromHtml(desc)+ "Are Being Marked Absent. Are You Sure You Want To Submit?");
             dialog.setCancelable(false);
             Button yes = dialog.findViewById(R.id.yes);
             yes.setOnClickListener(new View.OnClickListener() {
@@ -277,6 +277,7 @@ public class StudentsView extends AppCompatActivity implements HttpHandler, Stud
                                 studentModel.setClass_id(jsonobject.optString("class_id"));
                                 studentModel.setStudent_id(jsonobject.optString("student_id"));
                                 studentModel.setSelected(true);
+
                                 studentModelList.add(studentModel);
 
                             }

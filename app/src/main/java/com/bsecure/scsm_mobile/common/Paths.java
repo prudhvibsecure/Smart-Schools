@@ -75,6 +75,10 @@ public class Paths {
     public static final String view_photo_gallery_mobile = base + "photo_gallery/view_photo_gallery_mobile";
     public static final String staff_login = base + "staff_login";
     public static final String get_teachers = base + "get_teachers";
+    public static final String get_approval_messages = base + "list_approval_msgs";
+    public static final String student_approval_message = base + "student_approval_message";
+    public static final String get_class_list = base + "getclasslist";
+
 
 
 

@@ -1,8 +1,10 @@
 package com.bsecure.scsm_mobile.fragments;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -12,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -68,7 +71,7 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
     String[]stu_ids;
     String [] sids;
     ArrayList<String>school_ids;
-    IntentFilter filter;
+    IntentFilter filter,approve_filter;
 
     public StudentsFragment() {
         // Required empty public constructor
@@ -90,7 +93,9 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
         // Inflate the layout for this fragment
         layout = inflater.inflate(R.layout.content_main_view, container, false);
         filter = new IntentFilter("com.parent.refresh");
+        approve_filter = new IntentFilter("com.scs.app.dashboard");
         getActivity().registerReceiver(mBroadcastReceiver, filter);
+        getActivity().registerReceiver(mBroadcastReceiver2, approve_filter);
         school_ids = new ArrayList<>();
         db_tables = new DB_Tables(getActivity());
         db_tables.openDB();
@@ -131,6 +136,56 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
             getStudentsList();
         }
     };
+    private BroadcastReceiver mBroadcastReceiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String student_id = intent.getStringExtra("student_id");
+            String message_id = intent.getStringExtra("message_id");
+            String message = intent.getStringExtra("message");
+            getApproval(student_id,message_id, message);
+
+        }
+    };
+
+    private void getApproval(final String student_id, final String message_id, String message) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        //builder.setMessage(message);
+
+        builder.setMessage(Html.fromHtml("<font color='#000000'>"+message+"</font>"));
+
+        builder.setCancelable(false);
+
+        builder.setTitle("Message!");
+
+        builder.setPositiveButton("ACCEPT", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int id) {
+
+                sendStatus(message_id, student_id,1);
+
+                dialog.cancel();
+            }
+        }).setNegativeButton("DECLINE", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //  Action for 'NO' Button
+                        sendStatus(message_id, student_id,2);
+
+                        dialog.cancel();
+
+                    }
+        }).setNeutralButton("PENDING", new DialogInterface.OnClickListener() {
+                 @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                     sendStatus(message_id, student_id,0);
+
+                     dialog.cancel();
+                }
+         }).show();
+
+    }
 
 
     private void getStudents(String schoolid) {
@@ -196,6 +251,20 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
                     } else {
                         Toast.makeText(getActivity(), object12.optString("statusdescription"), Toast.LENGTH_SHORT).show();
                     }
+                    break;
+
+                case 100:
+
+                    JSONObject obj = new JSONObject(results.toString());
+                    if(obj.optString("statuscode").equalsIgnoreCase("200"))
+                    {
+                        Toast.makeText(schoolMain, "Status Sent Successfully", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(schoolMain, "Failed To Send.Try Again", Toast.LENGTH_SHORT).show();
+                    }
+
                     break;
             }
         } catch (Exception e) {
@@ -372,9 +441,12 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
                         startActivity(in);
                         return true;
 
-                   /* case R.id.messages:
+                    case R.id.apmsg:
                         Intent am = new Intent(getActivity(), ApprovalMessages.class);
-                        startActivity(am);*/
+                        am.putExtra("student_id", classModelList.get(position).getStudent_id());
+                        am.putExtra("class_id", classModelList.get(position).getClass_id());
+                        startActivity(am);
+                        return true;
 
                     default:
                         return false;
@@ -437,5 +509,41 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
         in.putExtra("roll_no", roll_no);
         in.putExtra("school_id", school_id);
         startActivity(in);
+    }
+
+    @Override
+    public void onDestroy() {
+
+        try{
+            getActivity().unregisterReceiver(mBroadcastReceiver);
+            getActivity().unregisterReceiver(mBroadcastReceiver2);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        super.onDestroy();
+    }
+
+    public void sendStatus(String message_id, String student_id, int status)
+    {
+        try {
+
+            JSONObject object = new JSONObject();
+
+            object.put("message_id", message_id);
+
+            object.put("student_id", student_id);
+
+            object.put("domain", ContentValues.DOMAIN);
+
+            object.put("status", status);
+
+            HTTPNewPost task = new HTTPNewPost(getActivity(), this);
+
+            task.userRequest("Processing...", 100, Paths.student_approval_message, object.toString(), 1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
