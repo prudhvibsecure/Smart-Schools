@@ -27,15 +27,14 @@ public class Absentdate_view extends AppCompatActivity {
    String year,month;
    ArrayList<String> dates;
    int mnth=1;
+   CalendarView cv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_absentdate_view);
 
-
         mCalendarView  =  findViewById(R.id.calendar);
-
-
         Intent i=getIntent();
         Bundle bd=i.getExtras();
         if(bd != null) {
@@ -44,6 +43,8 @@ public class Absentdate_view extends AppCompatActivity {
             dates = (ArrayList<String>) bd.getSerializable("dates");
 
         }
+        cv = new CalendarView(this);
+
        /* ArrayList<DateData> dates=new ArrayList<>();
         dates.add(new DateData(2018,04,26));
         dates.add(new DateData(2018,04,27));
@@ -51,46 +52,46 @@ public class Absentdate_view extends AppCompatActivity {
         for(int i=0;i<dates.size();i++) {*/
        if (month.equalsIgnoreCase("Jan")){
            mnth=1;
-          return;
        }
-        if (month.equalsIgnoreCase("Feb")){
+        else if (month.equalsIgnoreCase("Feb")){
             mnth=2;
-            return;
-        } if (month.equalsIgnoreCase("Mar")){
+
+        } else if (month.equalsIgnoreCase("Mar")){
             mnth=3;
-            return;
-        } if (month.equalsIgnoreCase("Apr")){
+
+        } else if (month.equalsIgnoreCase("Apr")){
             mnth=4;
-            return;
-        } if (month.equalsIgnoreCase("May")){
+
+        } else if (month.equalsIgnoreCase("May")){
             mnth=5;
-            return;
-        } if (month.equalsIgnoreCase("Jun")){
+
+        } else if (month.equalsIgnoreCase("Jun")){
             mnth=6;
-            return;
-        } if (month.equalsIgnoreCase("Jul")){
+
+        } else if (month.equalsIgnoreCase("Jul")){
             mnth=7;
-            return;
-        } if (month.equalsIgnoreCase("Aug")){
+
+        } else if (month.equalsIgnoreCase("Aug")){
             mnth=8;
-            return;
-        } if (month.equalsIgnoreCase("Sep")){
+
+        } else if (month.equalsIgnoreCase("Sep")){
             mnth=9;
-            return;
-        } if (month.equalsIgnoreCase("Oct")){
+
+        } else if (month.equalsIgnoreCase("Oct")){
             mnth=10;
-            return;
-        } if (month.equalsIgnoreCase("Nov")){
+
+        } else if (month.equalsIgnoreCase("Nov")){
             mnth=11;
-            return;
-        } if (month.equalsIgnoreCase("Dec")){
+
+        } else if (month.equalsIgnoreCase("Dec")){
             mnth=12;
-            return;
+
         }
        for (int j=0;j<dates.size();j++)
        {
            try {
                mCalendarView.markDate(new DateData(Integer.parseInt(year),mnth,Integer.parseInt(dates.get(j))).setMarkStyle(new MarkStyle(MarkStyle.BACKGROUND, Color.RED)));
+
            }catch (Exception e)
            {
                e.printStackTrace();

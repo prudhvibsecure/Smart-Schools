@@ -48,7 +48,13 @@ public class CalenderAdapter extends RecyclerView.Adapter<CalenderAdapter.ViewHo
 
         viewHolder.name.setText(calender.get(position).getOccassion());
         viewHolder.fromdate.setText(getTimeAgolatest(Long.parseLong(calender.get(position).getFromdate())));
-        viewHolder.todate.setText(getTimeAgolatest(Long.parseLong(calender.get(position).getTodate())));
+        if(!calender.get(position).getTodate().equals("")) {
+            viewHolder.todate.setText(getTimeAgolatest(Long.parseLong(calender.get(position).getTodate())));
+        }
+        else
+        {
+            viewHolder.todate.setText("");
+        }
 
     }
 

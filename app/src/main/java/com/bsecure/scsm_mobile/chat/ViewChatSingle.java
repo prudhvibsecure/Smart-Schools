@@ -404,6 +404,7 @@ public class ViewChatSingle extends AppCompatActivity implements View.OnClickLis
                     messageObject.setForward_status(jsonobject.optString("forward"));
                     messageObject.setnType(jsonobject.optString("notifyType"));
                     messageObject.setClass_id(jsonobject.optString("class_id"));
+
                     messageList.add(messageObject);
 
                 }

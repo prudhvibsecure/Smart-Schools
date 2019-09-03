@@ -2,9 +2,11 @@ package com.bsecure.scsm_mobile.modules;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 import com.bsecure.scsm_mobile.R;
 import com.bsecure.scsm_mobile.adapters.ApprovalMessagesAdapter;
 import com.bsecure.scsm_mobile.adapters.TutorAssignStudentsListAdapter;
+import com.bsecure.scsm_mobile.callbacks.ClickListener;
 import com.bsecure.scsm_mobile.callbacks.HttpHandler;
 import com.bsecure.scsm_mobile.common.ContentValues;
 import com.bsecure.scsm_mobile.common.Paths;
@@ -35,7 +38,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ApprovalMessages extends AppCompatActivity implements HttpHandler, ApprovalMessagesAdapter.ContactAdapterListener{
+public class ApprovalMessages extends AppCompatActivity implements HttpHandler, ClickListener {
 
     private DB_Tables db_tables;
     ArrayList<ApprovalModel> messages;
@@ -45,6 +48,7 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
     public ItemTouchHelperExtension.Callback mCallback;
     IntentFilter filter;
     String student_id, class_id;
+    String[] permissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,11 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        permissions = new String[3];
+        permissions[0] = "ACCEPT";
+        permissions[1] = "DECLINE";
+        permissions[2] = "PENDING";
+
         Intent in = getIntent();
         student_id = in.getStringExtra("student_id");
         class_id = in.getStringExtra("class_id");
@@ -68,9 +77,9 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
         db_tables = new DB_Tables(this);
         db_tables.openDB();
 
-        mCallback = new ItemTouchHelperCallbackMessage();
+       /* mCallback = new ItemTouchHelperCallbackMessage();
         mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
-        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+        mItemTouchHelper.attachToRecyclerView(mRecyclerView);*/
         getMessages();
 
     }
@@ -93,21 +102,7 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
         super.onResume();
     }
 
-    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
 
-            try {
-                if (adapter != null) {
-                    adapter.clear();
-                    adapter.notifyDataSetChanged();
-                    getMessages();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
 
     private void getMessages() {
 
@@ -124,12 +119,34 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
         }
     }
 
-    @Override
-    public void onMessageRowClicked(List<ApprovalModel> matchesList, int position) {
+   /* @Override
+    public void onMessageRowClicked(final List<ApprovalModel> matchesList, final int position) {
 
-    }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose Your Response");
+        builder.setItems(permissions, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-    @Override
+                if(permissions[which].equalsIgnoreCase("ACCEPT"))
+                {
+                    matchesList.get(position).setStatus(1);
+                    updateResponse(matchesList.get(position).getMessage_id(), 1);
+                }
+                else
+                {
+                    matchesList.get(position).setStatus(2);
+                    updateResponse(matchesList.get(position).getMessage_id(), 2);
+                }
+
+                adapter.notifyDataSetChanged();
+            }
+        });
+        builder.show();
+
+    }*/
+
+    /*@Override
     public void swipeToSyllabus(int position, List<ApprovalModel> classModelList) {
 
         try {
@@ -160,7 +177,7 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @Override
     public void onResponse(Object results, int requestType) {
@@ -180,6 +197,7 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
                                 message.setMessage(jsonobject.optString("message"));
                                 message.setMessage_id(jsonobject.optString("message_id"));
                                 message.setMessage_date(jsonobject.optString("message_date"));
+                                message.setStatus(jsonobject.optInt("status"));
                                 messages.add(message);
                             }
                             adapter = new ApprovalMessagesAdapter(messages, this, this);
@@ -217,6 +235,54 @@ public class ApprovalMessages extends AppCompatActivity implements HttpHandler, 
 
     @Override
     public void onFailure(String errorCode, int requestType) {
+
+    }
+
+    public void updateResponse(String mid, int status){
+
+        try {
+            JSONObject object = new JSONObject();
+            object.put("student_id", student_id);
+            object.put("message_id", mid);
+            object.put("status", status);
+            object.put("domain", ContentValues.DOMAIN);
+            HTTPNewPost task = new HTTPNewPost(this, this);
+            task.userRequest("Processing...", 2, Paths.student_approval_message, object.toString(), 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void OnRowClicked(final int position, View view) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose Your Response");
+        builder.setItems(permissions, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if(permissions[which].equalsIgnoreCase("ACCEPT"))
+                {
+                    messages.get(position).setStatus(1);
+                    updateResponse(messages.get(position).getMessage_id(), 1);
+                }
+                else if(permissions[which].equalsIgnoreCase("DECLINE"))
+                {
+                    messages.get(position).setStatus(2);
+                    updateResponse(messages.get(position).getMessage_id(), 2);
+                }
+                else
+                {
+                    messages.get(position).setStatus(0);
+                    updateResponse(messages.get(position).getMessage_id(), 0);
+                }
+
+                adapter.notifyDataSetChanged();
+            }
+        });
+        builder.show();
+
 
     }
 }

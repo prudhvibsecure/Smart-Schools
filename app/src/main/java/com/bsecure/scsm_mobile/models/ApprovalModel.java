@@ -1,8 +1,8 @@
 package com.bsecure.scsm_mobile.models;
 
 public class ApprovalModel {
-    String message, status, message_id, message_date;
-
+    String message, message_id, message_date;
+    int status;
     public String getMessage() {
         return message;
     }
@@ -11,11 +11,11 @@ public class ApprovalModel {
         this.message = message;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

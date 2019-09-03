@@ -129,9 +129,9 @@ public class StudentsViewAttendence extends AppCompatActivity implements HttpHan
     @Override
     public void OnRowClicked(int position, View view) {
 
-        String year=viewAttandenceArrayList.get(position).getYear();
-        String month=viewAttandenceArrayList.get(position).getMonth();
-        ArrayList array=viewAttandenceArrayList.get(position).getAbsentdays();
+        String year = viewAttandenceArrayList.get(position).getYear();
+        String month = viewAttandenceArrayList.get(position).getMonth();
+        ArrayList array = viewAttandenceArrayList.get(position).getAbsentdays();
 
         //Toast.makeText(this,String.valueOf(position),Toast.LENGTH_LONG).show();
         Intent i=new Intent(StudentsViewAttendence.this, Absentdate_view.class);

@@ -91,7 +91,15 @@ public class Calender extends AppCompatActivity implements HttpHandler {
                                 CalenderModel calenderModel = new CalenderModel();
                                 calenderModel.setOccassion(jsonobject.optString("occassion"));
                                 calenderModel.setFromdate(jsonobject.optString("calendar_from_date"));
-                                calenderModel.setTodate(jsonobject.optString("calendar_to_date"));
+
+                                if(jsonobject.optString("calendar_from_date").equalsIgnoreCase(jsonobject.optString("calendar_to_date")))
+                                {
+                                    calenderModel.setTodate("");
+                                }
+                                else
+                                {
+                                    calenderModel.setTodate(jsonobject.optString("calendar_to_date"));
+                                }
                                //calenderModel.setTodate(jsonobject.optString("student_id"));
                                 calenderList.add(calenderModel);
                             }

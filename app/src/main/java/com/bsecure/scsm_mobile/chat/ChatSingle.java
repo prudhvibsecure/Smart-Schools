@@ -28,6 +28,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
@@ -68,12 +69,12 @@ import com.bsecure.scsm_mobile.common.NetworkInfoAPI;
 import com.bsecure.scsm_mobile.common.Paths;
 import com.bsecure.scsm_mobile.common.RunTimePermission;
 import com.bsecure.scsm_mobile.database.DB_Tables;
+import com.bsecure.scsm_mobile.fragments.ImageDialogFragment;
 import com.bsecure.scsm_mobile.https.DownloadService;
 import com.bsecure.scsm_mobile.https.FileUploader;
 import com.bsecure.scsm_mobile.https.HTTPNewPost;
 import com.bsecure.scsm_mobile.models.MessageObject;
 import com.bsecure.scsm_mobile.models.StudentModel;
-import com.bsecure.scsm_mobile.modules.TeacherView;
 import com.bsecure.scsm_mobile.provider.CameraPreview;
 import com.bsecure.scsm_mobile.utils.ContactUtils;
 import com.bsecure.scsm_mobile.utils.SharedValues;
@@ -93,7 +94,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -106,7 +106,7 @@ import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
  * Created by Admin on 2018-11-20.
  */
 
-public class ChatSingle extends AppCompatActivity implements View.OnClickListener, HttpHandler, MessageListAdapter.ChatAdapterListener, IndividualStudentsAdapter.ContactAdapterListener, IDownloadCallback, OfflineDataInterface, NetworkInfoAPI.OnNetworkChangeListener {
+public class ChatSingle extends AppCompatActivity implements View.OnClickListener, HttpHandler, MessageListAdapter.ChatAdapterListener, IndividualStudentsAdapter.ContactAdapterListener, IDownloadCallback, OfflineDataInterface, NetworkInfoAPI.OnNetworkChangeListener, ImageDialogFragment.actionListener {
 
     private ImageView mFabButton, mEmoji;
     private RecordButton mAudioButton;
@@ -168,6 +168,11 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
     private LinearLayout inputLL;
     private NetworkInfoAPI networkInfoAPI;
     int pgno = 0;
+    public Item item;
+
+    ImageDialogFragment df;
+
+    TextView ok, retake;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -250,7 +255,6 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
         networkInfoAPI.setOnNetworkChangeListener(this);
         initViews();
         addObserver(this);
-
 
     }
 
@@ -791,7 +795,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-    private void viewCameraTag() {
+    public void viewCameraTag() {
 
         runTimePermission = new RunTimePermission(this);
         runTimePermission.requestPermission(new String[]{Manifest.permission.CAMERA,
@@ -860,17 +864,48 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                     } else {
                         displayname = THUMB.substring(THUMB.lastIndexOf("/") + 1);
                     }
-                    Item item = new Item("");
+                    item = new Item("");
                     item.setAttribute("data", filepath);
                     item.setAttribute("displayname", displayname);
                     item.setAttribute("attachname", displayname);
-                    if (isNetworkAvailable()) {
-                        startUploadingFile(item);
-                    }else {
-                        mesg_date_time = String.valueOf(System.currentTimeMillis());
-                        db_tables.messageDataOffline(displayname, null, mesg_date_time, fr_ids_l.toString(), class_id, SharedValues.getValue(this, "school_id"), "0", techaer_id, student_id, null, null, "0", "0", "Yes", "none", "1", filepath);
-                        getChatMessages();
-                    }
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("path", filepath);
+
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ImageDialogFragment newFragment = ImageDialogFragment.newInstance();
+                    newFragment.setArguments(bundle);
+                    newFragment.show(ft, "slideshow");
+
+                    /*final String[] opt = new String[2];
+                    opt[0] = "YES";
+                    opt[1] = "RETAKE";
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ChatSingle.this);
+                            builder.setTitle("Are You Sure To Send?");
+                            builder.setItems(opt, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if (opt[which].equalsIgnoreCase("YES")) {
+                                            if (isNetworkAvailable()) {
+                                                startUploadingFile(item);
+                                            } else {
+                                                mesg_date_time = String.valueOf(System.currentTimeMillis());
+                                                db_tables.messageDataOffline(displayname, null, mesg_date_time, fr_ids_l.toString(), class_id, SharedValues.getValue(ChatSingle.this, "school_id"), "0", techaer_id, student_id, null, null, "0", "0", "Yes", "none", "1", filepath);
+                                                getChatMessages();
+                                            }
+                                        } else {
+                                            viewCameraTag();
+                                        }
+                                    }
+                                });
+                                builder.show();
+                        }
+                        }, 5000);// shows dialog after 5 seconds*/
                 }
                 break;
         }
@@ -1882,6 +1917,24 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                     observer.get().loadActualData();
                 }
             }
+        }
+    }
+
+    @Override
+    public void onAction(int i) {
+        if(i == 1)
+        {
+            if (isNetworkAvailable()) {
+                startUploadingFile(item);
+            } else {
+                mesg_date_time = String.valueOf(System.currentTimeMillis());
+                db_tables.messageDataOffline(displayname, null, mesg_date_time, fr_ids_l.toString(), class_id, SharedValues.getValue(ChatSingle.this, "school_id"), "0", techaer_id, student_id, null, null, "0", "0", "Yes", "none", "1", filepath);
+                getChatMessages();
+            }
+        }
+        else
+        {
+            viewCameraTag();
         }
     }
 

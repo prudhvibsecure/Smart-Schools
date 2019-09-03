@@ -1289,7 +1289,7 @@ public class DB_Tables {
             if (database != null) {
                 SQLiteDatabase db = database.getWritableDatabase();
 
-                String sql = "select * from Message where class_id='" + class_id + "' or student_id='" + stu_id + "'";
+                String sql = "select * from Message where class_id='" + class_id + "' and student_id='" + stu_id + "'";
                 Cursor cursor = db.rawQuery(sql,
                         null);
                 if (cursor != null) {
@@ -1307,6 +1307,7 @@ public class DB_Tables {
                         json.put("forward_status", cursor.getString(cursor.getColumnIndex("forward_status")));
                         json.put("notifyType", cursor.getString(cursor.getColumnIndex("notifyType")));
                         json.put("class_id", cursor.getString(cursor.getColumnIndex("class_id")));
+
                         array.put(json);
                     }
 
