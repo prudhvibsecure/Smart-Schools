@@ -77,6 +77,7 @@ import com.bsecure.scsm_mobile.models.MessageObject;
 import com.bsecure.scsm_mobile.models.StudentModel;
 import com.bsecure.scsm_mobile.provider.CameraPreview;
 import com.bsecure.scsm_mobile.utils.ContactUtils;
+import com.bsecure.scsm_mobile.utils.RealPathUtil;
 import com.bsecure.scsm_mobile.utils.SharedValues;
 import com.bsecure.scsm_mobile.utils.Utils;
 import com.bumptech.glide.Glide;
@@ -91,6 +92,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -169,8 +171,9 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
     private NetworkInfoAPI networkInfoAPI;
     int pgno = 0;
     public Item item;
-
+    public Intent dataa;
     ImageDialogFragment df;
+    int PICK_IMAGE_MULTIPLE = 1;
 
     TextView ok, retake;
 
@@ -842,7 +845,33 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                         //showToast(R.string.fnf);
                         return;
                     }
-                    validateSelectedFile(processFileMetadata(data));
+/////////////////////////////////////////
+                    //filepath = getRealPathFromURI(this,data.getData());
+                    dataa = data;
+
+                    if (Build.VERSION.SDK_INT < 11)
+                        filepath = RealPathUtil.getRealPathFromURI_BelowAPI11(this, data.getData());
+
+                        // SDK >= 11 && SDK < 19
+                    else if (Build.VERSION.SDK_INT < 19)
+                        filepath = RealPathUtil.getRealPathFromURI_API11to18(this, data.getData());
+
+                        // SDK > 19 (Android 4.4)
+                    else
+                        filepath = RealPathUtil.getRealPathFromURI_API19(this, data.getData());
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("path", filepath);
+                    bundle.putString("type", "0");
+
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ImageDialogFragment newFragment = ImageDialogFragment.newInstance();
+                    newFragment.setArguments(bundle);
+                    newFragment.show(ft, "slideshow");
+
+
+ ////////////////////////////////////////
+                    //validateSelectedFile(processFileMetadata(data));
                 }
                 break;
             case 222:
@@ -871,6 +900,7 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
 
                     Bundle bundle = new Bundle();
                     bundle.putString("path", filepath);
+                    bundle.putString("type", "1");
 
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ImageDialogFragment newFragment = ImageDialogFragment.newInstance();
@@ -1932,9 +1962,21 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
                 getChatMessages();
             }
         }
-        else
+        else if(i == 0)
         {
             viewCameraTag();
+        }
+        else if(i == 2)
+        {
+            validateSelectedFile(processFileMetadata(dataa));
+        }
+        else if(i==3)
+        {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent,"Select Picture"), PICK_IMAGE_MULTIPLE);
         }
     }
 
@@ -2053,5 +2095,22 @@ public class ChatSingle extends AppCompatActivity implements View.OnClickListene
         NetworkInfo net = manager.getActiveNetworkInfo();
         return net != null && net.isConnected();
 
+    }
+
+    private String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } catch (Exception e) {
+            return "";
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 }

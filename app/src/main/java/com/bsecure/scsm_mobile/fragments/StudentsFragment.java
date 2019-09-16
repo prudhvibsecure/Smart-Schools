@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -72,6 +73,7 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
     String [] sids;
     ArrayList<String>school_ids;
     IntentFilter filter,approve_filter;
+    SharedPreferences sp;
 
     public StudentsFragment() {
         // Required empty public constructor
@@ -101,6 +103,12 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
         db_tables.openDB();
         Toolbar toolbar = (Toolbar) layout.findViewById(R.id.toolset);
         toolbar.setVisibility(View.GONE);
+
+        sp = getActivity().getSharedPreferences("apm", Context.MODE_PRIVATE);
+        if(sp.getString("seen","").equals("1"))
+        {
+           getApproval(sp.getString("sid",""),sp.getString("mid",""),sp.getString("msg",""));
+        }
 //        toolbar.setTitle("Students List");
 //        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 //        setSupportActionBar(toolbar);
@@ -259,6 +267,9 @@ public class StudentsFragment extends Fragment implements HttpHandler, ParentStu
                     if(obj.optString("statuscode").equalsIgnoreCase("200"))
                     {
                         Toast.makeText(schoolMain, "Status Sent Successfully", Toast.LENGTH_SHORT).show();
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putString("seen", "0");
+                        editor.apply();
                     }
                     else
                     {

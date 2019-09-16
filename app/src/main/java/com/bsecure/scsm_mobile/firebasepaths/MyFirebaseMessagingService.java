@@ -1,6 +1,7 @@
 package com.bsecure.scsm_mobile.firebasepaths;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
@@ -35,10 +36,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     Intent intent, intent_pending;
     String secureTage, repId_type2, f_status, fwd;
     long count = 0;
-    String m_type, status_code, student_name = "SCM";
+    private String m_type, status_code, student_name = "SCM";
+    SharedPreferences sp;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        sp = getSharedPreferences("apm",MODE_PRIVATE);
         if (remoteMessage.getData().size() > 0) {
             Log.e(TAG, "Data Payload: " + remoteMessage.getData().toString());
             try {
@@ -253,12 +256,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     //db_tables.messageData(messsages, message_id, message_date, null, class_id, SharedValues.getValue(this, "school_id"), "1", null, student_id, student_name, null, "0", "0", "No", m_type);
                     //write code and
 
-
                     intent_pending = new Intent();
                     intent_pending.putExtra("message_id", message_id);
                     intent_pending.putExtra("student_id", student_id);
                     intent_pending.putExtra("message", messsages);
                     intent_pending.setAction("com.scs.app.dashboard");
+
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("seen", "1");
+                    editor.putString("mid", message_id);
+                    editor.putString("sid", student_id);
+                    editor.putString("msg", messsages);
+                    editor.apply();
+
                     sendBroadcast(intent_pending);
                     //sendBD2();
 

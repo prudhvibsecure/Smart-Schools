@@ -191,9 +191,9 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.pr_teacher:
+            /*case R.id.pr_teacher:
                 showProfile();
-                break;
+                break;*/
         }
         return super.onOptionsItemSelected(item);
     }
@@ -251,6 +251,12 @@ public class TeacherView extends AppCompatActivity implements HttpHandler, Class
                         Intent cal = new Intent(TeacherView.this, Calender.class);
                         cal.putExtra("class_id", SharedValues.getValue(TeacherView.this, "class_id"));
                         startActivity(cal);
+                        return true;
+
+                    case R.id.performance:
+                        Intent in = new Intent(TeacherView.this, StudentsList.class);
+                        in.putExtra("class_id", SharedValues.getValue(TeacherView.this, "class_id"));
+                        startActivity(in);
                         return true;
 
 

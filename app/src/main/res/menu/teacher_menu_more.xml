@@ -17,4 +17,9 @@
         android:title="Syllabus"
         android:visible="false"/>
 
+    <item
+        android:id="@+id/performance"
+        android:title="Performance"
+        android:visible="true"/>
+
 </menu>

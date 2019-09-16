@@ -51,7 +51,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="icon, label,allowBackup,supportsRtl">
-        <activity android:name=".modules.TeachersList"></activity>
+        <activity android:name=".modules.StudentsList"></activity>
+        <activity android:name=".modules.TeachersList" />
         <activity android:name=".modules.ClassesList" />
         <activity android:name=".AdminLogin" />
         <activity android:name=".modules.ApprovalMessages" />
@@ -96,7 +97,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".modules.Absentdate_view">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -104,7 +104,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".modules.TutorsView">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -130,7 +129,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".modules.TeacherView"
+        <activity
+            android:name=".modules.TeacherView"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -189,7 +189,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".chat.ChatSingle"
+        <activity
+            android:name=".chat.ChatSingle"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
