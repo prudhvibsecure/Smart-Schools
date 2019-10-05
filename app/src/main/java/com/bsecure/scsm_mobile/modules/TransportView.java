@@ -139,11 +139,11 @@ public class TransportView extends AppCompatActivity implements HttpHandler, Tra
             @Override
             public void run() {
                 syncCall();
-                habs.postDelayed(myRunnable, 600000);
+                habs.postDelayed(myRunnable, 30000);
 
             }
         };
-        habs.postDelayed(myRunnable, 60000);
+        habs.postDelayed(myRunnable, 3000);
     }
 
     private void syncCall() {
